@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="version" content="lp-v4.5">
+<meta name="version" content="lp-v4.6">
 <title>Mila's Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -232,21 +232,25 @@ body::before{content:'';position:fixed;inset:0;
   overflow:hidden;
   box-shadow:3px 4px 0 rgba(44,36,22,.07);
   display:flex;
+  flex-direction:column;
 }
 .mag-feature-card.vertical{flex-direction:column}
 .mag-feature-img{
-  width:140px;flex-shrink:0;
-  overflow:hidden;min-height:160px;
+  width:100%;
+  overflow:hidden;
 }
 .mag-feature-img img{
-  width:100%;height:100%;min-height:160px;object-fit:cover;display:block;
+  width:100%;height:auto;max-height:280px;object-fit:contain;background:#EDE5CE;display:block;
 }
 .mag-feature-card.vertical .mag-feature-img{
-  width:100%;height:220px;min-height:220px;
+  width:100%;
+}
+.mag-feature-card.vertical .mag-feature-img img{
+  height:auto;max-height:320px;
 }
 .mag-feature-body{
   padding:14px;flex:1;
-  border-left:1px solid rgba(44,36,22,.06);
+  border-left:none;border-top:1px solid rgba(44,36,22,.06);
 }
 .mag-feature-card.vertical .mag-feature-body{
   border-left:none;border-top:1px solid rgba(44,36,22,.06);
@@ -333,16 +337,16 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#FBF7EE;border-top:1px sol
 
 /* PHOTO CARD — full bleed */
 .photo-card{margin:20px 20px 0;border-radius:6px;overflow:hidden;position:relative;box-shadow:3px 4px 0 rgba(44,36,22,.1);}
-.photo-card img{width:100%;display:block;object-fit:cover;}
-.photo-card.tall img{height:260px;}
-.photo-card.wide img{height:220px;}
-.photo-card.hero-style img{height:300px;}
+.photo-card img{width:100%;display:block;object-fit:contain;background:#EDE5CE;}
+.photo-card.tall img{height:auto;max-height:280px;}
+.photo-card.wide img{height:auto;max-height:240px;}
+.photo-card.hero-style img{height:auto;max-height:320px;}
 .photo-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(27,43,75,.75));color:#fff;font-size:11px;letter-spacing:1px;padding:20px 12px 10px;}
 
 /* PHOTO ROW (2 side by side) */
 .photo-row{display:flex;gap:10px;margin:16px 20px 0;}
 .photo-row .photo-half{flex:1;border-radius:6px;overflow:hidden;box-shadow:2px 3px 0 rgba(44,36,22,.1);}
-.photo-row .photo-half img{width:100%;height:180px;object-fit:cover;display:block;}
+.photo-row .photo-half img{width:100%;height:auto;max-height:200px;object-fit:contain;background:#EDE5CE;display:block;}
 
 /* OVERVIEW CARDS */
 .overview-row{display:flex;gap:10px;padding:16px 20px 0;overflow-x:auto;scrollbar-width:none}
@@ -393,7 +397,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#FBF7EE;border-top:1px sol
 .tl-tip{font-size:12px;color:#5C6B3A;background:rgba(92,107,58,.08);border-left:2px solid #5C6B3A;padding:4px 8px;margin-top:6px;border-radius:0 2px 2px 0;}
 /* inline photo in timeline */
 .tl-photo{margin-top:10px;border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(44,36,22,.08);}
-.tl-photo img{width:100%;height:200px;object-fit:cover;display:block;}
+.tl-photo img{width:100%;height:auto;max-height:260px;object-fit:contain;background:#EDE5CE;display:block;}
 
 /* BUDGET */
 .budget-card{margin:16px 20px 0;background:#EDE5CE;border:1px solid rgba(44,36,22,.1);border-radius:4px;padding:16px;box-shadow:2px 3px 0 rgba(44,36,22,.06);}
@@ -407,7 +411,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#FBF7EE;border-top:1px sol
 /* FOOD */
 .food-grid{padding:0 20px;display:flex;flex-direction:column;gap:12px}
 .food-card{background:#FBF7EE;border:1px solid rgba(44,36,22,.1);border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(44,36,22,.06);}
-.food-card-img{width:100%;height:200px;object-fit:cover;display:block;}
+.food-card-img{width:100%;height:auto;max-height:240px;object-fit:contain;background:#EDE5CE;display:block;}
 .food-card-body{padding:14px;position:relative;}
 .food-card-body::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#C4622D;}
 .food-card-body-inner{padding-left:8px;}
@@ -421,7 +425,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#FBF7EE;border-top:1px sol
 /* TIPS */
 .tips-list{padding:0 20px;display:flex;flex-direction:column;gap:12px}
 .tip-card{background:#FBF7EE;border:1px solid rgba(44,36,22,.1);border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(44,36,22,.06);}
-.tip-card-img{width:100%;height:180px;object-fit:cover;display:block;}
+.tip-card-img{width:100%;height:auto;max-height:220px;object-fit:contain;background:#EDE5CE;display:block;}
 .tip-card-body{display:flex;gap:14px;align-items:flex-start;padding:14px;}
 .tip-icon{font-size:24px;flex-shrink:0;margin-top:2px}
 .tip-title{font-size:14px;font-weight:600;color:#1B2B4B}
@@ -445,7 +449,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#FBF7EE;border-top:1px sol
 
 /* ENDING PHOTO */
 .ending-photo{margin:20px 20px 0;border-radius:6px;overflow:hidden;position:relative;box-shadow:3px 4px 0 rgba(44,36,22,.1);}
-.ending-photo img{width:100%;height:280px;object-fit:cover;display:block;}
+.ending-photo img{width:100%;height:auto;object-fit:contain;background:#1B2B4B;display:block;}
 .ending-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(27,43,75,.8));display:flex;align-items:flex-end;padding:20px;}
 .ending-quote{font-family:'Playfair Display',serif;color:#fff;font-size:16px;font-style:italic;line-height:1.5;text-shadow:0 1px 6px rgba(0,0,0,.4);}
 </style>
