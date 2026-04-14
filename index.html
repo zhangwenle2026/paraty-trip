@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="version" content="lp-v3.0">
+<meta name="version" content="lp-v4.0">
 <title>Paraty 自驾游</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{{
   --sand:#F5EFE0;--paper:#EDE5CE;--terra:#C4622D;--terra-dark:#A04D22;
@@ -17,15 +17,296 @@ body::before{{content:'';position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   pointer-events:none;z-index:9999;}}
 
-/* SPLASH */
-#splash{{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;transition:opacity .6s ease;}}
-#splash.hide{{opacity:0;pointer-events:none}}
-.splash-label{{color:rgba(255,255,255,.5);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}}
-.splash-title{{font-family:'Playfair Display',serif;color:#fff;font-size:52px;font-weight:900;line-height:1}}
-.splash-sub{{color:var(--stamp);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-top:10px}}
-.splash-bar{{width:120px;height:2px;background:rgba(255,255,255,.15);margin-top:40px;border-radius:2px;overflow:hidden}}
-.splash-bar-fill{{height:100%;background:var(--terra);width:0;animation:loadbar 1.5s ease forwards}}
-@keyframes loadbar{{to{{width:100%}}}}
+/* SPLASH — Lonely Planet Magazine Edition */
+#splash{
+  position:fixed;inset:0;z-index:1000;
+  background:#F0E8D5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .8s ease;overflow:hidden;
+}
+#splash.hide{opacity:0;pointer-events:none}
+
+/* Paper grain overlay */
+#splash::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+  opacity:1;
+}
+/* Thin border frame — magazine page feel */
+#splash::after{
+  content:'';position:absolute;inset:18px;
+  border:1px solid rgba(196,98,45,.25);pointer-events:none;
+}
+
+/* SVG compass icon */
+.splash-compass{
+  width:64px;height:64px;margin-bottom:24px;opacity:.85;
+}
+.splash-eyebrow{
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:4px;text-transform:uppercase;color:var(--terra);
+  margin-bottom:12px;
+}
+.splash-title{
+  font-family:'Playfair Display',serif;font-size:58px;font-weight:900;
+  color:var(--ink);line-height:.95;text-align:center;letter-spacing:-1px;
+}
+.splash-title em{
+  font-style:italic;font-weight:700;color:var(--terra);
+}
+.splash-rule{
+  width:48px;height:2px;background:var(--terra);margin:18px auto 14px;
+}
+.splash-meta{
+  font-family:'Libre Baskerville',serif;font-size:12px;font-style:italic;
+  color:var(--muted);letter-spacing:.5px;text-align:center;line-height:1.6;
+}
+.splash-bar{
+  width:80px;height:1px;background:rgba(44,36,22,.12);
+  margin-top:36px;overflow:hidden;
+}
+.splash-bar-fill{
+  height:100%;background:var(--terra);width:0;
+  animation:loadbar 1.6s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes loadbar{to{width:100%}}
+
+/* Decorative corner marks */
+.splash-corner{
+  position:absolute;width:20px;height:20px;
+  border-color:rgba(196,98,45,.4);border-style:solid;
+}
+.splash-corner.tl{top:28px;left:28px;border-width:1.5px 0 0 1.5px;}
+.splash-corner.tr{top:28px;right:28px;border-width:1.5px 1.5px 0 0;}
+.splash-corner.bl{bottom:28px;left:28px;border-width:0 0 1.5px 1.5px;}
+.splash-corner.br{bottom:28px;right:28px;border-width:0 1.5px 1.5px 0;}
+
+
+/* ══════════════════════════════════════
+   MAGAZINE HERO — Lonely Planet Edition
+   ══════════════════════════════════════ */
+
+/* Slideshow */
+.mag-slideshow{
+  position:relative;height:72vw;max-height:440px;min-height:260px;
+  overflow:hidden;background:#1B2B4B;
+}
+.mag-slide{
+  position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;
+}
+.mag-slide.active{opacity:1}
+.mag-slide img{
+  width:100%;height:100%;object-fit:cover;
+  transform:scale(1.04);
+  transition:transform 8s ease;
+}
+.mag-slide.active img{transform:scale(1)}
+
+/* Gradient overlay — stronger at bottom for text legibility */
+.mag-slide-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(27,43,75,.05) 0%,
+    rgba(27,43,75,.1) 40%,
+    rgba(27,43,75,.65) 70%,
+    rgba(27,43,75,.92) 100%
+  );
+}
+
+/* Issue label — top left, like LP magazine cover */
+.mag-issue{
+  position:absolute;top:16px;left:16px;
+  background:var(--terra);color:#fff;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  padding:5px 10px;z-index:10;
+}
+
+/* Slide dots */
+.mag-dots{
+  position:absolute;bottom:90px;right:16px;
+  display:flex;flex-direction:column;gap:5px;z-index:10;
+}
+.mag-dot{
+  width:4px;height:4px;border-radius:50%;
+  background:rgba(255,255,255,.35);
+  transition:all .3s;cursor:pointer;
+}
+.mag-dot.active{background:#fff;height:14px;border-radius:2px;}
+
+/* Hero text block — magazine layout */
+.mag-hero-text{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:20px 20px 22px;z-index:10;
+}
+.mag-eyebrow{
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:600;
+  letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,.65);margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.mag-eyebrow::before{
+  content:'';display:inline-block;width:18px;height:1px;
+  background:var(--terra);flex-shrink:0;
+}
+.mag-headline{
+  font-family:'Playfair Display',serif;
+  font-size:38px;font-weight:900;line-height:.95;
+  color:#fff;letter-spacing:-0.5px;
+  text-shadow:0 2px 16px rgba(0,0,0,.3);
+}
+.mag-headline em{font-style:italic;font-weight:700;}
+.mag-deck{
+  font-family:'Libre Baskerville',serif;font-size:12px;font-style:italic;
+  color:rgba(255,255,255,.8);margin-top:8px;line-height:1.5;
+}
+.mag-dateline{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:10px;
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.9);
+}
+.mag-dateline span{
+  background:var(--terra);padding:3px 9px;letter-spacing:1px;
+}
+
+/* ── MAGAZINE DIGEST STRIP ── */
+.mag-digest{
+  background:var(--ink);
+  padding:14px 20px;
+  display:flex;gap:0;overflow-x:auto;
+  scrollbar-width:none;border-bottom:2px solid var(--terra);
+}
+.mag-digest::-webkit-scrollbar{display:none}
+.mag-digest-item{
+  flex-shrink:0;padding:0 16px;
+  border-right:1px solid rgba(255,255,255,.08);
+  display:flex;flex-direction:column;gap:3px;
+  min-width:80px;
+}
+.mag-digest-item:first-child{padding-left:0}
+.mag-digest-item:last-child{border-right:none}
+.mag-digest-val{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:700;color:#fff;line-height:1;
+}
+.mag-digest-key{
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+}
+
+/* ── MAGAZINE SECTION HEADER ── */
+.mag-section-header{
+  padding:22px 20px 0;
+  display:flex;align-items:baseline;justify-content:space-between;
+}
+.mag-section-title{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:900;color:var(--ink);
+  display:flex;align-items:center;gap:10px;
+}
+.mag-section-title::before{
+  content:'';display:inline-block;
+  width:4px;height:22px;background:var(--terra);flex-shrink:0;
+}
+.mag-section-kicker{
+  font-family:'Libre Baskerville',serif;
+  font-size:11px;font-style:italic;color:var(--muted);
+}
+
+/* ── FEATURE CARD ROW (杂志分栏) ── */
+.mag-feature-row{
+  padding:14px 20px 0;
+  display:flex;flex-direction:column;gap:12px;
+}
+.mag-feature-card{
+  background:var(--cream);
+  border:1px solid rgba(44,36,22,.1);
+  border-radius:2px;
+  overflow:hidden;
+  box-shadow:3px 4px 0 rgba(44,36,22,.07);
+  display:flex;
+}
+.mag-feature-card.vertical{flex-direction:column}
+.mag-feature-img{
+  width:120px;flex-shrink:0;
+  overflow:hidden;
+}
+.mag-feature-img img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.mag-feature-card.vertical .mag-feature-img{
+  width:100%;height:160px;
+}
+.mag-feature-body{
+  padding:14px;flex:1;
+  border-left:1px solid rgba(44,36,22,.06);
+}
+.mag-feature-card.vertical .mag-feature-body{
+  border-left:none;border-top:1px solid rgba(44,36,22,.06);
+}
+.mag-feature-kicker{
+  font-size:9px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--terra);margin-bottom:6px;
+}
+.mag-feature-title{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;color:var(--navy);line-height:1.2;
+}
+.mag-feature-card.vertical .mag-feature-title{font-size:18px}
+.mag-feature-desc{
+  font-family:'Libre Baskerville',serif;
+  font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6;
+  font-style:italic;
+}
+.mag-feature-tags{
+  display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;
+}
+.mag-feature-tag{
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  background:var(--paper);color:var(--muted);
+  padding:3px 7px;border:1px solid rgba(44,36,22,.1);
+}
+.mag-feature-tag.hot{background:var(--terra);color:#fff;border-color:var(--terra)}
+
+/* ── PULL QUOTE ── */
+.mag-pullquote{
+  margin:20px 20px 0;padding:16px 20px;
+  border-left:3px solid var(--terra);
+  background:var(--paper);
+}
+.mag-pullquote-text{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-style:italic;font-weight:700;
+  color:var(--navy);line-height:1.5;
+}
+.mag-pullquote-attr{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-top:8px;
+}
+
+/* ── HAND-DRAWN ICON STRIP ── */
+.mag-icon-strip{
+  margin:16px 20px 0;
+  display:flex;gap:0;
+  border:1px solid rgba(44,36,22,.1);
+  border-radius:2px;overflow:hidden;
+  background:var(--cream);
+}
+.mag-icon-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;gap:4px;
+  padding:12px 8px;
+  border-right:1px solid rgba(44,36,22,.08);
+}
+.mag-icon-item:last-child{border-right:none}
+.mag-icon{font-size:22px;line-height:1}
+.mag-icon-label{
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);text-align:center;
+}
 
 /* NAV */
 nav{{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1px solid rgba(44,36,22,.1);display:flex;z-index:100;box-shadow:0 -4px 20px rgba(44,36,22,.08);}}
@@ -168,9 +449,35 @@ nav{{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1
 <body>
 
 <div id="splash">
-  <div class="splash-label">South America · Brazil</div>
-  <div class="splash-title">Paraty</div>
-  <div class="splash-sub">Apr 18 – 21, 2026</div>
+  <div class="splash-corner tl"></div>
+  <div class="splash-corner tr"></div>
+  <div class="splash-corner bl"></div>
+  <div class="splash-corner br"></div>
+
+  <!-- Compass SVG icon -->
+  <svg class="splash-compass" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="32" r="28" stroke="#C4622D" stroke-width="1.5" opacity=".4"/>
+    <circle cx="32" cy="32" r="22" stroke="#C4622D" stroke-width="1" opacity=".25"/>
+    <!-- Compass needle -->
+    <polygon points="32,10 35,32 32,36 29,32" fill="#C4622D" opacity=".9"/>
+    <polygon points="32,54 35,32 32,36 29,32" fill="#7A6E5F" opacity=".6"/>
+    <!-- Cardinal marks -->
+    <line x1="32" y1="6" x2="32" y2="12" stroke="#C4622D" stroke-width="1.5" opacity=".5"/>
+    <line x1="32" y1="52" x2="32" y2="58" stroke="#7A6E5F" stroke-width="1" opacity=".4"/>
+    <line x1="6" y1="32" x2="12" y2="32" stroke="#7A6E5F" stroke-width="1" opacity=".3"/>
+    <line x1="52" y1="32" x2="58" y2="32" stroke="#7A6E5F" stroke-width="1" opacity=".3"/>
+    <text x="32" y="5" text-anchor="middle" font-size="6" fill="#C4622D" font-family="Inter,sans-serif" font-weight="700" opacity=".8">N</text>
+    <!-- Center dot -->
+    <circle cx="32" cy="32" r="2.5" fill="#2C2416" opacity=".7"/>
+  </svg>
+
+  <div class="splash-eyebrow">Road Trip Guide</div>
+  <div class="splash-title">Par<em>aty</em></div>
+  <div class="splash-rule"></div>
+  <div class="splash-meta">
+    São Paulo → Paraty<br>
+    April 18 – 21, 2026
+  </div>
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
@@ -183,28 +490,130 @@ nav{{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1
 
 <!-- ===== ITINERARY ===== -->
 <div class="page active" id="page-itinerary">
-  <div class="hero">
-    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_680c18db-aad1-4f42-bb2c-a62b64e41e0b.jpg" alt="Paraty">
-    <div class="hero-overlay"></div>
-    <div class="hero-text">
-      <div class="hero-breadcrumb">South America &nbsp;/&nbsp; Brazil</div>
-      <div class="hero-title">Baraty</div>
-      <div class="hero-dates">📅 Apr 18 – 21, 2026 &nbsp;·&nbsp; 4天自驾</div>
+  <!-- ══ MAGAZINE HERO SLIDESHOW ══ -->
+  <div class="mag-slideshow" id="mag-hero">
+    <!-- Issue badge -->
+    <div class="mag-issue">Road Trip · Brasil</div>
+
+    <!-- Slide 0 — Hero mountain shot -->
+    <div class="mag-slide active" id="slide-0">
+      <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_680c18db-aad1-4f42-bb2c-a62b64e41e0b.jpg" alt="Serra do Mar">
+      <div class="mag-slide-overlay"></div>
+    </div>
+    <!-- Slide 1 — 港口渔船 -->
+    <div class="mag-slide" id="slide-1">
+      <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_6637c39c-ed46-4e40-8a20-b5fc197553db.jpg" alt="Paraty 港口">
+      <div class="mag-slide-overlay"></div>
+    </div>
+    <!-- Slide 2 — 涨潮石板街 -->
+    <div class="mag-slide" id="slide-2">
+      <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_ddc64a0a-ccea-4232-b695-9ae34fea9a1e.jpg" alt="涨潮倒影">
+      <div class="mag-slide-overlay"></div>
+    </div>
+    <!-- Slide 3 — 背影女孩 -->
+    <div class="mag-slide" id="slide-3">
+      <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_d72c6672-cf3c-49ca-a676-60ac15e7c915.jpg" alt="旅人">
+      <div class="mag-slide-overlay"></div>
+    </div>
+    <!-- Slide 4 — 黄昏广场 -->
+    <div class="mag-slide" id="slide-4">
+      <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_af5bb4eb-9f37-4ed0-b349-1c5b683edfd6.jpg" alt="黄昏">
+      <div class="mag-slide-overlay"></div>
+    </div>
+
+    <!-- Dot nav -->
+    <div class="mag-dots">
+      <div class="mag-dot active" onclick="goSlide(0)"></div>
+      <div class="mag-dot" onclick="goSlide(1)"></div>
+      <div class="mag-dot" onclick="goSlide(2)"></div>
+      <div class="mag-dot" onclick="goSlide(3)"></div>
+      <div class="mag-dot" onclick="goSlide(4)"></div>
+    </div>
+
+    <!-- Text overlay -->
+    <div class="mag-hero-text">
+      <div class="mag-eyebrow">South America &nbsp;/&nbsp; Brazil</div>
+      <div class="mag-headline">Par<em>aty</em></div>
+      <div class="mag-deck">海盗湾的秘密，殖民地的石板街，<br>一条海岸公路，四天时光。</div>
+      <div class="mag-dateline">
+        <span>Apr 18–21, 2026</span>
+        &nbsp;·&nbsp; 自驾 280km
+      </div>
     </div>
   </div>
 
-  <!-- Photo: 港口渔船 -->
-  <div class="photo-card wide" style="margin-top:16px">
-    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_6637c39c-ed46-4e40-8a20-b5fc197553db.jpg" alt="Paraty 港口">
-    <div class="photo-caption">🚤 Paraty 港口 · 彩色渔船与教堂</div>
+  <!-- ══ DIGEST STRIP ══ -->
+  <div class="mag-digest">
+    <div class="mag-digest-item">
+      <div class="mag-digest-val">280</div>
+      <div class="mag-digest-key">公里</div>
+    </div>
+    <div class="mag-digest-item">
+      <div class="mag-digest-val">4–5h</div>
+      <div class="mag-digest-key">单程</div>
+    </div>
+    <div class="mag-digest-item">
+      <div class="mag-digest-val">4天</div>
+      <div class="mag-digest-key">行程</div>
+    </div>
+    <div class="mag-digest-item">
+      <div class="mag-digest-val">3晚</div>
+      <div class="mag-digest-key">住宿</div>
+    </div>
+    <div class="mag-digest-item">
+      <div class="mag-digest-val">26°</div>
+      <div class="mag-digest-key">气温</div>
+    </div>
   </div>
 
-  <div class="overview-row">
-    <div class="ov-card"><div class="ov-card-val">280</div><div class="ov-card-key">公里</div></div>
-    <div class="ov-card"><div class="ov-card-val">4–5h</div><div class="ov-card-key">单程</div></div>
-    <div class="ov-card"><div class="ov-card-val">4天</div><div class="ov-card-key">行程</div></div>
-    <div class="ov-card"><div class="ov-card-val">3晚</div><div class="ov-card-key">住宿</div></div>
-    <div class="ov-card"><div class="ov-card-val">26°C</div><div class="ov-card-key">气温</div></div>
+  <!-- ══ HAND-DRAWN ICON STRIP ══ -->
+  <div class="mag-icon-strip">
+    <div class="mag-icon-item"><div class="mag-icon">⛵</div><div class="mag-icon-label">出海</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🏛️</div><div class="mag-icon-label">老城</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🌊</div><div class="mag-icon-label">涨潮</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🌿</div><div class="mag-icon-label">丛林</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🥃</div><div class="mag-icon-label">蔗酒</div></div>
+  </div>
+
+  <!-- ══ PULL QUOTE ══ -->
+  <div class="mag-pullquote">
+    <div class="mag-pullquote-text">"Paraty is one of those rare places that feels frozen in the best possible way — cobblestones, colonial facades, and a bay that turns gold at dusk."</div>
+    <div class="mag-pullquote-attr">— Lonely Planet South America</div>
+  </div>
+
+  <!-- ══ MAGAZINE FEATURE: 本次路线亮点 ══ -->
+  <div class="mag-section-header">
+    <div class="mag-section-title">旅程亮点</div>
+    <div class="mag-section-kicker">4 reasons to go</div>
+  </div>
+  <div class="mag-feature-row">
+    <div class="mag-feature-card vertical">
+      <div class="mag-feature-img"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_eb35f69b-a268-40bd-91bd-c49d71ed3916.jpg" alt="海湾"></div>
+      <div class="mag-feature-body">
+        <div class="mag-feature-kicker">Day 2 Highlight</div>
+        <div class="mag-feature-title">出海游岛：Baía de Paraty</div>
+        <div class="mag-feature-desc">帆船穿越蓝绿色海湾，停靠原始小岛，浮潜、游泳，午餐在船上吃。</div>
+        <div class="mag-feature-tags"><span class="mag-feature-tag hot">必做</span><span class="mag-feature-tag">约 R$100/人</span><span class="mag-feature-tag">提前预订</span></div>
+      </div>
+    </div>
+    <div class="mag-feature-card">
+      <div class="mag-feature-img"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_ddc64a0a-ccea-4232-b695-9ae34fea9a1e.jpg" alt="涨潮"></div>
+      <div class="mag-feature-body">
+        <div class="mag-feature-kicker">Tidal Wonder</div>
+        <div class="mag-feature-title">涨潮时刻</div>
+        <div class="mag-feature-desc">海水漫入历史老城，石板路化为镜面，教堂倒影如梦。</div>
+        <div class="mag-feature-tags"><span class="mag-feature-tag hot">奇观</span></div>
+      </div>
+    </div>
+    <div class="mag-feature-card">
+      <div class="mag-feature-img"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_af5bb4eb-9f37-4ed0-b349-1c5b683edfd6.jpg" alt="黄昏"></div>
+      <div class="mag-feature-body">
+        <div class="mag-feature-kicker">Golden Hour</div>
+        <div class="mag-feature-title">黄昏教堂广场</div>
+        <div class="mag-feature-desc">日落时分，教堂广场逆光如油画，是整趟旅程的情绪高潮。</div>
+        <div class="mag-feature-tags"><span class="mag-feature-tag hot">拍照圣地</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="weather-strip">
@@ -628,7 +1037,22 @@ nav{{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1
 </div>
 
 <script>
-setTimeout(()=>{{document.getElementById('splash').classList.add('hide');setTimeout(()=>{{document.getElementById('splash').style.display='none';}},650);}},1600);
+// ── Splash dismiss
+setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>{document.getElementById('splash').style.display='none';},850);},1800);
+
+// ── Magazine slideshow
+let _slideIdx=0;
+const _slides=document.querySelectorAll('.mag-slide');
+const _dots=document.querySelectorAll('.mag-dot');
+function goSlide(n){
+  if(!_slides.length)return;
+  _slides[_slideIdx].classList.remove('active');
+  _dots[_slideIdx].classList.remove('active');
+  _slideIdx=(n+_slides.length)%_slides.length;
+  _slides[_slideIdx].classList.add('active');
+  _dots[_slideIdx].classList.add('active');
+}
+setTimeout(()=>{if(_slides.length>1)setInterval(()=>goSlide(_slideIdx+1),4500);},2200);
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');btn.classList.add('active');}}
 function toggleDay(id){{document.getElementById(id).classList.toggle('open');}}
 function togglePack(item){{item.classList.toggle('checked');item.querySelector('.pack-checkbox').textContent=item.classList.contains('checked')?'✓':'';updateProgress();}}
