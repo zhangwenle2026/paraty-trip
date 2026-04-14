@@ -1,29 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""Paraty v5.0 builder — writes HTML directly"""
-import os, shutil, re
-
-OUT = "/root/.openclaw/workspace/paraty_trip.html"
-DEPLOY = "/tmp/paraty-trip-deploy/index.html"
-
-IMGS = [
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg",
-    "https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg",
-]
-I = IMGS  # shorthand
-
-def build():
-    parts = []
-
-    # ─── HEAD ───────────────────────────────────────────────
-    parts.append("""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
@@ -31,170 +6,130 @@ def build():
 <meta name="version" content="lp-v5.0">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>""")
-
-    # ─── CSS ────────────────────────────────────────────────
-    parts.append("""
+<style>
 :root{
   --sand:#EAF0F8;--paper:#D6E4F0;--terra:#C4622D;--terra-dark:#A04D22;
   --olive:#1A6B9A;--navy:#004F9F;--cream:#F0F5FC;--ink:#0D1E3A;--muted:#5A7A9E;--stamp:#D4A843;
   --lp-blue:#004F9F;--lp-dark:#002D5B;--lp-mid:#003A75;--lp-light:#EAF0F8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#003A75;color:#0D1E3A;min-height:100vh;}
+body{font-family:'Inter',sans-serif;background:#003A75;color:#0D1E3A;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:9999;}
+  pointer-events:none;z-index:9999}
 
-/* ── ANIMATIONS ── */
-@keyframes loadbar{to{width:100%}}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes kenBurns{from{transform:scale(1.0)}to{transform:scale(1.08)}}
-@keyframes navPop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-.anim-fadeInUp{animation:fadeInUp 1.0s ease both;}
-.anim-fadeInUp-d3{animation:fadeInUp 1.0s ease 0.3s both;}
-.reveal{opacity:0;transform:translateY(30px);transition:opacity .5s ease,transform .5s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
-
-/* ── SPLASH ── */
-#splash{position:fixed;inset:0;z-index:1000;background:#0D1E3A;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  transition:opacity .8s ease;}
+/* ═══ SPLASH ═══ */
+#splash{position:fixed;inset:0;z-index:1000;background:#F0E8D5;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease;overflow:hidden}
 #splash.hide{opacity:0;pointer-events:none}
-#splash-bg{position:absolute;inset:0;background-size:cover;background-position:center;
-  background-repeat:no-repeat;filter:brightness(.5);}
-#splash-bg::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(to bottom,transparent 30%,rgba(13,30,58,.92) 100%);}
-#splash::after{content:'';position:absolute;inset:18px;
-  border:1px solid rgba(255,255,255,.15);pointer-events:none;}
-.splash-inner{position:relative;z-index:2;display:flex;flex-direction:column;
-  align-items:center;padding:0 20px 60px;}
-.splash-compass{width:56px;height:56px;margin-bottom:20px;opacity:.9;}
-.splash-eyebrow{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;
-  letter-spacing:4px;text-transform:uppercase;color:#C4622D;margin-bottom:12px;}
-.splash-title{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;
-  color:#fff;line-height:1.05;text-align:center;letter-spacing:-0.5px;}
-.splash-title em{font-style:italic;font-weight:700;color:#C4622D;}
-.splash-rule{width:48px;height:2px;background:#C4622D;margin:18px auto 14px;}
-.splash-meta{font-family:'Libre Baskerville',serif;font-size:12px;font-style:italic;
-  color:rgba(255,255,255,.65);letter-spacing:.5px;text-align:center;line-height:1.6;}
-.splash-bar{width:80px;height:1px;background:rgba(255,255,255,.2);margin-top:36px;overflow:hidden;}
-.splash-bar-fill{height:100%;background:#C4622D;width:0;animation:loadbar 1.6s cubic-bezier(.4,0,.2,1) forwards;}
-.splash-corner{position:absolute;width:20px;height:20px;border-color:rgba(196,98,45,.5);border-style:solid;}
-.splash-corner.tl{top:28px;left:28px;border-width:1.5px 0 0 1.5px;}
-.splash-corner.tr{top:28px;right:28px;border-width:1.5px 1.5px 0 0;}
-.splash-corner.bl{bottom:28px;left:28px;border-width:0 0 1.5px 1.5px;}
-.splash-corner.br{bottom:28px;right:28px;border-width:0 1.5px 1.5px 0;}
+#splash::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E")}
+#splash::after{content:'';position:absolute;inset:18px;border:1px solid rgba(0,79,159,.3);pointer-events:none}
+.splash-compass{width:64px;height:64px;margin-bottom:24px;opacity:.85;animation:compass-spin 12s linear infinite}
+@keyframes compass-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.splash-eyebrow{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#C4622D;margin-bottom:12px}
+.splash-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#0D1E3A;line-height:1.05;text-align:center;letter-spacing:-0.5px;padding:0 20px}
+.splash-title em{font-style:italic;font-weight:700;color:#C4622D}
+.splash-rule{width:48px;height:2px;background:#C4622D;margin:18px auto 14px}
+.splash-meta{font-family:'Libre Baskerville',serif;font-size:12px;font-style:italic;color:#5A7A9E;letter-spacing:.5px;text-align:center;line-height:1.6}
+.splash-bar{width:80px;height:1px;background:rgba(0,45,91,.15);margin-top:36px;overflow:hidden}
+.splash-bar-fill{height:100%;background:#C4622D;width:0;animation:loadbar 1.6s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes loadbar{to{width:100%}}
+.splash-corner{position:absolute;width:20px;height:20px;border-color:rgba(196,98,45,.4);border-style:solid}
+.splash-corner.tl{top:28px;left:28px;border-width:1.5px 0 0 1.5px}
+.splash-corner.tr{top:28px;right:28px;border-width:1.5px 1.5px 0 0}
+.splash-corner.bl{bottom:28px;left:28px;border-width:0 0 1.5px 1.5px}
+.splash-corner.br{bottom:28px;right:28px;border-width:0 1.5px 1.5px 0}
 
-/* ── LANG SWITCHER ── */
-.lang-switcher{position:fixed;top:12px;right:12px;z-index:500;display:flex;
-  background:rgba(255,255,255,.95);border:1px solid rgba(0,79,159,.2);border-radius:3px;
-  box-shadow:1px 2px 6px rgba(0,45,91,.15);}
-.lang-btn{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.5px;
-  padding:6px 10px;background:none;border:none;cursor:pointer;color:#5A7A9E;
-  transition:background .2s,color .2s;}
-.lang-btn.active{background:#004F9F;color:#fff;}
-.lang-btn:not(:last-child){border-right:1px solid rgba(0,79,159,.15);}
+/* ═══ FULL-SCREEN HERO CAROUSEL (LP Album Style) ═══ */
+.hero-carousel{position:relative;width:100%;height:85vh;max-height:600px;min-height:400px;overflow:hidden;background:#002D5B}
+.hc-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.8s ease;will-change:opacity}
+.hc-slide.active{opacity:1;z-index:2}
+.hc-slide img{width:100%;height:100%;object-fit:cover;object-position:center;animation:kenburns 6s ease-in-out forwards}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.08)}}
+.hc-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,45,91,.05) 0%,rgba(0,45,91,.15) 40%,rgba(0,45,91,.7) 75%,rgba(0,45,91,.95) 100%)}
+.hc-dots{position:absolute;bottom:110px;right:16px;display:flex;flex-direction:column;gap:5px;z-index:10}
+.hc-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .3s;cursor:pointer}
+.hc-dot.active{background:#fff;height:14px;border-radius:2px}
+.hc-issue{position:absolute;top:16px;left:16px;background:#C4622D;color:#fff;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:5px 10px;z-index:10}
+.hc-text{position:absolute;bottom:0;left:0;right:0;padding:20px;z-index:10;opacity:0;transform:translateY(20px);animation:fadeInUp 1s ease .5s forwards}
+@keyframes fadeInUp{to{opacity:1;transform:translateY(0)}}
+.hc-eyebrow{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.hc-eyebrow::before{content:'';display:inline-block;width:18px;height:1px;background:#C4622D}
+.hc-headline{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;line-height:.95;color:#fff;letter-spacing:-0.5px;text-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hc-headline em{font-style:italic;font-weight:700}
+.hc-deck{font-family:'Libre Baskerville',serif;font-size:12px;font-style:italic;color:rgba(255,255,255,.8);margin-top:8px;line-height:1.5}
+.hc-dateline{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.9)}
+.hc-dateline span{background:#C4622D;padding:3px 9px;letter-spacing:1px}
 
-/* ── HOME FULLSCREEN SLIDESHOW ── */
-#home-hero{position:relative;height:100svh;min-height:500px;overflow:hidden;
-  background:#002D5B;}
-.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;}
-.hero-slide.active{opacity:1;}
-.hero-slide-img{width:100%;height:100%;object-fit:cover;object-position:center;
-  display:block;transform:scale(1);animation:kenBurns 5s ease-in-out both;}
-.hero-slide-overlay{position:absolute;inset:0;
-  background:linear-gradient(to bottom,rgba(0,20,50,.15) 0%,rgba(0,20,50,.2) 50%,rgba(0,20,50,.75) 100%);}
-/* book-seam shadows */
-#home-hero::before{content:'';position:absolute;left:0;top:0;bottom:0;width:20px;
-  background:linear-gradient(to right,rgba(0,0,0,.25),transparent);z-index:5;pointer-events:none;}
-#home-hero::after{content:'';position:absolute;right:0;top:0;bottom:0;width:20px;
-  background:linear-gradient(to left,rgba(0,0,0,.25),transparent);z-index:5;pointer-events:none;}
-.hero-text-block{position:absolute;bottom:0;left:0;right:0;padding:24px 24px 100px;z-index:10;}
-.hero-issue{display:inline-block;background:#C4622D;color:#fff;font-family:'Inter',sans-serif;
-  font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
-  padding:5px 10px;margin-bottom:14px;}
-.hero-big-title{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;
-  color:#fff;line-height:.95;letter-spacing:-0.5px;text-shadow:0 2px 20px rgba(0,0,0,.35);}
-.hero-big-title em{font-style:italic;color:#C4622D;}
-.hero-deck{font-family:'Libre Baskerville',serif;font-size:13px;font-style:italic;
-  color:rgba(255,255,255,.82);margin-top:8px;line-height:1.55;}
-.hero-meta-row{display:flex;align-items:center;gap:10px;margin-top:12px;}
-.hero-meta-tag{background:#C4622D;color:#fff;font-family:'Inter',sans-serif;
-  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;}
-.hero-meta-plain{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;
-  letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.7);}
-/* hero dots */
-.hero-dots{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);
-  display:flex;gap:7px;z-index:10;}
-.hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);
-  cursor:pointer;transition:all .3s;}
-.hero-dot.active{background:#fff;width:18px;border-radius:3px;}
-/* scroll hint */
-.hero-scroll-hint{position:absolute;bottom:82px;right:20px;z-index:10;
-  display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.55;}
-.hero-scroll-hint span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;}
-.hero-scroll-arrow{font-size:14px;color:#fff;animation:fadeInUp .8s ease infinite alternate;}
+/* ═══ LANG SWITCH ═══ */
+.lang-switch{position:fixed;top:12px;right:12px;z-index:200;display:flex;gap:2px;background:rgba(0,45,91,.6);backdrop-filter:blur(8px);border-radius:16px;padding:3px}
+.lang-btn{border:none;background:transparent;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;padding:4px 10px;border-radius:14px;cursor:pointer;transition:all .2s}
+.lang-btn.active{background:#C4622D;color:#fff}
 
-/* ── BELOW-HERO CONTENT ── */
-.home-content{background:#EAF0F8;}
+/* ═══ DAY TABS ═══ */
+.day-tabs{display:flex;gap:0;margin:16px 20px 0;border-bottom:2px solid rgba(0,79,159,.15)}
+.day-tab{flex:1;text-align:center;padding:10px 0;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#5A7A9E;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .25s}
+.day-tab.active{color:#C4622D;border-bottom-color:#C4622D}
 
-/* ── DURATION CARDS ── */
-.dur-cards-section{padding:20px 0 4px;}
-.dur-cards-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A7A9E;
-  padding:0 20px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
-.dur-cards-label::after{content:'';flex:1;height:1px;
-  background:linear-gradient(to right,rgba(0,79,159,.2),transparent);}
-.dur-cards-scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:0 20px 16px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-.dur-cards-scroll::-webkit-scrollbar{display:none}
-.dur-card{flex-shrink:0;width:240px;background:#fff;border:2px solid rgba(0,79,159,.1);
-  border-radius:6px;padding:20px 18px 16px;scroll-snap-align:start;cursor:pointer;
-  transition:border-color .25s,box-shadow .25s,transform .2s;
-  box-shadow:2px 4px 12px rgba(0,45,91,.1);}
-.dur-card:hover{transform:translateY(-3px);box-shadow:4px 8px 20px rgba(0,45,91,.16);}
-.dur-card.selected{border-color:#004F9F;box-shadow:0 0 0 3px rgba(0,79,159,.18),2px 4px 14px rgba(0,45,91,.15);}
-.dur-card-days{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#004F9F;line-height:1;}
-.dur-card-days .unit{font-size:22px;font-weight:700;color:#5A7A9E;margin-left:3px;}
-.dur-card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#0D1E3A;margin:6px 0 4px;line-height:1.2;}
-.dur-card-rule{width:28px;height:2px;background:#C4622D;margin:8px 0;}
-.dur-card-tags{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
-.dur-card-tag{font-size:11px;color:#5A7A9E;display:flex;align-items:center;gap:6px;}
-.dur-card-tag::before{content:'';width:4px;height:4px;border-radius:50%;background:#C4622D;flex-shrink:0;}
-.dur-card-cta{margin-top:14px;font-size:11px;font-weight:600;letter-spacing:1.5px;
-  text-transform:uppercase;color:#004F9F;display:flex;align-items:center;gap:5px;}
-.dur-card-cta::after{content:'\2192';}
+/* ═══ BADGE (self-drive info) ═══ */
+.spot-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.spot-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;letter-spacing:.5px;background:#EAF0F8;color:#5A7A9E;padding:3px 8px;border-radius:12px;border:1px solid rgba(0,79,159,.12)}
+.spot-badge.tide{background:rgba(30,144,255,.1);border-color:rgba(30,144,255,.25);color:#1a6b9a}
 
-/* ── TIDAL TABLE ── */
-.tidal-section{padding:16px 20px 0;}
-.section-label-plain{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A7A9E;
-  margin-bottom:12px;display:flex;align-items:center;gap:10px;}
-.section-label-plain::after{content:'';flex:1;height:1px;
-  background:linear-gradient(to right,rgba(0,79,159,.2),transparent);}
-.tidal-table{background:#002D5B;border-radius:4px;overflow:hidden;}
-.tidal-thead{display:flex;background:rgba(0,0,0,.2);padding:7px 12px;}
-.tidal-th{flex:1;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);text-align:center;}
-.tidal-tr{display:flex;padding:9px 12px;border-top:1px solid rgba(255,255,255,.07);}
-.tidal-td{flex:1;text-align:center;line-height:1.4;}
-.t-date{font-size:12px;color:#fff;font-weight:600;}
-.t-sub{font-size:9px;color:rgba(255,255,255,.35);}
-.t-high{font-size:11px;color:#7EC8E3;}
-.t-low{font-size:11px;color:rgba(255,255,255,.45);}
-.t-best{font-size:10px;color:#D4A843;font-weight:600;}
-.tidal-foot{padding:7px 12px;font-size:10px;color:rgba(255,255,255,.4);font-style:italic;}
+/* ═══ CARD ANIMATIONS (IntersectionObserver) ═══ */
+.anim-card{opacity:0;transform:translateY(30px);transition:opacity .5s ease,transform .5s ease}
+.anim-card.visible{opacity:1;transform:translateY(0)}
 
-/* ── HOME QUICK INFO ── */
-.home-qi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px 0;}
-.home-qi-card{background:#fff;border:1px solid rgba(0,79,159,.12);border-radius:4px;padding:13px;
-  transition:transform .2s,box-shadow .2s;}
-.home-qi-card:hover{transform:translateY(-2px);box-shadow:2px 6px 14px rgba(0,45,91,.1);}
-.home-qi-icon{font-size:20px;margin-bottom:5px;}
-.home-qi-title{font-size:11px;font-weight:600;color:#004F9F;}
-.home-qi-val{font-size:13px;color:#0D1E3A;margin-top:4px;line-height:1.5;}
+/* Digest strip */
+.mag-digest{background:#002D5B;padding:12px 16px;display:flex;gap:0;border-bottom:2px solid #C4622D;min-height:52px}
+.mag-digest-item{flex:1;padding:0 6px;border-right:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:3px;min-width:0;text-align:center}
+.mag-digest-item:last-child{border-right:none}
+.mag-digest-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;line-height:1}
+.mag-digest-key{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)}
 
-/* ── WEATHER ── */
-.weather-strip{margin:16px 20px 0;background:#002D5B;border-radius:4px;padding:14px 16px;
-  display:flex;gap:16px;align-items:center;overflow-x:auto;scrollbar-width:none;}
+/* Icon strip */
+.mag-icon-strip{margin:16px 20px 0;display:flex;gap:0;border:1px solid rgba(0,79,159,.15);border-radius:2px;overflow:hidden;background:#FFFFFF}
+.mag-icon-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-right:1px solid rgba(0,45,91,.1)}
+.mag-icon-item:last-child{border-right:none}
+.mag-icon{font-size:22px;line-height:1}
+.mag-icon-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#5A7A9E;text-align:center}
+
+/* Pull quote */
+.mag-pullquote{margin:20px 20px 0;padding:16px 20px;border-left:3px solid #C4622D;background:#EAF0F8}
+.mag-pullquote-text{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;font-weight:700;color:#004F9F;line-height:1.5}
+.mag-pullquote-attr{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5A7A9E;margin-top:8px}
+
+/* Section headers */
+.mag-section-header{padding:22px 20px 0;display:flex;align-items:baseline;justify-content:space-between}
+.mag-section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#0D1E3A;display:flex;align-items:center;gap:10px}
+.mag-section-title::before{content:'';display:inline-block;width:4px;height:22px;background:#C4622D;flex-shrink:0}
+.mag-section-kicker{font-family:'Libre Baskerville',serif;font-size:11px;font-style:italic;color:#5A7A9E}
+
+/* Feature cards */
+.mag-feature-row{padding:14px 20px 0;display:flex;flex-direction:column;gap:12px}
+.mag-feature-card{background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:2px;overflow:hidden;box-shadow:3px 4px 0 rgba(0,45,91,.1);display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease}
+.mag-feature-card:hover{transform:translateY(-3px);box-shadow:3px 7px 0 rgba(0,45,91,.15)}
+.mag-feature-img{width:100%;overflow:hidden;background:#EAF0F8}
+.mag-feature-img img{width:100%;height:200px;object-fit:cover;object-position:center 40%;display:block}
+.mag-feature-body{padding:14px;flex:1;border-top:1px solid rgba(0,79,159,.1)}
+.mag-feature-kicker{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C4622D;margin-bottom:6px}
+.mag-feature-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#004F9F;line-height:1.2}
+.mag-feature-desc{font-family:'Libre Baskerville',serif;font-size:12px;color:#5A7A9E;margin-top:6px;line-height:1.6;font-style:italic}
+.mag-feature-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.mag-feature-tag{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:#EAF0F8;color:#5A7A9E;padding:3px 7px;border:1px solid rgba(0,79,159,.15)}
+.mag-feature-tag.hot{background:#C4622D;color:#fff;border-color:#C4622D}
+
+/* NAV */
+nav{position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;border-top:1px solid rgba(0,79,159,.15);display:flex;z-index:100;box-shadow:0 -4px 20px rgba(0,45,91,.15)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 14px;cursor:pointer;color:#5A7A9E;font-size:10px;letter-spacing:.5px;text-transform:uppercase;transition:color .2s,transform .25s;gap:4px;border:none;background:none}
+.nav-item.active{color:#C4622D}
+.nav-item.active .nav-icon{transform:scale(1.15)}
+
+/* Pages */
+.page{display:none;padding-bottom:80px;min-height:100vh}
+.page.active{display:block}
+
+/* Weather strip */
+.weather-strip{margin:0 20px;background:#002D5B;border-radius:0 0 6px 6px;padding:14px 16px;display:flex;gap:16px;align-items:center;overflow-x:auto;scrollbar-width:none}
 .weather-strip::-webkit-scrollbar{display:none}
 .weather-item{flex:1;text-align:center;color:#fff;min-width:0}
 .weather-day{font-size:10px;opacity:.6;letter-spacing:1px;text-transform:uppercase}
@@ -202,165 +137,51 @@ body::before{content:'';position:fixed;inset:0;
 .weather-temp{font-size:13px;font-weight:600}
 .weather-sep{width:1px;background:rgba(255,255,255,.1);align-self:stretch;flex-shrink:0}
 
-/* ── DIGEST STRIP ── */
-.mag-digest{background-color:#002D5B !important;padding:12px 16px;display:flex;
-  scrollbar-width:none;border-bottom:2px solid #C4622D;min-height:52px;}
-.mag-digest::-webkit-scrollbar{display:none}
-.mag-digest-item{flex:1;padding:0 6px;border-right:1px solid rgba(255,255,255,.08);
-  display:flex;flex-direction:column;gap:3px;min-width:0;text-align:center;}
-.mag-digest-item:first-child{padding-left:4px}
-.mag-digest-item:last-child{border-right:none;padding-right:4px}
-.mag-digest-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;line-height:1;}
-.mag-digest-key{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+/* Tide panel */
+.tide-panel{margin:16px 20px 0;background:#EAF0F8;border:1px solid rgba(0,79,159,.15);border-radius:4px;padding:14px 16px}
+.tide-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#004F9F;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tide-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,79,159,.08)}
+.tide-row:last-child{border-bottom:none}
+.tide-date{font-size:12px;font-weight:600;color:#0D1E3A;min-width:65px}
+.tide-times{font-size:11px;color:#5A7A9E}
+.tide-high{color:#1A6B9A;font-weight:600}
 
-/* ── NAV ── */
-nav{position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;
-  border-top:1px solid rgba(0,79,159,.15);display:flex;z-index:100;
-  box-shadow:0 -4px 20px rgba(0,45,91,.15);}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;
-  padding:10px 4px 14px;cursor:pointer;color:#5A7A9E;font-size:10px;
-  letter-spacing:.5px;text-transform:uppercase;transition:color .2s;gap:4px;border:none;background:none;}
-.nav-item.active{color:#C4622D}
-.nav-icon{font-size:20px;line-height:1;transition:transform .25s ease;}
-.nav-item.active .nav-icon{animation:navPop .25s ease;}
+/* Route map */
+.route-map{margin:20px 20px 0;background:#EAF0F8;border-radius:6px;border:1px solid rgba(0,79,159,.15);padding:16px;box-shadow:2px 3px 0 rgba(0,45,91,.08)}
+.route-map-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5A7A9E;margin-bottom:12px}
+.route-svg{width:100%;height:auto;display:block}
 
-/* ── PAGES ── */
-.page{display:none;padding-bottom:80px;min-height:100vh}
-.page.active{display:block}
-#page-home{padding-bottom:0}
+/* Section */
+.section{padding:24px 20px 0}
+.section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A7A9E;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(0,79,159,.2),transparent)}
+.section-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#004F9F;line-height:1.2;margin-bottom:6px}
 
-/* ── ITINERARY PAGE SLIDESHOW (compact) ── */
-.mag-slideshow{position:relative;background:#002D5B;overflow:hidden;}
-.mag-slide{display:none;position:absolute;inset:0;}
-.mag-slide.active{display:block;position:relative;}
-.mag-slide img{width:100%;height:80vw;max-height:480px;min-height:280px;
-  object-fit:cover;object-position:center;display:block;}
-.mag-slide-overlay{position:absolute;inset:0;
-  background:linear-gradient(to bottom,rgba(27,43,75,.05) 0%,rgba(27,43,75,.1) 40%,rgba(27,43,75,.65) 70%,rgba(27,43,75,.92) 100%);}
-.mag-issue{position:absolute;top:16px;left:16px;background:#C4622D;color:#fff;
-  font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;
-  text-transform:uppercase;padding:5px 10px;z-index:10;}
-.mag-dots-v{position:absolute;bottom:90px;right:16px;display:flex;flex-direction:column;gap:5px;z-index:10;}
-.mag-dot-v{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .3s;cursor:pointer;}
-.mag-dot-v.active{background:#fff;height:14px;border-radius:2px;}
-.mag-hero-text{position:absolute;bottom:0;left:0;right:0;padding:20px 20px 22px;z-index:10;}
-.mag-eyebrow{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:3px;
-  text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:8px;
-  display:flex;align-items:center;gap:8px;}
-.mag-eyebrow::before{content:'';display:inline-block;width:18px;height:1px;background:#C4622D;flex-shrink:0;}
-.mag-headline{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;line-height:.95;
-  color:#fff;letter-spacing:-0.5px;text-shadow:0 2px 16px rgba(0,0,0,.3);}
-.mag-headline em{font-style:italic;font-weight:700;}
-.mag-deck{font-family:'Libre Baskerville',serif;font-size:12px;font-style:italic;
-  color:rgba(255,255,255,.8);margin-top:8px;line-height:1.5;}
-.mag-dateline{display:inline-flex;align-items:center;gap:6px;margin-top:10px;
-  font-family:'Inter',sans-serif;font-size:10px;font-weight:600;
-  letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.9);}
-.mag-dateline span{background:#C4622D;padding:3px 9px;}
+/* Day cards */
+.day-cards{padding:0 20px}
+.day-card{background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:4px;margin-bottom:12px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.08)}
+.day-card-header{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;user-select:none}
+.day-num{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#C4622D;line-height:1;min-width:40px}
+.day-info{flex:1}
+.day-date{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#5A7A9E}
+.day-title{font-size:15px;font-weight:600;color:#004F9F;margin-top:2px}
+.day-arrow{color:#5A7A9E;font-size:18px;transition:transform .3s}
+.day-card.open .day-arrow{transform:rotate(180deg)}
+.day-body{max-height:0;overflow:hidden;transition:max-height .45s ease}
+.day-card.open .day-body{max-height:2000px}
+.day-body-inner{padding:0 16px 16px;border-top:1px solid rgba(0,45,91,.1)}
+.timeline{margin-top:14px;padding-left:20px;border-left:2px solid #C4622D}
+.tl-item{position:relative;padding-bottom:16px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-25px;top:4px;width:8px;height:8px;border-radius:50%;background:#C4622D;border:2px solid #FFFFFF}
+.tl-time{font-size:10px;letter-spacing:1px;color:#5A7A9E;text-transform:uppercase}
+.tl-desc{font-size:14px;color:#0D1E3A;margin-top:2px;line-height:1.5}
+.tl-tip{font-size:12px;color:#5C6B3A;background:rgba(92,107,58,.08);border-left:2px solid #5C6B3A;padding:4px 8px;margin-top:6px;border-radius:0 2px 2px 0}
+.tl-photo{margin-top:10px;border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.1)}
+.tl-photo img{width:100%;height:190px;object-fit:cover;object-position:center 40%;background:#EAF0F8;display:block}
 
-/* ── ITINERARY TABS ── */
-.day-tabs-wrap{background:#fff;border-bottom:2px solid rgba(0,79,159,.1);
-  padding:0 20px;position:sticky;top:0;z-index:50;
-  perspective:600px;}
-.day-tabs{display:flex;}
-.day-tab{flex:1;display:flex;flex-direction:column;align-items:center;
-  padding:11px 6px 0;cursor:pointer;border:none;background:none;
-  border-bottom:3px solid transparent;margin-bottom:-2px;
-  transition:all .2s;color:#5A7A9E;font-family:'Inter',sans-serif;
-  font-size:15px;font-weight:700;letter-spacing:2px;}
-.day-tab span{font-size:9px;letter-spacing:2px;text-transform:uppercase;
-  margin-top:2px;margin-bottom:8px;color:inherit;opacity:.7;}
-.day-tab.active{color:#004F9F;border-bottom-color:#004F9F;}
-
-/* ── DAY PANEL TRANSITIONS ── */
-.day-panel{display:none;transition:opacity .35s ease,transform .35s ease;}
-.day-panel.active{display:block;}
-.day-panel.slide-in-left{animation:slideInLeft .35s ease both;}
-.day-panel.slide-in-right{animation:slideInRight .35s ease both;}
-@keyframes slideInLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-
-/* ── DAY HEADER ── */
-.day-sec-hdr{padding:16px 20px 10px;display:flex;align-items:center;gap:14px;}
-.day-sec-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#C4622D;line-height:1;min-width:48px;}
-.day-sec-info{flex:1;}
-.day-sec-date{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#5A7A9E;}
-.day-sec-title{font-size:16px;font-weight:600;color:#004F9F;margin-top:3px;}
-
-/* ── ITINERARY LAYOUT ── */
-.itin-layout{display:flex;align-items:flex-start;}
-.itin-main{flex:1;min-width:0;}
-.itin-map-col{width:110px;flex-shrink:0;padding:14px 12px 0 4px;position:sticky;top:56px;}
-.itin-map-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#5A7A9E;text-align:center;margin-bottom:5px;}
-.itin-map-svg{width:100%;border:1px solid rgba(0,79,159,.15);border-radius:4px;background:#EAF0F8;display:block;}
-
-/* ── TIMELINE ── */
-.timeline{padding-left:20px;border-left:2px solid #C4622D;margin:4px 20px;}
-.tl-item{position:relative;padding-bottom:18px;}
-.tl-item:last-child{padding-bottom:4px}
-.tl-dot{position:absolute;left:-25px;top:4px;width:8px;height:8px;border-radius:50%;background:#C4622D;border:2px solid #FFFFFF;}
-.tl-time{font-size:10px;letter-spacing:1px;color:#5A7A9E;text-transform:uppercase;}
-.tl-desc{font-size:14px;color:#0D1E3A;margin-top:2px;line-height:1.5;}
-.tl-tip{font-size:12px;color:#5C6B3A;background:rgba(92,107,58,.08);border-left:2px solid #5C6B3A;padding:4px 8px;margin-top:6px;border-radius:0 2px 2px 0;}
-.tl-photo{margin-top:10px;border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.1);}
-.tl-photo img{width:100%;height:190px;object-fit:cover;object-position:center;background:#EAF0F8;display:block;}
-
-/* ── SPOT CARDS + BADGES ── */
-.spot-card{background:#fff;border:1px solid rgba(0,79,159,.12);border-radius:4px;
-  margin:8px 20px 2px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.08);
-  cursor:grab;user-select:none;
-  transition:transform .2s ease,box-shadow .2s ease;}
-.spot-card:hover{transform:translateY(-3px);box-shadow:4px 8px 18px rgba(0,45,91,.15);}
-.spot-card:active{cursor:grabbing;}
-.spot-card.dragging{opacity:.5;box-shadow:6px 8px 20px rgba(0,45,91,.25);}
-.spot-card.drag-over{border-color:#004F9F;border-style:dashed;}
-.spot-card-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#004F9F;padding:10px 12px 6px;}
-.spot-badges{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;}
-.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:3px 7px;
-  border-radius:2px;border:1px solid rgba(0,79,159,.15);background:#EAF0F8;color:#5A7A9E;white-space:nowrap;}
-.badge.tide{background:rgba(126,200,227,.12);border-color:rgba(126,200,227,.4);color:#1A6B9A;}
-
-/* ── SAVE BTN + TOAST ── */
-.save-itin-btn{display:flex;align-items:center;justify-content:center;gap:8px;
-  margin:16px 20px 4px;padding:13px;background:#004F9F;color:#fff;border:none;
-  border-radius:4px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
-  letter-spacing:1px;cursor:pointer;box-shadow:2px 3px 0 rgba(0,45,91,.2);
-  width:calc(100% - 40px);transition:transform .15s;}
-.save-itin-btn:active{transform:translateY(1px);}
-.save-toast{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
-  background:#004F9F;color:#fff;padding:10px 24px;border-radius:4px;font-size:13px;
-  z-index:200;box-shadow:0 4px 12px rgba(0,0,0,.2);white-space:nowrap;}
-
-/* ── HERO (food/tips pages) ── */
-.page-hero{position:relative;height:52vw;max-height:300px;min-height:180px;overflow:hidden;}
-.page-hero img{width:100%;height:100%;object-fit:cover;object-position:center}
-.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(27,43,75,.1) 0%,rgba(27,43,75,.72) 100%);}
-.page-hero-text{position:absolute;bottom:0;left:0;right:0;padding:14px 20px 16px;}
-.page-hero-crumb{color:rgba(255,255,255,.65);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px;}
-.page-hero-title{font-family:'Playfair Display',serif;color:#fff;font-size:28px;font-weight:900;line-height:1.1;}
-
-/* ── PHOTO CARDS ── */
-.photo-card{margin:16px 20px 0;border-radius:6px;overflow:hidden;position:relative;box-shadow:3px 4px 0 rgba(0,45,91,.12);}
-.photo-card img{width:100%;display:block;height:200px;object-fit:cover;object-position:center;background:#EAF0F8;}
-.photo-card.hero-style img{height:250px;}
-.photo-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(27,43,75,.75));color:#fff;font-size:11px;letter-spacing:1px;padding:20px 12px 10px;}
-.photo-row{display:flex;gap:10px;margin:16px 20px 0;}
-.photo-row .photo-half{flex:1;border-radius:6px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,79,159,.15);}
-.photo-row .photo-half img{width:100%;height:170px;object-fit:cover;object-position:center;background:#EAF0F8;display:block;}
-
-/* ── ROUTE MAP ── */
-.route-map{margin:16px 20px 0;background:#EAF0F8;border-radius:6px;border:1px solid rgba(0,79,159,.15);padding:16px;box-shadow:2px 3px 0 rgba(0,45,91,.08);}
-.route-map-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5A7A9E;margin-bottom:12px;}
-
-/* ── SECTION ── */
-.section{padding:20px 20px 0}
-.section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5A7A9E;
-  margin-bottom:14px;display:flex;align-items:center;gap:10px;}
-.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(0,79,159,.2),transparent);}
-.section-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#004F9F;line-height:1.2;margin-bottom:6px;}
-
-/* ── BUDGET ── */
-.budget-card{margin:12px 20px 0;background:#EAF0F8;border:1px solid rgba(0,79,159,.15);border-radius:4px;padding:16px;box-shadow:2px 3px 0 rgba(0,45,91,.08);}
+/* Budget */
+.budget-card{margin:16px 20px 0;background:#EAF0F8;border:1px solid rgba(0,79,159,.15);border-radius:4px;padding:16px;box-shadow:2px 3px 0 rgba(0,45,91,.08)}
 .budget-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,79,159,.1)}
 .budget-row:last-child{border-bottom:none;padding-top:10px}
 .budget-label{font-size:13px;color:#5A7A9E}
@@ -368,934 +189,805 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;
 .budget-total-label{font-size:14px;font-weight:700;color:#004F9F}
 .budget-total-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#C4622D}
 
-/* ── FOOD ── */
+/* Food */
 .food-grid{padding:0 20px;display:flex;flex-direction:column;gap:12px}
-.food-card{background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.08);}
-.food-card-img{width:100%;height:190px;object-fit:cover;object-position:center;background:#EAF0F8;display:block;}
-.food-card-body{padding:14px;position:relative;}
-.food-card-body::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#C4622D;}
-.food-card-inner{padding-left:8px;}
+.food-card{background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.08);transition:transform .2s,box-shadow .2s}
+.food-card:hover{transform:translateY(-3px);box-shadow:3px 7px 0 rgba(0,45,91,.15)}
+.food-card-img{width:100%;height:200px;object-fit:cover;object-position:center 40%;background:#EAF0F8;display:block}
+.food-card-body{padding:14px;position:relative}
+.food-card-body::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#C4622D}
+.food-card-body-inner{padding-left:8px}
 .food-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#004F9F}
 .food-type{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5A7A9E;margin-top:2px}
 .food-desc{font-size:13px;color:#0D1E3A;margin-top:8px;line-height:1.6}
 .food-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.food-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;background:#EAF0F8;color:#5A7A9E;padding:3px 8px;border-radius:2px;border:1px solid rgba(0,79,159,.15);}
+.food-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;background:#EAF0F8;color:#5A7A9E;padding:3px 8px;border-radius:2px;border:1px solid rgba(0,79,159,.15)}
 .food-tag.highlight{background:#C4622D;color:#fff;border-color:#C4622D}
 
-/* ── TIPS ── */
+/* Tips */
 .tips-list{padding:0 20px;display:flex;flex-direction:column;gap:12px}
-.tip-card{background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.08);}
-.tip-card-img{width:100%;height:190px;object-fit:cover;object-position:center;background:#EAF0F8;display:block;}
-.tip-card-body{display:flex;gap:14px;align-items:flex-start;padding:14px;}
+.tip-card{background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:4px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,45,91,.08);transition:transform .2s,box-shadow .2s}
+.tip-card:hover{transform:translateY(-3px);box-shadow:3px 7px 0 rgba(0,45,91,.15)}
+.tip-card-img{width:100%;height:200px;object-fit:cover;object-position:center 40%;background:#EAF0F8;display:block}
+.tip-card-body{display:flex;gap:14px;align-items:flex-start;padding:14px}
 .tip-icon{font-size:24px;flex-shrink:0;margin-top:2px}
 .tip-title{font-size:14px;font-weight:600;color:#004F9F}
 .tip-text{font-size:13px;color:#5A7A9E;margin-top:4px;line-height:1.6}
-.tip-alert{background:rgba(196,98,45,.1);border:1px solid rgba(0,79,159,.3);border-radius:4px;padding:12px 16px;margin:0 20px;display:flex;gap:10px;align-items:flex-start;}
+.tip-alert{background:rgba(196,98,45,.1);border:1px solid rgba(0,79,159,.3);border-radius:4px;padding:12px 16px;margin:0 20px;display:flex;gap:10px;align-items:flex-start}
 .tip-alert-text{font-size:13px;color:#A04D22;line-height:1.5}
 
-/* ── PACK ── */
+/* Hero (non-itinerary pages) */
+.hero{position:relative;height:56vw;max-height:320px;min-height:200px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(27,43,75,.1) 0%,rgba(27,43,75,.7) 100%)}
+.hero-text{position:absolute;bottom:0;left:0;right:0;padding:16px 20px 18px}
+.hero-breadcrumb{color:rgba(255,255,255,.65);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px}
+.hero-title{font-family:'Playfair Display',serif;color:#fff;font-size:30px;font-weight:900;line-height:1}
+
+/* Photo */
+.photo-card{margin:20px 20px 0;border-radius:6px;overflow:hidden;position:relative;box-shadow:3px 4px 0 rgba(0,45,91,.12)}
+.photo-card img{width:100%;display:block;height:200px;object-fit:cover;object-position:center 40%;background:#EAF0F8}
+.photo-card.hero-style img{height:260px}
+.photo-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(27,43,75,.75));color:#fff;font-size:11px;letter-spacing:1px;padding:20px 12px 10px}
+.photo-row{display:flex;gap:10px;margin:16px 20px 0}
+.photo-row .photo-half{flex:1;border-radius:6px;overflow:hidden;box-shadow:2px 3px 0 rgba(0,79,159,.15)}
+.photo-row .photo-half img{width:100%;height:180px;object-fit:cover;object-position:center 40%;background:#EAF0F8;display:block}
+
+/* Pack */
 .pack-section{padding:0 20px;margin-bottom:20px}
-.pack-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#004F9F;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.pack-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#004F9F;margin-bottom:12px;display:flex;align-items:center;gap:10px}
 .pack-progress{height:4px;background:rgba(0,79,159,.15);border-radius:2px;margin-bottom:16px;overflow:hidden}
 .pack-progress-fill{height:100%;background:#5C6B3A;border-radius:2px;transition:width .4s ease;width:0}
 .pack-items{display:flex;flex-direction:column;gap:6px}
-.pack-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:4px;cursor:pointer;transition:opacity .2s;}
+.pack-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FFFFFF;border:1px solid rgba(0,79,159,.15);border-radius:4px;cursor:pointer;transition:opacity .2s}
 .pack-item.checked{opacity:.5}
 .pack-item.checked .pack-item-name{text-decoration:line-through;color:#5A7A9E}
-.pack-checkbox{width:18px;height:18px;border-radius:3px;border:2px solid rgba(0,79,159,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pack-checkbox{width:18px;height:18px;border-radius:3px;border:2px solid rgba(0,79,159,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .pack-item.checked .pack-checkbox{background:#5C6B3A;border-color:#5C6B3A;color:#fff;font-size:11px}
 .pack-item-name{font-size:14px;color:#0D1E3A;flex:1}
 .pack-item-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#5A7A9E}
 
-/* ── ENDING ── */
-.ending-photo{margin:20px 20px 0;border-radius:6px;overflow:hidden;position:relative;box-shadow:3px 4px 0 rgba(0,45,91,.12);}
-.ending-photo img{width:100%;height:220px;object-fit:cover;object-position:center;background:#002D5B;display:block;}
-.ending-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(27,43,75,.8));display:flex;align-items:flex-end;padding:20px;}
-.ending-quote{font-family:'Playfair Display',serif;color:#fff;font-size:16px;font-style:italic;line-height:1.5;text-shadow:0 1px 6px rgba(0,0,0,.4);}
+/* Ending photo */
+.ending-photo{margin:20px 20px 0;border-radius:6px;overflow:hidden;position:relative;box-shadow:3px 4px 0 rgba(0,45,91,.12)}
+.ending-photo img{width:100%;height:220px;object-fit:cover;object-position:center 40%;background:#002D5B;display:block}
+.ending-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(27,43,75,.8));display:flex;align-items:flex-end;padding:20px}
+.ending-quote{font-family:'Playfair Display',serif;color:#fff;font-size:16px;font-style:italic;line-height:1.5;text-shadow:0 1px 6px rgba(0,0,0,.4)}
 
-/* ── MAG COMPONENTS (reused in non-home pages) ── */
-.mag-pullquote{margin:16px 20px 0;padding:16px 20px;border-left:3px solid #C4622D;background:#EAF0F8;}
-.mag-pullquote-text{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;font-weight:700;color:#004F9F;line-height:1.5;}
-.mag-pullquote-attr{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5A7A9E;margin-top:8px;}
-.mag-icon-strip{margin:16px 20px 0;display:flex;border:1px solid rgba(0,79,159,.15);border-radius:2px;overflow:hidden;background:#FFFFFF;}
-.mag-icon-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-right:1px solid rgba(0,45,91,.1);}
-.mag-icon-item:last-child{border-right:none}
-.mag-icon{font-size:22px;line-height:1}
-.mag-icon-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#5A7A9E;text-align:center;}
+/* Book-spine shadow for page transitions */
+.page-spine{box-shadow:inset 20px 0 25px -15px rgba(0,0,0,.08),inset -20px 0 25px -15px rgba(0,0,0,.08)}
 </style>
 </head>
 <body>
-
-
 <div id="splash">
   <div class="splash-corner tl"></div><div class="splash-corner tr"></div>
   <div class="splash-corner bl"></div><div class="splash-corner br"></div>
-  <div id="splash-bg" style="background-image:url('https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg')"></div>
-  <div class="splash-inner">
-    <svg class="splash-compass" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="32" cy="32" r="28" stroke="#C4622D" stroke-width="1.5" opacity=".5"/>
-      <circle cx="32" cy="32" r="22" stroke="#C4622D" stroke-width="1" opacity=".3"/>
-      <polygon points="32,10 35,32 32,36 29,32" fill="#C4622D" opacity=".95"/>
-      <polygon points="32,54 35,32 32,36 29,32" fill="rgba(255,255,255,.6)"/>
-      <text x="32" y="5" text-anchor="middle" font-size="6" fill="#C4622D" font-family="Inter,sans-serif" font-weight="700">N</text>
-      <circle cx="32" cy="32" r="2.5" fill="#002D5B" opacity=".8"/>
-    </svg>
-    <div class="splash-eyebrow" data-i18n="eyebrow">Road Trip Guide</div>
-    <div class="splash-title">April <em>Paraty</em> Trip</div>
-    <div class="splash-rule"></div>
-    <div class="splash-meta" data-i18n="splashMeta">São Paulo → Paraty<br>April 18–21, 2026</div>
-    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
-  </div>
+  <svg class="splash-compass" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="32" r="28" stroke="#C4622D" stroke-width="1.5" opacity=".4"/>
+    <circle cx="32" cy="32" r="22" stroke="#C4622D" stroke-width="1" opacity=".25"/>
+    <polygon points="32,10 35,32 32,36 29,32" fill="#C4622D" opacity=".9"/>
+    <polygon points="32,54 35,32 32,36 29,32" fill="#7A6E5F" opacity=".6"/>
+    <line x1="32" y1="6" x2="32" y2="12" stroke="#C4622D" stroke-width="1.5" opacity=".5"/>
+    <line x1="32" y1="52" x2="32" y2="58" stroke="#7A6E5F" stroke-width="1" opacity=".4"/>
+    <line x1="6" y1="32" x2="12" y2="32" stroke="#7A6E5F" stroke-width="1" opacity=".3"/>
+    <line x1="52" y1="32" x2="58" y2="32" stroke="#7A6E5F" stroke-width="1" opacity=".3"/>
+    <text x="32" y="5" text-anchor="middle" font-size="6" fill="#C4622D" font-family="Inter,sans-serif" font-weight="700" opacity=".8">N</text>
+    <circle cx="32" cy="32" r="2.5" fill="#003A75" opacity=".7"/>
+  </svg>
+  <div class="splash-eyebrow">Road Trip Guide</div>
+  <div class="splash-title">April Par<em>aty</em> Trip</div>
+  <div class="splash-rule"></div>
+  <div class="splash-meta">São Paulo → Paraty<br>April 18 – 21, 2026</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
-<div class="lang-switcher">
+<!-- Lang switch -->
+<div class="lang-switch">
   <button class="lang-btn active" onclick="setLang('zh')">中</button>
   <button class="lang-btn" onclick="setLang('en')">EN</button>
   <button class="lang-btn" onclick="setLang('pt')">PT</button>
 </div>
 
 <nav>
-  <button class="nav-item active" onclick="showPage('home',this)">
-    <span class="nav-icon">&#127968;</span><span data-i18n="nav_home">首页</span>
-  </button>
-  <button class="nav-item" onclick="showPage('itinerary',this)">
-    <span class="nav-icon">&#128197;</span><span data-i18n="nav_itin">行程</span>
-  </button>
-  <button class="nav-item" onclick="showPage('food',this)">
-    <span class="nav-icon">&#127869;</span><span data-i18n="nav_food">美食</span>
-  </button>
-  <button class="nav-item" onclick="showPage('tips',this)">
-    <span class="nav-icon">&#128663;</span><span data-i18n="nav_tips">攻略</span>
-  </button>
-  <button class="nav-item" onclick="showPage('pack',this)">
-    <span class="nav-icon">&#127992;</span><span data-i18n="nav_pack">清单</span>
-  </button>
+  <button class="nav-item active" onclick="showPage('itinerary',this)"><span class="nav-icon">🗓</span><span data-i18n="nav_itin">行程</span></button>
+  <button class="nav-item" onclick="showPage('food',this)"><span class="nav-icon">🍽</span><span data-i18n="nav_food">美食</span></button>
+  <button class="nav-item" onclick="showPage('tips',this)"><span class="nav-icon">🚗</span><span data-i18n="nav_tips">攻略</span></button>
+  <button class="nav-item" onclick="showPage('pack',this)"><span class="nav-icon">🎒</span><span data-i18n="nav_pack">清单</span></button>
 </nav>
-<div id="save-toast" class="save-toast">已保存</div>
 
+<!-- ===== ITINERARY PAGE ===== -->
+<div class="page active" id="page-itinerary">
 
-<div class="page active" id="page-home">
+  <!-- Full-screen Hero Carousel -->
+  <div class="hero-carousel" id="hero-carousel">
+    <div class="hc-issue">Road Trip · Brasil</div>
+    <div class="hc-slide active"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty 1"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="Paraty 2"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="Paraty 3"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg" alt="Paraty 4"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="Paraty 5"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="Paraty 6"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="Paraty 7"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty 8"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="Paraty 9"><div class="hc-overlay"></div></div>
 
-  <!-- FULLSCREEN HERO SLIDESHOW -->
-  <div id="home-hero">
-    <div class="hero-slide active"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty 1" loading="eager"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="Paraty 2" loading="eager"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="Paraty 3" loading="lazy"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg" alt="Paraty 4" loading="lazy"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="Paraty 5" loading="lazy"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="Paraty 6" loading="lazy"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="Paraty 7" loading="lazy"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty 8" loading="lazy"><div class="hero-slide-overlay"></div></div>
-<div class="hero-slide"><img class="hero-slide-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="Paraty 9" loading="lazy"><div class="hero-slide-overlay"></div></div>
-    <div class="hero-text-block">
-      <div class="hero-issue">Road Trip · Brasil</div>
-      <div class="hero-big-title anim-fadeInUp">April <em>Paraty</em> Trip</div>
-      <div class="hero-deck anim-fadeInUp-d3" data-i18n="heroDeck">海盗湾的秘密，殖民地的石板街，<br>一条海岸公路，四天时光。</div>
-      <div class="hero-meta-row anim-fadeInUp-d3">
-        <div class="hero-meta-tag">Apr 18–21, 2026</div>
-        <div class="hero-meta-plain">自驾 280km</div>
-      </div>
+    <div class="hc-dots">
+      <div class="hc-dot active" onclick="goSlide(0)"></div>
+      <div class="hc-dot" onclick="goSlide(1)"></div>
+      <div class="hc-dot" onclick="goSlide(2)"></div>
+      <div class="hc-dot" onclick="goSlide(3)"></div>
+      <div class="hc-dot" onclick="goSlide(4)"></div>
+      <div class="hc-dot" onclick="goSlide(5)"></div>
+      <div class="hc-dot" onclick="goSlide(6)"></div>
+      <div class="hc-dot" onclick="goSlide(7)"></div>
+      <div class="hc-dot" onclick="goSlide(8)"></div>
     </div>
-    <div class="hero-dots">
-      <div class="hero-dot active" onclick="goHeroSlide(0)"></div>
-<div class="hero-dot" onclick="goHeroSlide(1)"></div>
-<div class="hero-dot" onclick="goHeroSlide(2)"></div>
-<div class="hero-dot" onclick="goHeroSlide(3)"></div>
-<div class="hero-dot" onclick="goHeroSlide(4)"></div>
-<div class="hero-dot" onclick="goHeroSlide(5)"></div>
-<div class="hero-dot" onclick="goHeroSlide(6)"></div>
-<div class="hero-dot" onclick="goHeroSlide(7)"></div>
-<div class="hero-dot" onclick="goHeroSlide(8)"></div>
-    </div>
-    <div class="hero-scroll-hint">
-      <span>SCROLL</span>
-      <div class="hero-scroll-arrow">&#8595;</div>
+    <div class="hc-text">
+      <div class="hc-eyebrow">South America &nbsp;/&nbsp; Brazil</div>
+      <div class="hc-headline">Par<em>aty</em></div>
+      <div class="hc-deck" data-i18n="hero_deck">海盗湾的秘密，殖民地的石板街，一条海岸公路，四天时光。</div>
+      <div class="hc-dateline"><span>Apr 18–21, 2026</span>&nbsp;·&nbsp; <span data-i18n="hero_km">自驾 280km</span></div>
     </div>
   </div>
 
-  <!-- BELOW HERO -->
-  <div class="home-content">
-
-    <!-- Digest -->
-    <div class="mag-digest">
-      <div class="mag-digest-item"><div class="mag-digest-val">280</div><div class="mag-digest-key" data-i18n="km">公里</div></div>
-      <div class="mag-digest-item"><div class="mag-digest-val">4–5h</div><div class="mag-digest-key" data-i18n="oneway">单程</div></div>
-      <div class="mag-digest-item"><div class="mag-digest-val">4</div><div class="mag-digest-key" data-i18n="days">天</div></div>
-      <div class="mag-digest-item"><div class="mag-digest-val">26°</div><div class="mag-digest-key" data-i18n="temp">气温</div></div>
-    </div>
-
-    <!-- Duration Cards -->
-    <div class="dur-cards-section">
-      <div class="dur-cards-label reveal" data-i18n="chooseDays">&#128197; 选择行程天数</div>
-      <div class="dur-cards-scroll">
-        <div class="dur-card selected reveal" id="dur-2" onclick="selectDurCard(2)">
-          <div class="dur-card-days">2<span class="unit" data-i18n="daysUnit">天</span></div>
-          <div class="dur-card-title" data-i18n="dur2Title">自驾 · 紧凑精华</div>
-          <div class="dur-card-rule"></div>
-          <div class="dur-card-tags">
-            <div class="dur-card-tag" data-i18n="dur2tag1">首次来Paraty</div>
-            <div class="dur-card-tag" data-i18n="dur2tag2">周末闪游</div>
-          </div>
-          <div class="dur-card-cta" data-i18n="viewItin">查看行程</div>
-        </div>
-        <div class="dur-card reveal" id="dur-3" onclick="selectDurCard(3)">
-          <div class="dur-card-days">3<span class="unit" data-i18n="daysUnit">天</span></div>
-          <div class="dur-card-title" data-i18n="dur3Title">自驾 · 舒适深度</div>
-          <div class="dur-card-rule"></div>
-          <div class="dur-card-tags">
-            <div class="dur-card-tag" data-i18n="dur3tag1">时间适中</div>
-            <div class="dur-card-tag" data-i18n="dur3tag2">&#11088; 最推荐</div>
-          </div>
-          <div class="dur-card-cta" data-i18n="viewItin">查看行程</div>
-        </div>
-        <div class="dur-card reveal" id="dur-4" onclick="selectDurCard(4)">
-          <div class="dur-card-days">4<span class="unit" data-i18n="daysUnit">天</span></div>
-          <div class="dur-card-title" data-i18n="dur4Title">自驾 · 完美全域</div>
-          <div class="dur-card-rule"></div>
-          <div class="dur-card-tags">
-            <div class="dur-card-tag" data-i18n="dur4tag1">深度玩家</div>
-            <div class="dur-card-tag" data-i18n="dur4tag2">完整体验</div>
-          </div>
-          <div class="dur-card-cta" data-i18n="viewItin">查看行程</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Info -->
-    <div class="home-qi-grid">
-      <div class="home-qi-card reveal">
-        <div class="home-qi-icon">&#128663;</div>
-        <div class="home-qi-title" data-i18n="qi_route">驾车路线</div>
-        <div class="home-qi-val">SP → BR-116 → BR-101 → Paraty</div>
-      </div>
-      <div class="home-qi-card reveal">
-        <div class="home-qi-icon">&#128394;</div>
-        <div class="home-qi-title" data-i18n="qi_park">停车</div>
-        <div class="home-qi-val" data-i18n="qi_park_val">老城外围 R$15–30/天</div>
-      </div>
-      <div class="home-qi-card reveal">
-        <div class="home-qi-icon">&#9981;</div>
-        <div class="home-qi-title" data-i18n="qi_fuel">加油</div>
-        <div class="home-qi-val" data-i18n="qi_fuel_val">SP满油出发，Angra补油</div>
-      </div>
-      <div class="home-qi-card reveal">
-        <div class="home-qi-icon">&#9973;</div>
-        <div class="home-qi-title" data-i18n="qi_boat">出海帆船</div>
-        <div class="home-qi-val" data-i18n="qi_boat_val">提前预订 R$80–120/人</div>
-      </div>
-    </div>
-
-    <!-- Tidal Table -->
-    <div class="tidal-section">
-      <div class="section-label-plain reveal" data-i18n="tidalTitle">&#127754; 潮汐 &amp; 出海最佳时段 (Apr 18–21)</div>
-      <div class="tidal-table reveal">
-        <div class="tidal-thead">
-          <div class="tidal-th" data-i18n="th_date">日期</div>
-          <div class="tidal-th" data-i18n="th_high">高潮</div>
-          <div class="tidal-th" data-i18n="th_low">低潮</div>
-          <div class="tidal-th" data-i18n="th_best">最佳出海</div>
-        </div>
-        <div class="tidal-tr">
-          <div class="tidal-td"><div class="t-date">4/18</div><div class="t-sub">Sat</div></div>
-          <div class="tidal-td"><div class="t-high">07:20 / 19:45</div></div>
-          <div class="tidal-td"><div class="t-low">01:10 / 13:30</div></div>
-          <div class="tidal-td"><div class="t-best">06:20 出发</div></div>
-        </div>
-        <div class="tidal-tr">
-          <div class="tidal-td"><div class="t-date">4/19</div><div class="t-sub">Sun</div></div>
-          <div class="tidal-td"><div class="t-high">08:05 / 20:30</div></div>
-          <div class="tidal-td"><div class="t-low">02:00 / 14:15</div></div>
-          <div class="tidal-td"><div class="t-best">07:05 出发</div></div>
-        </div>
-        <div class="tidal-tr">
-          <div class="tidal-td"><div class="t-date">4/20</div><div class="t-sub">Mon</div></div>
-          <div class="tidal-td"><div class="t-high">08:50 / 21:15</div></div>
-          <div class="tidal-td"><div class="t-low">02:50 / 15:00</div></div>
-          <div class="tidal-td"><div class="t-best">07:50 出发</div></div>
-        </div>
-        <div class="tidal-tr">
-          <div class="tidal-td"><div class="t-date">4/21</div><div class="t-sub">Tue</div></div>
-          <div class="tidal-td"><div class="t-high">09:35 / 22:00</div></div>
-          <div class="tidal-td"><div class="t-low">03:40 / 15:45</div></div>
-          <div class="tidal-td"><div class="t-best">08:35 出发</div></div>
-        </div>
-        <div class="tidal-foot">&#9973; 帆船时刻：08:00 / 09:00 — 建议选高潮前1小时出发</div>
-      </div>
-    </div>
-
-    <!-- Weather -->
-    <div style="padding:16px 20px 0;">
-      <div class="section-label-plain reveal" data-i18n="weatherTitle">&#9728; 天气预报</div>
-      <div class="weather-strip reveal" style="margin:0;border-radius:4px;">
-        <div class="weather-item"><div class="weather-day">Apr 18</div><div class="weather-icon">&#9925;</div><div class="weather-temp">24–29°C</div></div>
-        <div class="weather-sep"></div>
-        <div class="weather-item"><div class="weather-day">Apr 19</div><div class="weather-icon">&#127780;</div><div class="weather-temp">25–30°C</div></div>
-        <div class="weather-sep"></div>
-        <div class="weather-item"><div class="weather-day">Apr 20</div><div class="weather-icon">&#127782;</div><div class="weather-temp">23–28°C</div></div>
-        <div class="weather-sep"></div>
-        <div class="weather-item"><div class="weather-day">Apr 21</div><div class="weather-icon">&#9925;</div><div class="weather-temp">24–29°C</div></div>
-      </div>
-    </div>
-    <div style="height:28px;"></div>
-  </div><!-- /home-content -->
-</div><!-- /page-home -->
-
-
-<div class="page" id="page-itinerary">
-
-  <!-- Compact slideshow -->
-  <div class="mag-slideshow" id="mag-itin">
-    <div class="mag-issue">Road Trip · Brasil</div>
-    <div class="mag-slide active"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty" loading="lazy"><div class="mag-slide-overlay"></div></div>
-<div class="mag-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="Paraty" loading="lazy"><div class="mag-slide-overlay"></div></div>
-<div class="mag-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="Paraty" loading="lazy"><div class="mag-slide-overlay"></div></div>
-<div class="mag-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty" loading="lazy"><div class="mag-slide-overlay"></div></div>
-<div class="mag-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="Paraty" loading="lazy"><div class="mag-slide-overlay"></div></div>
-    <div class="mag-dots-v" id="itin-dot-wrap">
-      <div class="mag-dot-v active" onclick="goItinSlide(0)"></div>
-<div class="mag-dot-v" onclick="goItinSlide(1)"></div>
-<div class="mag-dot-v" onclick="goItinSlide(2)"></div>
-<div class="mag-dot-v" onclick="goItinSlide(3)"></div>
-<div class="mag-dot-v" onclick="goItinSlide(4)"></div>
-    </div>
-    <div class="mag-hero-text">
-      <div class="mag-eyebrow">South America / Brazil</div>
-      <div class="mag-headline">April <em>Paraty</em> Trip</div>
-      <div class="mag-deck" data-i18n="heroDeck">海盗湾的秘密，殖民地的石板街，<br>一条海岸公路，四天时光。</div>
-      <div class="mag-dateline"><span>Apr 18–21, 2026</span> · 自驾 280km</div>
-    </div>
-  </div>
-
-  <!-- Digest -->
+  <!-- Digest strip -->
   <div class="mag-digest">
-    <div class="mag-digest-item"><div class="mag-digest-val">280</div><div class="mag-digest-key" data-i18n="km">公里</div></div>
-    <div class="mag-digest-item"><div class="mag-digest-val">4–5h</div><div class="mag-digest-key" data-i18n="oneway">单程</div></div>
-    <div class="mag-digest-item"><div class="mag-digest-val">4天</div><div class="mag-digest-key">行程</div></div>
-    <div class="mag-digest-item"><div class="mag-digest-val">3晚</div><div class="mag-digest-key" data-i18n="nights">住宿</div></div>
-    <div class="mag-digest-item"><div class="mag-digest-val">26°</div><div class="mag-digest-key" data-i18n="temp">气温</div></div>
+    <div class="mag-digest-item"><div class="mag-digest-val">280</div><div class="mag-digest-key" data-i18n="dig_km">公里</div></div>
+    <div class="mag-digest-item"><div class="mag-digest-val">4–5h</div><div class="mag-digest-key" data-i18n="dig_drive">单程</div></div>
+    <div class="mag-digest-item"><div class="mag-digest-val">4</div><div class="mag-digest-key" data-i18n="dig_days">天</div></div>
+    <div class="mag-digest-item"><div class="mag-digest-val">3</div><div class="mag-digest-key" data-i18n="dig_nights">晚</div></div>
+    <div class="mag-digest-item"><div class="mag-digest-val">26°</div><div class="mag-digest-key" data-i18n="dig_temp">气温</div></div>
   </div>
 
   <!-- Day Tabs -->
-  <div class="day-tabs-wrap">
-    <div class="day-tabs">
-      <button class="day-tab active" id="tab-2d" onclick="switchDay(2,event)">2D<span data-i18n="tabCompact">紧凑</span></button>
-      <button class="day-tab" id="tab-3d" onclick="switchDay(3,event)">3D<span data-i18n="tabComfort">舒适</span></button>
-      <button class="day-tab" id="tab-4d" onclick="switchDay(4,event)">4D<span data-i18n="tabFull">完整</span></button>
+  <div class="day-tabs">
+    <div class="day-tab" onclick="switchPlan(2,this)" data-i18n="tab_2d">2天紧凑</div>
+    <div class="day-tab" onclick="switchPlan(3,this)" data-i18n="tab_3d">3天舒适</div>
+    <div class="day-tab active" onclick="switchPlan(4,this)" data-i18n="tab_4d">4天完整</div>
+  </div>
+
+  <!-- Icon strip -->
+  <div class="mag-icon-strip">
+    <div class="mag-icon-item"><div class="mag-icon">⛵</div><div class="mag-icon-label" data-i18n="ic_sail">出海</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🏛️</div><div class="mag-icon-label" data-i18n="ic_town">老城</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🌊</div><div class="mag-icon-label" data-i18n="ic_tide">涨潮</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🌿</div><div class="mag-icon-label" data-i18n="ic_jungle">丛林</div></div>
+    <div class="mag-icon-item"><div class="mag-icon">🥃</div><div class="mag-icon-label" data-i18n="ic_cachaca">蔗酒</div></div>
+  </div>
+
+  <!-- Pull quote -->
+  <div class="mag-pullquote anim-card">
+    <div class="mag-pullquote-text">"Paraty is one of those rare places that feels frozen in the best possible way — cobblestones, colonial facades, and a bay that turns gold at dusk."</div>
+    <div class="mag-pullquote-attr">— Lonely Planet South America</div>
+  </div>
+
+  <!-- Tidal info -->
+  <div class="tide-panel anim-card">
+    <div class="tide-title">🌊 <span data-i18n="tide_title">潮汐预报 · 4月18–21日</span></div>
+    <div class="tide-row"><div class="tide-date">Apr 18</div><div class="tide-times"><span class="tide-high">↑ 07:20 / 19:45</span> &nbsp; ↓ 01:10 / 13:30</div></div>
+    <div class="tide-row"><div class="tide-date">Apr 19</div><div class="tide-times"><span class="tide-high">↑ 08:05 / 20:30</span> &nbsp; ↓ 02:00 / 14:15</div></div>
+    <div class="tide-row"><div class="tide-date">Apr 20</div><div class="tide-times"><span class="tide-high">↑ 08:50 / 21:15</span> &nbsp; ↓ 02:50 / 15:00</div></div>
+    <div class="tide-row"><div class="tide-date">Apr 21</div><div class="tide-times"><span class="tide-high">↑ 09:35 / 22:00</span> &nbsp; ↓ 03:40 / 15:45</div></div>
+  </div>
+
+  <!-- Feature cards -->
+  <div class="mag-section-header"><div class="mag-section-title" data-i18n="sec_highlights">旅程亮点</div><div class="mag-section-kicker">4 reasons to go</div></div>
+  <div class="mag-feature-row">
+    <div class="mag-feature-card anim-card">
+      <div class="mag-feature-img"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty panorama"></div>
+      <div class="mag-feature-body">
+        <div class="mag-feature-kicker">Day 2 Highlight</div>
+        <div class="mag-feature-title" data-i18n="feat1_t">出海游岛：Baía de Paraty</div>
+        <div class="mag-feature-desc" data-i18n="feat1_d">帆船穿越蓝绿色海湾，停靠原始小岛，浮潜、游泳，午餐在船上吃。</div>
+        <div class="mag-feature-tags"><span class="mag-feature-tag hot" data-i18n="tag_mustdo">必做</span><span class="mag-feature-tag">≈ R$100/人</span></div>
+      </div>
+    </div>
+    <div class="mag-feature-card anim-card">
+      <div class="mag-feature-img"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg" alt="Church"></div>
+      <div class="mag-feature-body">
+        <div class="mag-feature-kicker">Tidal Wonder</div>
+        <div class="mag-feature-title" data-i18n="feat2_t">涨潮时刻</div>
+        <div class="mag-feature-desc" data-i18n="feat2_d">海水漫入历史老城，石板路化为镜面，教堂倒影如梦。</div>
+        <div class="mag-feature-tags"><span class="mag-feature-tag hot" data-i18n="tag_wonder">奇观</span></div>
+      </div>
+    </div>
+    <div class="mag-feature-card anim-card">
+      <div class="mag-feature-img"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Night dining"></div>
+      <div class="mag-feature-body">
+        <div class="mag-feature-kicker">Golden Hour</div>
+        <div class="mag-feature-title" data-i18n="feat3_t">黄昏教堂广场</div>
+        <div class="mag-feature-desc" data-i18n="feat3_d">日落时分，教堂广场逆光如油画，是整趟旅程的情绪高潮。</div>
+        <div class="mag-feature-tags"><span class="mag-feature-tag hot" data-i18n="tag_photo">拍照圣地</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- ══ 2-DAY PANEL ══ -->
-  <div class="day-panel active" id="panel-2d">
-    <div class="itin-layout">
-      <div class="itin-main">
-        <div class="day-sec-hdr"><div class="day-sec-num">01</div><div class="day-sec-info"><div class="day-sec-date">Apr 18, Sat — 出发日</div><div class="day-sec-title">圣保罗 → Paraty 老城</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-2d-1" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127963; Centro Histórico de Paraty</div><div class="spot-badges"><span class="badge">&#128394; 外围停车场</span><span class="badge">&#8987; 2–3小时</span><span class="badge">&#128739; 石板老街</span></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-2d-2" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#129347; Cachaça 酒厂参观</div><div class="spot-badges"><span class="badge">&#128394; 景点内停车</span><span class="badge">&#8987; 1–2小时</span><span class="badge">&#128739; 平坦公路</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">07:00</div><div class="tl-desc">从圣保罗出发，走 BR-116 向南</div><div class="tl-tip">&#128161; 早出发避开周末出城高峰</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">09:00</div><div class="tl-desc">翻越 Serra do Mar 山脉，云雾山景壮观</div><div class="tl-tip">&#128161; 下坡陡，注意刹车，大货车多</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">10:30</div><div class="tl-desc">转 BR-101 Rio-Santos 沿海公路，全程最美路段</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">12:00</div><div class="tl-desc">途经 Angra dos Reis，停车午餐或加油</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">14:00</div><div class="tl-desc">抵达 Paraty，入住民宿，漫步 Centro Histórico 石板街</div><div class="tl-tip">&#128161; 老城禁止车辆，停外围停车场 R$15–30/天</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">17:00</div><div class="tl-desc">涨潮时刻：海水漫入石板街，经典倒影</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">19:30</div><div class="tl-desc">Rua do Comércio 晚餐 + Cachaça 酒厂参观品酒</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="" loading="lazy"></div></div></div>
-        <div class="day-sec-hdr"><div class="day-sec-num">02</div><div class="day-sec-info"><div class="day-sec-date">Apr 19, Sun — 返程日</div><div class="day-sec-title">Praia do Sono → 圣保罗</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-2d-3" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127958; Praia do Sono</div><div class="spot-badges"><span class="badge">&#128394; 路边免费停车</span><span class="badge">&#8987; 2–3小时</span><span class="badge">&#128739; 山路弯道</span><span class="badge">&#128694; 徒步20min</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">08:00</div><div class="tl-desc">驾车前往 Praia do Sono（约45min），最美野生海滩，需徒步20min</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">10:00</div><div class="tl-desc">游泳、晒太阳、拍照，享受原始海滩</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">12:30</div><div class="tl-desc">返回 Paraty 老城午餐</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">14:00</div><div class="tl-desc">启程返回圣保罗</div><div class="tl-tip">&#128161; 预留5小时，避开周末返城高峰</div></div></div>
-      </div>
-      <div class="itin-map-col">
-        <div class="itin-map-lbl">路线</div>
-        <svg class="itin-map-svg" viewBox="0 0 100 215" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="215" fill="#EAF0F8"/><path d="M50 18 Q40 51 50 85 Q40 115 50 145 Q40 170 50 195" stroke="#004F9F" stroke-width="2" fill="none" stroke-dasharray="4,3"/><circle cx="50" cy="18" r="5" fill="#004F9F"/><text x="50" y="32" text-anchor="middle" font-size="7" fill="#004F9F" font-family="Inter,sans-serif">SP</text><circle cx="50" cy="85" r="5" fill="#C4622D"/><text x="50" y="78" text-anchor="middle" font-size="7" fill="#C4622D" font-family="Inter,sans-serif">Paraty</text><circle cx="50" cy="145" r="5" fill="#5C6B3A"/><text x="50" y="138" text-anchor="middle" font-size="7" fill="#5C6B3A" font-family="Inter,sans-serif">P.Sono</text><circle cx="50" cy="195" r="5" fill="#004F9F"/><text x="50" y="188" text-anchor="middle" font-size="7" fill="#004F9F" font-family="Inter,sans-serif">↩SP</text></svg>
-      </div>
-    </div>
-    <button class="save-itin-btn" onclick="saveItinerary(2)">&#128190; 保存「2天行程」</button>
+  <!-- Weather -->
+  <div class="weather-strip">
+    <div class="weather-item"><div class="weather-day">Apr 18</div><div class="weather-icon">⛅</div><div class="weather-temp">24–29°C</div></div>
+    <div class="weather-sep"></div>
+    <div class="weather-item"><div class="weather-day">Apr 19</div><div class="weather-icon">🌤</div><div class="weather-temp">25–30°C</div></div>
+    <div class="weather-sep"></div>
+    <div class="weather-item"><div class="weather-day">Apr 20</div><div class="weather-icon">🌦</div><div class="weather-temp">23–28°C</div></div>
+    <div class="weather-sep"></div>
+    <div class="weather-item"><div class="weather-day">Apr 21</div><div class="weather-icon">⛅</div><div class="weather-temp">24–29°C</div></div>
   </div>
 
-  <!-- ══ 3-DAY PANEL ══ -->
-  <div class="day-panel" id="panel-3d">
-    <div class="itin-layout">
-      <div class="itin-main">
-        <div class="day-sec-hdr"><div class="day-sec-num">01</div><div class="day-sec-info"><div class="day-sec-date">Apr 18, Sat — 出发日</div><div class="day-sec-title">圣保罗 → Paraty 老城</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-3d-1" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127963; Centro Histórico de Paraty</div><div class="spot-badges"><span class="badge">&#128394; 外围停车场</span><span class="badge">&#8987; 2–3小时</span><span class="badge">&#128739; 石板老街</span></div></div>
-<div class="spot-card reveal" draggable="true" data-id="
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">07:00</div><div class="tl-desc">从圣保罗出发，走 BR-116 → BR-101</div><div class="tl-tip">&#128161; 早出发避开高峰</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">14:00</div><div class="tl-desc">抵达 Paraty，办理入住，漫步老城石板街</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">17:00</div><div class="tl-desc">涨潮奇景，石板街变水景</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">19:30</div><div class="tl-desc">晚餐 Rua do Comércio</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="" loading="lazy"></div></div></div>
-        <div class="day-sec-hdr"><div class="day-sec-num">02</div><div class="day-sec-info"><div class="day-sec-date">Apr 19, Sun — 海岛日</div><div class="day-sec-title">跳岛出海 · 游泳 · 夜游老城</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-3d-2" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#9973; 跳岛出海 — Ilha Comprida / Araújo</div><div class="spot-badges"><span class="badge">&#128394; 码头停车场</span><span class="badge">&#8987; 5–6小时</span><span class="badge">&#128739; 海路</span><span class="badge tide">&#127754; 高潮 08:05 (19日)</span></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-3d-3" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127958; Praia Vermelha</div><div class="spot-badges"><span class="badge">&#128394; 路边免费停车</span><span class="badge">&#8987; 2小时</span><span class="badge">&#128739; 平坦公路</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">07:05</div><div class="tl-desc">&#127754; 最佳出海时间（高潮前1小时），前往码头</div><div class="tl-tip">&#128161; 提前预订帆船 R$80–120/人</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">08:00–14:00</div><div class="tl-desc">帆船出海，游览 Baía de Paraty 海湾，停靠3–4个小岛，自由浮潜+船上午餐</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">15:00</div><div class="tl-desc">Praia Vermelha 游泳</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">19:30</div><div class="tl-desc">历史中心夜游，探索工艺品店，品 Cachaça</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="" loading="lazy"></div></div></div>
-        <div class="day-sec-hdr"><div class="day-sec-num">03</div><div class="day-sec-info"><div class="day-sec-date">Apr 20, Mon — 海滩返程</div><div class="day-sec-title">Praia do Sono → 圣保罗</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-3d-4" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127958; Praia do Sono — 最美野生海滩</div><div class="spot-badges"><span class="badge">&#128394; 路边免费停车</span><span class="badge">&#8987; 2–3小时</span><span class="badge">&#128739; 山路弯道</span><span class="badge">&#128694; 徒步20min</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">08:00</div><div class="tl-desc">驾车前往 Praia do Sono（约45min），徒步20min入滩</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">09:00–12:00</div><div class="tl-desc">游泳、晒太阳，享受原始海滩时光</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">13:00</div><div class="tl-desc">返回 Paraty 老城午餐</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">14:30</div><div class="tl-desc">启程返回圣保罗</div><div class="tl-tip">&#128161; 预留5小时返程</div></div></div>
-      </div>
-      <div class="itin-map-col">
-        <div class="itin-map-lbl">路线</div>
-        <svg class="itin-map-svg" viewBox="0 0 100 230" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="230" fill="#EAF0F8"/><path d="M50 15 Q40 45 50 75 Q40 100 50 125 Q40 147 50 170 Q40 192 50 215" stroke="#004F9F" stroke-width="2" fill="none" stroke-dasharray="4,3"/><circle cx="50" cy="15" r="5" fill="#004F9F"/><text x="50" y="29" text-anchor="middle" font-size="7" fill="#004F9F" font-family="Inter,sans-serif">SP</text><circle cx="50" cy="75" r="5" fill="#C4622D"/><text x="50" y="68" text-anchor="middle" font-size="7" fill="#C4622D" font-family="Inter,sans-serif">Paraty</text><circle cx="50" cy="125" r="5" fill="#1A6B9A"/><text x="50" y="118" text-anchor="middle" font-size="7" fill="#1A6B9A" font-family="Inter,sans-serif">Ilhas</text><circle cx="50" cy="170" r="5" fill="#5C6B3A"/><text x="50" y="163" text-anchor="middle" font-size="7" fill="#5C6B3A" font-family="Inter,sans-serif">P.Sono</text><circle cx="50" cy="215" r="5" fill="#004F9F"/><text x="50" y="208" text-anchor="middle" font-size="7" fill="#004F9F" font-family="Inter,sans-serif">↩SP</text></svg>
-      </div>
-    </div>
-    <button class="save-itin-btn" onclick="saveItinerary(3)">&#128190; 保存「3天行程」</button>
+  <!-- Route map -->
+  <div class="route-map anim-card">
+    <div class="route-map-title">📍 <span data-i18n="route_title">自驾路线 · SP → Paraty</span></div>
+    <svg class="route-svg" viewBox="0 0 340 110" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 30 80 Q 80 30 140 55 Q 190 78 240 50 Q 280 30 310 55" stroke="#C4622D" stroke-width="2.5" fill="none" stroke-dasharray="6,3" stroke-linecap="round"/>
+      <circle cx="30" cy="80" r="7" fill="#004F9F"/><text x="30" y="98" text-anchor="middle" font-size="9" fill="#004F9F" font-family="Inter,sans-serif" font-weight="600">São Paulo</text>
+      <circle cx="220" cy="52" r="5" fill="#5C6B3A"/><text x="220" y="70" text-anchor="middle" font-size="8" fill="#5C6B3A" font-family="Inter,sans-serif">Angra</text>
+      <circle cx="310" cy="55" r="8" fill="#C4622D"/><text x="310" y="73" text-anchor="middle" font-size="9" fill="#C4622D" font-family="Inter,sans-serif" font-weight="700">Paraty</text>
+      <text x="120" y="44" text-anchor="middle" font-size="8" fill="#7A6E5F" font-family="Inter,sans-serif">BR-116</text>
+      <text x="265" y="36" text-anchor="middle" font-size="8" fill="#7A6E5F" font-family="Inter,sans-serif">BR-101</text>
+    </svg>
   </div>
 
-  <!-- ══ 4-DAY PANEL ══ -->
-  <div class="day-panel" id="panel-4d">
-    <div class="itin-layout">
-      <div class="itin-main">
-        <div class="day-sec-hdr"><div class="day-sec-num">01</div><div class="day-sec-info"><div class="day-sec-date">Apr 18, Sat — 出发日</div><div class="day-sec-title">圣保罗 → Paraty 老城</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-4d-1" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127963; Centro Histórico + 涨潮奇景</div><div class="spot-badges"><span class="badge">&#128394; 外围停车场</span><span class="badge">&#8987; 3–4小时</span><span class="badge">&#128739; 石板老街</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">07:00</div><div class="tl-desc">从圣保罗出发 BR-116 → BR-101</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">14:00</div><div class="tl-desc">抵达 Paraty，入住，漫步老城</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">17:00</div><div class="tl-desc">涨潮时刻，石板街变水景</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">19:30</div><div class="tl-desc">晚餐 + Cachaça 酒厂参观</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="" loading="lazy"></div></div></div>
-        <div class="day-sec-hdr"><div class="day-sec-num">02</div><div class="day-sec-info"><div class="day-sec-date">Apr 19, Sun — 海岛日</div><div class="day-sec-title">跳岛出海 · Praia Vermelha</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-4d-2" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#9973; 跳岛帆船 — Ilha Comprida / Araújo</div><div class="spot-badges"><span class="badge">&#128394; 码头停车场</span><span class="badge">&#8987; 5–6小时</span><span class="badge">&#128739; 海路</span><span class="badge tide">&#127754; 高潮 08:05 (19日)</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">07:05</div><div class="tl-desc">&#127754; 高潮前1小时出发，前往码头</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">08:00–14:00</div><div class="tl-desc">帆船出海，3–4个小岛，浮潜+船上午餐</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">15:00</div><div class="tl-desc">Praia Vermelha 游泳</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">19:30</div><div class="tl-desc">历史中心夜游</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="" loading="lazy"></div></div></div>
-        <div class="day-sec-hdr"><div class="day-sec-num">03</div><div class="day-sec-info"><div class="day-sec-date">Apr 20, Mon — 丛林日</div><div class="day-sec-title">Praia do Sono 徒步 · 游泳</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-4d-3" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127958; Praia do Sono — 最美野生海滩</div><div class="spot-badges"><span class="badge">&#128394; 路边免费停车</span><span class="badge">&#8987; 3小时</span><span class="badge">&#128739; 山路弯道</span><span class="badge">&#128694; 徒步20min</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">08:00</div><div class="tl-desc">驾车前往 Praia do Sono，徒步20min入滩</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">09:00–12:00</div><div class="tl-desc">游泳、晒太阳，享受原始海滩</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">14:00</div><div class="tl-desc">返回老城，Casa da Cultura 文化馆</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">18:00</div><div class="tl-desc">Alambique 酿酒坊参观 + 品酒之旅</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">20:00</div><div class="tl-desc">晚餐：Merlin o Mago，老城最佳氛围</div></div></div>
-        <div class="day-sec-hdr"><div class="day-sec-num">04</div><div class="day-sec-info"><div class="day-sec-date">Apr 21, Tue — 返程日</div><div class="day-sec-title">Tobogã 瀑布 · Fazenda · 返回SP</div></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-4d-4" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#128166; Cachoeira Tobogã — 天然岩滑瀑布</div><div class="spot-badges"><span class="badge">&#128394; 路边免费停车</span><span class="badge">&#8987; 2小时</span><span class="badge">&#128739; 平坦公路</span></div></div>
-        <div class="spot-card reveal" draggable="true" data-id="sc-4d-5" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"><div class="spot-card-name">&#127807; Fazenda Murycana — 庄园甘蔗酒</div><div class="spot-badges"><span class="badge">&#128394; 景点内停车</span><span class="badge">&#8987; 1–2小时</span><span class="badge">&#128739; 乡村小道</span></div></div>
-        <div class="timeline" style="margin-top:10px;"><div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">08:00</div><div class="tl-desc">驾车前往 Cachoeira Tobogã（约30min），穿泳衣，滑天然岩道</div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">10:30</div><div class="tl-desc">Fazenda Murycana 庄园参观，了解 Cachaça 酿造，品甘蔗汁</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">13:00</div><div class="tl-desc">返回 Paraty 老城，告别午餐</div><div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg" alt="" loading="lazy"></div></div>
-<div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-time">15:00</div><div class="tl-desc">启程返回圣保罗（19:00前抵达），途经 Angra 可加油</div><div class="tl-tip">&#128161; 19:00前出发，避开节后高峰</div></div></div>
+  <div class="section"><div class="section-label" data-i18n="sec_itin">四日行程</div></div>
+  <div class="day-cards" id="day-cards-container">
+
+    <!-- Day 1 -->
+    <div class="day-card anim-card" id="day1" data-plan="2,3,4">
+      <div class="day-card-header" onclick="toggleDay('day1')">
+        <div class="day-num">01</div>
+        <div class="day-info">
+          <div class="day-date">Apr 18, Fri · <span data-i18n="d1_label">出发日</span></div>
+          <div class="day-title" data-i18n="d1_title">圣保罗 → Paraty</div>
+        </div>
+        <div class="day-arrow">▾</div>
       </div>
-      <div class="itin-map-col">
-        <div class="itin-map-lbl">路线</div>
-        <svg class="itin-map-svg" viewBox="0 0 100 260" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="260" fill="#EAF0F8"/><path d="M50 14 Q40 41 50 68 Q40 91 50 115 Q40 135 50 155 Q40 177 50 200 Q40 222 50 245" stroke="#004F9F" stroke-width="2" fill="none" stroke-dasharray="4,3"/><circle cx="50" cy="14" r="5" fill="#004F9F"/><text x="50" y="28" text-anchor="middle" font-size="7" fill="#004F9F" font-family="Inter,sans-serif">SP</text><circle cx="50" cy="68" r="5" fill="#C4622D"/><text x="50" y="61" text-anchor="middle" font-size="7" fill="#C4622D" font-family="Inter,sans-serif">Paraty</text><circle cx="50" cy="115" r="5" fill="#1A6B9A"/><text x="50" y="108" text-anchor="middle" font-size="7" fill="#1A6B9A" font-family="Inter,sans-serif">Ilhas</text><circle cx="50" cy="155" r="5" fill="#5C6B3A"/><text x="50" y="148" text-anchor="middle" font-size="7" fill="#5C6B3A" font-family="Inter,sans-serif">P.Sono</text><circle cx="50" cy="200" r="5" fill="#D4A843"/><text x="50" y="193" text-anchor="middle" font-size="7" fill="#D4A843" font-family="Inter,sans-serif">Toboga</text><circle cx="50" cy="245" r="5" fill="#004F9F"/><text x="50" y="238" text-anchor="middle" font-size="7" fill="#004F9F" font-family="Inter,sans-serif">↩SP</text></svg>
+      <div class="day-body"><div class="day-body-inner">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">07:00</div>
+            <div class="tl-desc" data-i18n="d1_0700">从圣保罗出发，走 BR-116 向南</div>
+            <div class="tl-tip">💡 <span data-i18n="d1_tip1">早出发避开周末出城高峰</span></div>
+            <div class="spot-badges"><span class="spot-badge">🛣 <span data-i18n="road_hwy">高速公路</span></span><span class="spot-badge">⏱ 4–5h</span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">09:00</div>
+            <div class="tl-desc" data-i18n="d1_0900">翻越 Serra do Mar 山脉，云雾山景壮观</div>
+            <div class="tl-tip">💡 <span data-i18n="d1_tip2">下坡陡，注意刹车，大货车多</span></div>
+            <div class="spot-badges"><span class="spot-badge">🛣 <span data-i18n="road_mtn">山路弯道</span></span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">12:00</div>
+            <div class="tl-desc" data-i18n="d1_1200">途经 Angra dos Reis，停车午餐或加油</div>
+            <div class="spot-badges"><span class="spot-badge">🅿️ <span data-i18n="park_road">路边免费停车</span></span><span class="spot-badge">⏱ 30min</span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">14:00</div>
+            <div class="tl-desc" data-i18n="d1_1400">抵达 Paraty，办理入住，漫步老城区石板街</div>
+            <div class="tl-tip">💡 <span data-i18n="d1_tip3">老城区禁止车辆进入，停外围停车场 R$15–30/天</span></div>
+            <div class="spot-badges"><span class="spot-badge">🅿️ <span data-i18n="park_paid">付费停车场</span></span><span class="spot-badge">🛣 <span data-i18n="road_cobble">石板老街</span></span><span class="spot-badge">⏱ 2–3h</span></div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="Paraty colorful buildings"></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">17:00</div>
+            <div class="tl-desc" data-i18n="d1_1700">涨潮时刻：海水漫入石板街，经典倒影景观</div>
+            <div class="spot-badges"><span class="spot-badge tide">🌊 <span data-i18n="tide_high">高潮 19:45</span></span></div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg" alt="Church reflection"></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">19:30</div>
+            <div class="tl-desc" data-i18n="d1_1930">晚餐：老城区餐厅，推荐 Moqueca de Peixe</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Day 2 -->
+    <div class="day-card anim-card" id="day2" data-plan="2,3,4">
+      <div class="day-card-header" onclick="toggleDay('day2')">
+        <div class="day-num">02</div>
+        <div class="day-info">
+          <div class="day-date">Apr 19, Sat · <span data-i18n="d2_label">海岛日</span></div>
+          <div class="day-title" data-i18n="d2_title">出海 · 小岛 · 海滩</div>
+        </div>
+        <div class="day-arrow">▾</div>
       </div>
+      <div class="day-body"><div class="day-body-inner">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">08:30</div>
+            <div class="tl-desc" data-i18n="d2_0830">港口乘帆船出海，游览 Baía de Paraty 海湾小岛</div>
+            <div class="spot-badges"><span class="spot-badge tide">🌊 <span data-i18n="tide_best">最佳出发：高潮前1h (07:05)</span></span><span class="spot-badge">⏱ 5–6h</span></div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty bay panorama"></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">09:00–14:00</div>
+            <div class="tl-desc" data-i18n="d2_sail">停靠 3–4 个小岛：Ilha do Araújo、Praia Vermelha，自由浮潜</div>
+            <div class="tl-tip">💡 <span data-i18n="d2_tip1">提前一天在码头预订，约 R$80–120/人，船上有午餐</span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">15:00</div>
+            <div class="tl-desc" data-i18n="d2_1500">返回 Paraty，品当地 cachaça 甘蔗酒</div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">17:30</div>
+            <div class="tl-desc" data-i18n="d2_1730">探索老城工艺品店，手工陶瓷、编织袋</div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="Bougainvillea wall"></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">20:00</div>
+            <div class="tl-desc" data-i18n="d2_2000">晚餐：Refúgio Restaurant，海鲜配冷饮</div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Night dining street"></div>
+          </div>
+        </div>
+      </div></div>
     </div>
-    <!-- Route Map -->
-    <div class="route-map" style="margin:16px 20px 0;">
-      <div class="route-map-title">&#128205; 自驾路线 · SP → Paraty</div>
-      <svg viewBox="0 0 340 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
-  <path d="M 30 80 Q 80 30 140 55 Q 190 78 240 50 Q 280 30 310 55"
-    stroke="#C4622D" stroke-width="2.5" fill="none" stroke-dasharray="6,3" stroke-linecap="round"/>
-  <circle cx="30" cy="80" r="7" fill="#004F9F"/>
-  <text x="30" y="98" text-anchor="middle" font-size="9" fill="#004F9F" font-family="Inter,sans-serif" font-weight="600">São Paulo</text>
-  <circle cx="220" cy="52" r="5" fill="#5C6B3A"/>
-  <text x="220" y="70" text-anchor="middle" font-size="8" fill="#5C6B3A" font-family="Inter,sans-serif">Angra</text>
-  <circle cx="310" cy="55" r="8" fill="#C4622D"/>
-  <text x="310" y="73" text-anchor="middle" font-size="9" fill="#C4622D" font-family="Inter,sans-serif" font-weight="700">Paraty</text>
-  <text x="120" y="44" text-anchor="middle" font-size="8" fill="#7A6E5F" font-family="Inter,sans-serif">BR-116</text>
-  <text x="265" y="36" text-anchor="middle" font-size="8" fill="#7A6E5F" font-family="Inter,sans-serif">BR-101</text>
-</svg>
-    </div>
-    <!-- Budget -->
-    <div class="section"><div class="section-label" data-i18n="budget">预算参考</div></div>
-    <div class="budget-card reveal">
-      <div class="budget-row"><span class="budget-label">&#128663; 油费（往返）</span><span class="budget-val">R$ 280</span></div>
-      <div class="budget-row"><span class="budget-label">&#127968; 住宿 3晚</span><span class="budget-val">R$ 900</span></div>
-      <div class="budget-row"><span class="budget-label">&#9973; 出海帆船（2人）</span><span class="budget-val">R$ 240</span></div>
-      <div class="budget-row"><span class="budget-label">&#127869; 餐饮（4天）</span><span class="budget-val">R$ 400</span></div>
-      <div class="budget-row"><span class="budget-label">&#127903; 景点 &amp; 活动</span><span class="budget-val">R$ 120</span></div>
-      <div class="budget-row"><span class="budget-total-label">合计（2人）</span><span class="budget-total-val">≈ R$ 1,940</span></div>
-    </div>
-    <button class="save-itin-btn" onclick="saveItinerary(4)">&#128190; 保存「4天行程」</button>
-    <div class="ending-photo">
-      <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg" alt="Paraty">
-      <div class="ending-overlay">
-        <div class="ending-quote">"The world is a book, and those who do not travel read only one page."</div>
+
+    <!-- Day 2 return (2-day plan only) -->
+    <div class="day-card anim-card" id="day2-return" data-plan="2" style="display:none">
+      <div class="day-card-header" onclick="toggleDay('day2-return')">
+        <div class="day-num">02</div>
+        <div class="day-info">
+          <div class="day-date">Apr 19 PM · <span data-i18n="d2r_label">返程</span></div>
+          <div class="day-title" data-i18n="d2r_title">Praia do Sono → 返回 SP</div>
+        </div>
+        <div class="day-arrow">▾</div>
       </div>
+      <div class="day-body"><div class="day-body-inner">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">08:00</div>
+            <div class="tl-desc">Praia do Sono 海滩，需徒步20min</div>
+            <div class="spot-badges"><span class="spot-badge">⏱ 2–3h</span><span class="spot-badge">🛣 徒步小径</span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">14:00</div>
+            <div class="tl-desc">返回圣保罗</div>
+            <div class="spot-badges"><span class="spot-badge">🛣 高速公路</span><span class="spot-badge">⏱ 4–5h</span></div>
+          </div>
+        </div>
+      </div></div>
     </div>
-  </div><!-- /panel-4d -->
+
+    <!-- Day 3 -->
+    <div class="day-card anim-card" id="day3" data-plan="3,4">
+      <div class="day-card-header" onclick="toggleDay('day3')">
+        <div class="day-num">03</div>
+        <div class="day-info">
+          <div class="day-date">Apr 20, Sun · <span data-i18n="d3_label">丛林日</span></div>
+          <div class="day-title" data-i18n="d3_title">瀑布 · 丛林 · 文化</div>
+        </div>
+        <div class="day-arrow">▾</div>
+      </div>
+      <div class="day-body"><div class="day-body-inner">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">08:00</div>
+            <div class="tl-desc" data-i18n="d3_0800">驾车前往 Cachoeira Tobogã 天然岩滑瀑布</div>
+            <div class="tl-tip">💡 穿泳衣去，周一人少</div>
+            <div class="spot-badges"><span class="spot-badge">🅿️ 景点内停车</span><span class="spot-badge">⏱ 2–3h</span><span class="spot-badge">🛣 山路弯道</span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">11:00</div>
+            <div class="tl-desc" data-i18n="d3_1100">参观 Casa da Cultura 文化馆</div>
+            <div class="spot-badges"><span class="spot-badge">🅿️ 路边免费停车</span><span class="spot-badge">⏱ 1–2h</span></div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="Pink signpost"></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">14:00</div>
+            <div class="tl-desc" data-i18n="d3_1400">Paraty Mirim 安静海滩，午后游泳</div>
+            <div class="spot-badges"><span class="spot-badge tide">🌊 高潮 08:50</span><span class="spot-badge">⏱ 2–3h</span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">18:00</div>
+            <div class="tl-desc" data-i18n="d3_1800">Alambique 酿酒坊参观 · cachaça 品酒之旅</div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">20:00</div>
+            <div class="tl-desc" data-i18n="d3_2000">最后一晚：Merlin o Mago，老城区氛围最佳餐厅</div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="Colorful hillside"></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Day 3 return (3-day plan only) -->
+    <div class="day-card anim-card" id="day3-return" data-plan="3" style="display:none">
+      <div class="day-card-header" onclick="toggleDay('day3-return')">
+        <div class="day-num">03</div>
+        <div class="day-info">
+          <div class="day-date">Apr 20 PM · 返程</div>
+          <div class="day-title">Praia do Sono → 返回 SP</div>
+        </div>
+        <div class="day-arrow">▾</div>
+      </div>
+      <div class="day-body"><div class="day-body-inner">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">08:00</div><div class="tl-desc">Praia do Sono 徒步+游泳</div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">14:00</div><div class="tl-desc">返回圣保罗，预留 5 小时</div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Day 4 -->
+    <div class="day-card anim-card" id="day4" data-plan="4">
+      <div class="day-card-header" onclick="toggleDay('day4')">
+        <div class="day-num">04</div>
+        <div class="day-info">
+          <div class="day-date">Apr 21, Mon · <span data-i18n="d4_label">返程日</span></div>
+          <div class="day-title" data-i18n="d4_title">Paraty → 圣保罗</div>
+        </div>
+        <div class="day-arrow">▾</div>
+      </div>
+      <div class="day-body"><div class="day-body-inner">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">08:00</div>
+            <div class="tl-desc" data-i18n="d4_0800">晨游老城区，最佳拍照时间</div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="White church with palms"></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">10:00</div>
+            <div class="tl-desc" data-i18n="d4_1000">退房，启程返回圣保罗</div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">12:00</div>
+            <div class="tl-desc" data-i18n="d4_1200">途经 Angra dos Reis 午餐</div>
+            <div class="spot-badges"><span class="spot-badge">🅿️ 路边免费停车</span><span class="spot-badge">⏱ 45min</span></div>
+          </div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">14:00–18:00</div>
+            <div class="tl-desc" data-i18n="d4_1400">翻越 Serra do Mar 返回圣保罗</div>
+            <div class="tl-tip">💡 周一下午高速通常顺畅</div>
+            <div class="spot-badges"><span class="spot-badge">🛣 高速公路</span><span class="spot-badge">⏱ 4–5h</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div><!-- /day-cards -->
+
+  <!-- Budget -->
+  <div class="section" style="margin-top:24px"><div class="section-label" data-i18n="sec_budget">预算参考</div></div>
+  <div class="budget-card anim-card">
+    <div class="budget-row"><span class="budget-label">🚗 <span data-i18n="bud_gas">油费（往返）</span></span><span class="budget-val">R$ 280</span></div>
+    <div class="budget-row"><span class="budget-label">🏨 <span data-i18n="bud_hotel">住宿 3晚</span></span><span class="budget-val">R$ 900</span></div>
+    <div class="budget-row"><span class="budget-label">⛵ <span data-i18n="bud_boat">出海帆船（2人）</span></span><span class="budget-val">R$ 240</span></div>
+    <div class="budget-row"><span class="budget-label">🍽 <span data-i18n="bud_food">餐饮（4天）</span></span><span class="budget-val">R$ 400</span></div>
+    <div class="budget-row"><span class="budget-label">🎟 <span data-i18n="bud_act">景点 & 活动</span></span><span class="budget-val">R$ 120</span></div>
+    <div class="budget-row"><span class="budget-total-label" data-i18n="bud_total">合计（2人）</span><span class="budget-total-val">≈ R$ 1,940</span></div>
+  </div>
+
+  <!-- Ending -->
+  <div class="ending-photo anim-card">
+    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty night">
+    <div class="ending-overlay">
+      <div class="ending-quote">"The world is a book, and those who do not travel read only one page."</div>
+    </div>
+  </div>
 
 </div><!-- /page-itinerary -->
 
-
+<!-- ===== FOOD PAGE ===== -->
 <div class="page" id="page-food">
-  <div class="page-hero">
-    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty nightlife">
-    <div class="page-hero-overlay"></div>
-    <div class="page-hero-text">
-      <div class="page-hero-crumb">Paraty · Brasil</div>
-      <div class="page-hero-title" data-i18n="foodTitle">美食指南</div>
+  <div class="hero">
+    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty Night Dining">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-breadcrumb">Paraty · Brasil</div>
+      <div class="hero-title" style="font-size:36px" data-i18n="food_hero">美食指南</div>
     </div>
   </div>
-  <div class="photo-row">
-    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="老城建筑"></div>
-    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="彩色街道"></div>
+  <div class="photo-row" style="margin-top:16px">
+    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="Colorful buildings"></div>
+    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="Hillside houses"></div>
   </div>
-  <div class="section">
-    <div class="section-label" data-i18n="localFlavors">本地特色</div>
-    <div class="section-title" data-i18n="foodSubtitle">海鲜 · 甘蔗酒 · 殖民风味</div>
+  <div class="section" style="margin-top:16px">
+    <div class="section-label" data-i18n="food_sec">本地特色</div>
+    <div class="section-title" data-i18n="food_title">海鲜 · 甘蔗酒 · 殖民风味</div>
   </div>
-  <div class="food-grid" style="margin-top:16px;">
-    <div class="food-card reveal">
-      <img class="food-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="餐厅夜景">
-      <div class="food-card-body"><div class="food-card-inner">
+  <div class="food-grid" style="margin-top:16px">
+    <div class="food-card anim-card">
+      <img class="food-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty Bay">
+      <div class="food-card-body"><div class="food-card-body-inner">
         <div class="food-name">Moqueca de Peixe</div>
-        <div class="food-type">&#127825; 主菜 · 巴西炖鱼</div>
-        <div class="food-desc">椰汁、番茄、洋葱、香菜炖鱼，配白饭和 farofa。Paraty 靠海，鱼新鲜，必点。</div>
-        <div class="food-tags"><span class="food-tag highlight" data-i18n="mustEat">必吃</span><span class="food-tag">海鲜</span><span class="food-tag">R$45–65</span></div>
+        <div class="food-type">🐟 主菜 · 巴西炖鱼</div>
+        <div class="food-desc" data-i18n="food1_d">椰汁、番茄、洋葱、香菜炖鱼，配白饭和 farofa，Paraty 靠海，鱼新鲜，必点。</div>
+        <div class="food-tags"><span class="food-tag highlight" data-i18n="tag_musteat">必吃</span><span class="food-tag">海鲜</span><span class="food-tag">R$45–65</span></div>
       </div></div>
     </div>
-    <div class="food-card reveal">
-      <div class="food-card-body"><div class="food-card-inner">
+    <div class="food-card anim-card">
+      <div class="food-card-body"><div class="food-card-body-inner">
         <div class="food-name">Camarão na Moranga</div>
-        <div class="food-type">&#129408; 主菜 · 南瓜虾</div>
-        <div class="food-desc">整只南瓜挖空填入奶油大虾，视觉和口味双重惊艳，份量够两人分享。</div>
-        <div class="food-tags"><span class="food-tag highlight" data-i18n="special">特色</span><span class="food-tag">R$55–80</span></div>
+        <div class="food-type">🦐 主菜 · 南瓜虾</div>
+        <div class="food-desc" data-i18n="food2_d">整只南瓜挖空填入奶油大虾，视觉和口味双重惊艳。</div>
+        <div class="food-tags"><span class="food-tag highlight" data-i18n="tag_special">特色</span><span class="food-tag">R$55–80</span></div>
       </div></div>
     </div>
-    <div class="food-card reveal">
-      <img class="food-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="白墙庄园">
-      <div class="food-card-body"><div class="food-card-inner">
+    <div class="food-card anim-card">
+      <img class="food-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="Bougainvillea">
+      <div class="food-card-body"><div class="food-card-body-inner">
         <div class="food-name">Cachaça Artesanal</div>
-        <div class="food-type">&#129347; 饮品 · 手工甘蔗酒</div>
-        <div class="food-desc">Paraty 是巴西 cachaça 历史名城，殖民时期就是产地。市内多家 alambique 酿酒坊可参观品酒，是最佳手信。</div>
-        <div class="food-tags"><span class="food-tag highlight" data-i18n="mustDrink">必喝</span><span class="food-tag" data-i18n="localProd">本地特产</span></div>
+        <div class="food-type">🥃 饮品 · 手工甘蔗酒</div>
+        <div class="food-desc" data-i18n="food3_d">Paraty 是巴西 cachaça 历史名城，多家 alambique 酿酒坊可参观品酒。</div>
+        <div class="food-tags"><span class="food-tag highlight" data-i18n="tag_mustdrink">必喝</span><span class="food-tag" data-i18n="tag_local">本地特产</span></div>
       </div></div>
     </div>
-    <div class="food-card reveal">
-      <div class="food-card-body"><div class="food-card-inner">
-        <div class="food-name" data-i18n="restaurantTitle">推荐餐厅</div>
-        <div class="food-type">&#128205; 老城区精选</div>
-        <div class="food-desc"><strong>Merlin o Mago</strong> — 最有氛围，烛光老城<br><strong>Refúgio</strong> — 海景露台，性价比高<br><strong>Thai Brasil</strong> — 创意融合菜<br><strong>Ponto de Encontro</strong> — 本地家常菜</div>
-        <div class="food-tags"><span class="food-tag" data-i18n="curated">精选</span></div>
+    <div class="food-card anim-card">
+      <div class="food-card-body"><div class="food-card-body-inner">
+        <div class="food-name" data-i18n="food4_n">推荐餐厅</div>
+        <div class="food-type">📍 老城区精选</div>
+        <div class="food-desc"><strong>Merlin o Mago</strong> — 最有氛围<br><strong>Refúgio</strong> — 海景露台<br><strong>Thai Brasil</strong> — 创意融合<br><strong>Ponto de Encontro</strong> — 本地人家常</div>
       </div></div>
     </div>
   </div>
-  <div style="height:20px;"></div>
 </div>
 
-
+<!-- ===== TIPS PAGE ===== -->
 <div class="page" id="page-tips">
-  <div class="photo-card hero-style">
-    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="教堂远景">
-    <div class="photo-caption">&#9992;&#65039; 旅行，是打开世界的方式</div>
+  <div class="photo-card hero-style" style="margin:20px 20px 0">
+    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="Paraty signpost">
+    <div class="photo-caption">✈️ <span data-i18n="tips_caption">旅行，是打开世界的方式</span></div>
   </div>
-  <div class="section" style="margin-top:16px;"><div class="section-label" data-i18n="drivingTips">驾车攻略</div></div>
-  <div class="tips-list" style="margin-top:16px;">
-    <div class="tip-card reveal">
-      <div class="tip-card-body">
-        <div class="tip-icon">&#128506;</div>
-        <div><div class="tip-title" data-i18n="routeTitle">推荐路线</div>
-        <div class="tip-text">SP → BR-116 → 翻山 → SP-55 → Angra dos Reis → BR-101 → Paraty。全程约 280km，4–5 小时（含停车拍照）。</div></div>
+  <div class="section" style="margin-top:20px"><div class="section-label" data-i18n="tips_sec">驾车攻略</div></div>
+  <div class="tips-list" style="margin-top:16px">
+    <div class="tip-card anim-card">
+      <div class="tip-card-body"><div class="tip-icon">🗺️</div>
+        <div><div class="tip-title" data-i18n="tip1_t">推荐路线</div>
+        <div class="tip-text" data-i18n="tip1_d">SP → BR-116 → Serra do Mar → SP-55 → Angra → BR-101 → Paraty。全程约 280km，4–5 小时。</div></div>
       </div>
     </div>
-    <div class="tip-card reveal">
-      <img class="tip-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="殖民地教堂">
-      <div class="tip-card-body">
-        <div class="tip-icon">&#127963;</div>
-        <div><div class="tip-title" data-i18n="parkingTitle">老城区停车</div>
-        <div class="tip-text">Centro Histórico 禁止普通车辆进入。停车在外围停车场，步行 5–10 分钟。约 R$15–30/天。</div></div>
+    <div class="tip-card anim-card">
+      <img class="tip-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="White church">
+      <div class="tip-card-body"><div class="tip-icon">🏛️</div>
+        <div><div class="tip-title" data-i18n="tip2_t">老城区停车</div>
+        <div class="tip-text" data-i18n="tip2_d">Centro Histórico 禁止车辆进入。停车在外围停车场，步行 5–10 分钟。约 R$15–30/天。</div></div>
       </div>
     </div>
-    <div class="tip-card reveal">
-      <div class="tip-card-body">
-        <div class="tip-icon">&#9981;</div>
-        <div><div class="tip-title" data-i18n="fuelTitle">加油建议</div>
-        <div class="tip-text">出发前 SP 满油，Angra dos Reis 必须补一次油，Paraty 油价比 SP 贵约 15%。建议用 Ipiranga / Shell。</div></div>
+    <div class="tip-card anim-card">
+      <div class="tip-card-body"><div class="tip-icon">⛽</div>
+        <div><div class="tip-title" data-i18n="tip3_t">加油建议</div>
+        <div class="tip-text" data-i18n="tip3_d">出发前 SP 满油，Angra dos Reis 必须补一次油，Paraty 油价比 SP 贵约 15%。</div></div>
       </div>
     </div>
-    <div class="tip-card reveal">
-      <img class="tip-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_2ff39c21-0df4-41a4-bce8-22af955fa1a5.jpg" alt="教堂近景">
-      <div class="tip-card-body">
-        <div class="tip-icon">&#127754;</div>
-        <div><div class="tip-title" data-i18n="tidalTip">涨潮奇景</div>
-        <div class="tip-text">涨潮时海水漫入老城石板街，形成著名「水中城」景观。最佳时段：Apr 18 约 19:45，Apr 19 约 20:30。</div></div>
+    <div class="tip-card anim-card">
+      <div class="tip-card-body"><div class="tip-icon">🌊</div>
+        <div><div class="tip-title" data-i18n="tip4_t">涨潮奇景</div>
+        <div class="tip-text" data-i18n="tip4_d">涨潮时海水漫入老城石板街，形成「水中城」。提前查好潮汐时间。</div></div>
       </div>
     </div>
-    <div class="tip-card reveal">
-      <img class="tip-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="彩色街道">
-      <div class="tip-card-body">
-        <div class="tip-icon">&#127783;</div>
-        <div><div class="tip-title" data-i18n="weatherTip">天气与季节</div>
-        <div class="tip-text">4月温度 24–30°C，偶有阵雨。带轻薄防雨外套。Serra do Mar 山路多雾，能见度低时减速慢行。</div></div>
+    <div class="tip-card anim-card">
+      <img class="tip-card-img" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f1214767-ba27-4ff5-a59d-4514a0c0fe67.jpg" alt="Blue church">
+      <div class="tip-card-body"><div class="tip-icon">🌧️</div>
+        <div><div class="tip-title" data-i18n="tip5_t">天气与季节</div>
+        <div class="tip-text" data-i18n="tip5_d">4月温度 24–30°C，偶有阵雨。Serra do Mar 山路多雾，能见度低时减速。</div></div>
       </div>
     </div>
-    <div class="tip-card reveal">
-      <div class="tip-card-body">
-        <div class="tip-icon">&#128176;</div>
-        <div><div class="tip-title" data-i18n="payTitle">支付方式</div>
-        <div class="tip-text">老城区大多数店铺接受 Pix + 信用卡。小摊建议备 R$200–300 现金。ATM 在 Banco Bradesco 附近。</div></div>
+    <div class="tip-card anim-card">
+      <div class="tip-card-body"><div class="tip-icon">💰</div>
+        <div><div class="tip-title" data-i18n="tip6_t">支付方式</div>
+        <div class="tip-text" data-i18n="tip6_d">大多数店铺接受 Pix + 信用卡。小摊建议备 R$200–300 现金。</div></div>
       </div>
     </div>
   </div>
-  <div style="margin:16px 0 20px;">
-    <div class="tip-alert">
-      <span style="font-size:18px">&#9888;</span>
-      <div class="tip-alert-text"><strong data-i18n="warning">重要提醒：</strong>Serra do Mar 山路弯多坡陡，尤其下坡段，切勿超速，注意大货车超车。雨天请格外谨慎。</div>
+  <div style="margin-top:16px">
+    <div class="tip-alert"><span style="font-size:18px">⚠️</span>
+      <div class="tip-alert-text"><strong data-i18n="tip_warn_t">重要提醒：</strong><span data-i18n="tip_warn_d">Serra do Mar 山路弯多坡陡，切勿超速，注意大货车。雨天格外谨慎。</span></div>
     </div>
   </div>
 </div>
 
-
+<!-- ===== PACK PAGE ===== -->
 <div class="page" id="page-pack">
-  <div class="photo-row" style="margin-top:20px;">
-    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="建筑"></div>
-    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_861174f3-ad81-4e3e-bccd-3d06b8c707c9.jpg" alt="路标蓝天"></div>
+  <div class="photo-row" style="margin-top:20px">
+    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="Hillside"></div>
+    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="Church"></div>
   </div>
-  <div class="section" style="margin-top:20px;"><div class="section-label" data-i18n="packTitle">出发清单</div></div>
-  <div class="pack-section" style="margin-top:16px;">
+  <div class="section" style="margin-top:20px"><div class="section-label" data-i18n="pack_sec">出发清单</div></div>
+  <div class="pack-section" style="margin-top:16px">
     <div class="pack-progress"><div class="pack-progress-fill" id="pack-progress"></div></div>
-    <div class="pack-title" data-i18n="packDrive">&#128663; 自驾必备</div>
+    <div class="pack-title">🚗 <span data-i18n="pack_drive">自驾必备</span></div>
     <div class="pack-items">
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">驾照（CNH 或国际驾照）</span><span class="pack-item-tag">必带</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">车辆 CRV + DPVAT 保险</span><span class="pack-item-tag">必带</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">手机支架 &amp; 充电线</span><span class="pack-item-tag">导航</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">TAG（ConectCar/SemParar）</span><span class="pack-item-tag">收费站</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">现金 R$200–300</span><span class="pack-item-tag">备用</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk1">驾照（CNH 或国际驾照）</span><span class="pack-item-tag">必带</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk2">车辆 CRV + DPVAT 保险</span><span class="pack-item-tag">必带</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk3">手机支架 & 充电线</span><span class="pack-item-tag">导航</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk4">TAG（ConectCar/SemParar）</span><span class="pack-item-tag">收费站</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk5">现金 R$200–300</span><span class="pack-item-tag">备用</span></div>
     </div>
   </div>
   <div class="pack-section">
-    <div class="pack-title" data-i18n="packBeach">&#128137; 海滩装备</div>
+    <div class="pack-title">👙 <span data-i18n="pack_beach">海滩装备</span></div>
     <div class="pack-items">
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">防晒霜 FPS 50+</span><span class="pack-item-tag">必带</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">泳衣 / 泳裤</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">拖鞋 &amp; 沙滩凉鞋</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">防晒帽 + 太阳镜</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">防水手机袋</span><span class="pack-item-tag">出海必备</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk6">防晒霜 FPS 50+</span><span class="pack-item-tag">必带</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk7">泳衣 / 泳裤</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk8">拖鞋 & 沙滩凉鞋</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk9">防晒帽 + 太阳镜</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk10">防水手机袋</span><span class="pack-item-tag">出海必备</span></div>
     </div>
   </div>
   <div class="pack-section">
-    <div class="pack-title" data-i18n="packJungle">&#127807; 丛林 &amp; 户外</div>
+    <div class="pack-title">🌿 <span data-i18n="pack_outdoor">丛林 & 户外</span></div>
     <div class="pack-items">
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">防蚊喷雾（DEET）</span><span class="pack-item-tag">必备</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">运动凉鞋 / 水陆两用鞋</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">轻薄防雨外套</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">小背包（日用）</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk11">防蚊喷雾（DEET）</span><span class="pack-item-tag">必备</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk12">运动凉鞋 / 水陆两用鞋</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk13">轻薄防雨外套</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk14">小背包（日用）</span></div>
     </div>
   </div>
   <div class="pack-section">
-    <div class="pack-title" data-i18n="packDocs">&#128138; 证件 &amp; 医疗</div>
+    <div class="pack-title">💊 <span data-i18n="pack_med">证件 & 医疗</span></div>
     <div class="pack-items">
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">护照 / RNE / RNM</span><span class="pack-item-tag">必带</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">常用药（止泻、感冒、晕车）</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">充电宝</span></div>
-      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name">手机离线地图（已下载）</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk15">护照 / RNE / RNM</span><span class="pack-item-tag">必带</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk16">常用药（止泻、感冒、晕车）</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk17">充电宝</span></div>
+      <div class="pack-item" onclick="togglePack(this)"><div class="pack-checkbox"></div><span class="pack-item-name" data-i18n="pk18">手机离线地图（已下载）</span></div>
     </div>
   </div>
-  <div style="height:20px;"></div>
+  <div style="height:20px"></div>
 </div>
-
 
 <script>
-// ── i18n ──────────────────────────────────────────────────
-const T={
-  zh:{
-    eyebrow:"Road Trip Guide",splashMeta:"São Paulo → Paraty<br>April 18–21, 2026",
-    nav_home:"首页",nav_itin:"行程",nav_food:"美食",nav_tips:"攻略",nav_pack:"清单",
-    heroDeck:"海盗湾的秘密，殖民地的石板街，<br>一条海岸公路，四天时光。",
-    km:"公里",oneway:"单程",days:"天",nights:"住宿",temp:"气温",
-    chooseDays:"&#128197; 选择行程天数",daysUnit:"天",
-    dur2Title:"自驾 · 紧凑精华",dur2tag1:"首次来Paraty",dur2tag2:"周末闪游",
-    dur3Title:"自驾 · 舒适深度",dur3tag1:"时间适中",dur3tag2:"&#11088; 最推荐",
-    dur4Title:"自驾 · 完美全域",dur4tag1:"深度玩家",dur4tag2:"完整体验",
-    viewItin:"查看行程",
-    qi_route:"驾车路线",qi_park:"停车",qi_park_val:"老城外围 R$15–30/天",
-    qi_fuel:"加油",qi_fuel_val:"SP满油出发，Angra补油",
-    qi_boat:"出海帆船",qi_boat_val:"提前预订 R$80–120/人",
-    tidalTitle:"&#127754; 潮汐 &amp; 出海最佳时段 (Apr 18–21)",
-    weatherTitle:"&#9728; 天气预报",
-    th_date:"日期",th_high:"高潮",th_low:"低潮",th_best:"最佳出海",
-    tabCompact:"紧凑",tabComfort:"舒适",tabFull:"完整",
-    foodTitle:"美食指南",localFlavors:"本地特色",
-    foodSubtitle:"海鲜 · 甘蔗酒 · 殖民风味",
-    mustEat:"必吃",special:"特色",mustDrink:"必喝",localProd:"本地特产",
-    restaurantTitle:"推荐餐厅",curated:"精选",
-    drivingTips:"驾车攻略",routeTitle:"推荐路线",parkingTitle:"老城区停车",
-    fuelTitle:"加油建议",tidalTip:"涨潮奇景",weatherTip:"天气与季节",payTitle:"支付方式",
-    warning:"重要提醒：",
-    packTitle:"出发清单",packDrive:"&#128663; 自驾必备",
-    packBeach:"&#128137; 海滩装备",packJungle:"&#127807; 丛林 &amp; 户外",packDocs:"&#128138; 证件 &amp; 医疗",
-    budget:"预算参考",saveToast:"&#10003; 行程已保存"
-  },
+// ── Splash
+setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>{document.getElementById('splash').style.display='none'},850)},1800);
+
+// ── Carousel with Ken Burns
+let _si=0;const _sl=document.querySelectorAll('.hc-slide'),_dt=document.querySelectorAll('.hc-dot');
+function goSlide(n){
+  if(!_sl.length)return;
+  _sl[_si].classList.remove('active');_sl[_si].querySelector('img').style.animation='none';
+  if(_dt[_si])_dt[_si].classList.remove('active');
+  _si=((n%_sl.length)+_sl.length)%_sl.length;
+  _sl[_si].classList.add('active');
+  const img=_sl[_si].querySelector('img');img.style.animation='none';img.offsetHeight;img.style.animation='kenburns 6s ease-in-out forwards';
+  if(_dt[_si])_dt[_si].classList.add('active');
+}
+setTimeout(()=>{if(_sl.length>1)setInterval(()=>goSlide(_si+1),5000)},2200);
+
+// Touch swipe on carousel
+let _tx=0;const _hc=document.getElementById('hero-carousel');
+if(_hc){_hc.addEventListener('touchstart',e=>{_tx=e.touches[0].clientX},{passive:true});
+_hc.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-_tx;if(Math.abs(dx)>50){dx<0?goSlide(_si+1):goSlide(_si-1)}},{passive:true})}
+
+// ── Parallax (subtle)
+const _car=document.querySelector('.hero-carousel');
+if(_car){window.addEventListener('scroll',()=>{const s=window.scrollY;if(s<700)_car.style.transform='translateY('+s*0.3+'px)'},{ passive:true })}
+
+// ── Nav
+function showPage(name,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');btn.classList.add('active');window.scrollTo(0,0)}
+
+// ── Day toggle
+function toggleDay(id){document.getElementById(id).classList.toggle('open')}
+
+// ── Pack
+function togglePack(item){item.classList.toggle('checked');item.querySelector('.pack-checkbox').textContent=item.classList.contains('checked')?'✓':'';updateProgress()}
+function updateProgress(){const all=document.querySelectorAll('.pack-item'),done=document.querySelectorAll('.pack-item.checked');const pct=all.length?Math.round(done.length/all.length*100):0;document.getElementById('pack-progress').style.width=pct+'%'}
+
+// ── Day plan switching (2D/3D/4D)
+let _plan=4;
+function switchPlan(n,btn){
+  _plan=n;
+  document.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.day-card').forEach(c=>{
+    const plans=c.dataset.plan;
+    if(plans){c.style.display=plans.split(',').includes(String(n))?'':'none'}
+  });
+  // Update section label
+  const labels={2:'两日行程',3:'三日行程',4:'四日行程'};
+  const en_labels={2:'2-Day Itinerary',3:'3-Day Itinerary',4:'4-Day Itinerary'};
+  const pt_labels={2:'Roteiro de 2 Dias',3:'Roteiro de 3 Dias',4:'Roteiro de 4 Dias'};
+  const el=document.querySelector('[data-i18n="sec_itin"]');
+  if(el){
+    if(_lang==='en')el.textContent=en_labels[n];
+    else if(_lang==='pt')el.textContent=pt_labels[n];
+    else el.textContent=labels[n];
+  }
+}
+
+// ── IntersectionObserver for card animations
+const _obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');_obs.unobserve(e.target)}})},{threshold:0.1});
+document.querySelectorAll('.anim-card').forEach(c=>_obs.observe(c));
+
+// ── i18n
+let _lang='zh';
+const _i18n={
   en:{
-    eyebrow:"Road Trip Guide",splashMeta:"São Paulo → Paraty<br>April 18–21, 2026",
-    nav_home:"Home",nav_itin:"Itinerary",nav_food:"Food",nav_tips:"Tips",nav_pack:"Packing",
-    heroDeck:"Pirates' bay secrets, colonial cobblestones,<br>one coastal highway, four days of light.",
-    km:"km",oneway:"one-way",days:"days",nights:"nights",temp:"temp",
-    chooseDays:"&#128197; Choose Duration",daysUnit:"d",
-    dur2Title:"Drive · Quick Essentials",dur2tag1:"First visit to Paraty",dur2tag2:"Weekend getaway",
-    dur3Title:"Drive · Comfortable Depth",dur3tag1:"Balanced pace",dur3tag2:"&#11088; Most recommended",
-    dur4Title:"Drive · Full Experience",dur4tag1:"Deep explorer",dur4tag2:"Complete journey",
-    viewItin:"View Itinerary",
-    qi_route:"Driving Route",qi_park:"Parking",qi_park_val:"Old town lots R$15–30/day",
-    qi_fuel:"Fuel Up",qi_fuel_val:"Full tank SP, refuel Angra",
-    qi_boat:"Sailing Tour",qi_boat_val:"Book ahead R$80–120/pp",
-    tidalTitle:"&#127754; Tides &amp; Best Departure (Apr 18–21)",
-    weatherTitle:"&#9728; Weather Forecast",
-    th_date:"Date",th_high:"High Tide",th_low:"Low Tide",th_best:"Best Depart.",
-    tabCompact:"Compact",tabComfort:"Comfort",tabFull:"Full",
-    foodTitle:"Food Guide",localFlavors:"Local Flavors",
-    foodSubtitle:"Seafood · Cachaça · Colonial Cuisine",
-    mustEat:"Must Eat",special:"Specialty",mustDrink:"Must Drink",localProd:"Local Product",
-    restaurantTitle:"Recommended Restaurants",curated:"Curated",
-    drivingTips:"Driving Tips",routeTitle:"Recommended Route",parkingTitle:"Old Town Parking",
-    fuelTitle:"Fuel Tips",tidalTip:"Tidal Wonder",weatherTip:"Weather & Season",payTitle:"Payment",
-    warning:"Important: ",
-    packTitle:"Packing List",packDrive:"&#128663; Driving Essentials",
-    packBeach:"&#128137; Beach Gear",packJungle:"&#127807; Jungle & Outdoor",packDocs:"&#128138; Documents & Health",
-    budget:"Budget Reference",saveToast:"&#10003; Itinerary saved"
+    nav_itin:'Itinerary',nav_food:'Food',nav_tips:'Tips',nav_pack:'Packing',
+    hero_deck:'Pirate bays, colonial cobblestones, one coastal highway, four days.',hero_km:'280km Drive',
+    dig_km:'KM',dig_drive:'Drive',dig_days:'Days',dig_nights:'Nights',dig_temp:'Temp',
+    tab_2d:'2D Compact',tab_3d:'3D Comfort',tab_4d:'4D Complete',
+    ic_sail:'Sail',ic_town:'Old Town',ic_tide:'Tides',ic_jungle:'Jungle',ic_cachaca:'Cachaça',
+    tide_title:'Tidal Forecast · Apr 18–21',
+    sec_highlights:'Highlights',sec_itin:'4-Day Itinerary',sec_budget:'Budget',
+    feat1_t:'Island Hopping: Baía de Paraty',feat1_d:'Sail through turquoise waters, stop at pristine islands, snorkel and swim.',
+    feat2_t:'Tidal Marvel',feat2_d:'Ocean floods the historic center, turning cobblestones into mirrors.',
+    feat3_t:'Golden Hour at the Church Square',feat3_d:'Sunset backlights the church square like an oil painting.',
+    tag_mustdo:'Must Do',tag_wonder:'Marvel',tag_photo:'Photo Spot',
+    route_title:'Drive Route · SP → Paraty',
+    d1_label:'Departure',d1_title:'São Paulo → Paraty',
+    d1_0700:'Depart São Paulo via BR-116 south',d1_tip1:'Leave early to avoid weekend traffic',
+    d1_0900:'Cross Serra do Mar mountains, stunning misty views',d1_tip2:'Steep descent, watch brakes, heavy trucks',
+    d1_1200:'Stop at Angra dos Reis for lunch & fuel',d1_1400:'Arrive Paraty, check in, stroll cobblestone streets',
+    d1_tip3:'No cars in historic center, park outside R$15–30/day',
+    d1_1700:'High tide: ocean floods cobblestones, classic reflections',d1_1930:'Dinner: old town restaurant, try Moqueca de Peixe',
+    d2_label:'Island Day',d2_title:'Sailing · Islands · Beaches',
+    d2_0830:'Board sailboat at port, explore Baía de Paraty islands',
+    d2_sail:'Stop at 3–4 islands: Ilha do Araújo, Praia Vermelha, free snorkeling',d2_tip1:'Book day before at dock, ~R$80–120/person, lunch included',
+    d2_1500:'Return to Paraty, taste local cachaça',d2_1730:'Browse old town craft shops',d2_2000:'Dinner: Refúgio Restaurant, seafood & drinks',
+    d2r_label:'Return',d2r_title:'Praia do Sono → Return to SP',
+    d3_label:'Jungle Day',d3_title:'Waterfalls · Jungle · Culture',
+    d3_0800:'Drive to Cachoeira Tobogã natural rock slide',d3_1100:'Visit Casa da Cultura museum',
+    d3_1400:'Quiet beach at Paraty Mirim, afternoon swim',d3_1800:'Alambique distillery tour · cachaça tasting',
+    d3_2000:'Final dinner: Merlin o Mago, best atmosphere in old town',
+    d4_label:'Return Day',d4_title:'Paraty → São Paulo',
+    d4_0800:'Morning walk in old town, best photo light',d4_1000:'Check out, head back to SP',
+    d4_1200:'Lunch stop at Angra dos Reis',d4_1400:'Cross Serra do Mar back to São Paulo',
+    bud_gas:'Gas (round trip)',bud_hotel:'3 nights lodging',bud_boat:'Boat trip (2 pax)',bud_food:'Meals (4 days)',bud_act:'Activities',bud_total:'Total (2 pax)',
+    food_hero:'Food Guide',food_sec:'Local Flavors',food_title:'Seafood · Cachaça · Colonial Cuisine',
+    food1_d:'Fish stew with coconut milk, tomato, onion & cilantro. Fresh catch in Paraty.',
+    food2_d:'Whole pumpkin stuffed with creamy shrimp. Visual and taste perfection.',
+    food3_d:'Paraty is the historic birthplace of cachaça. Visit local alambique distilleries.',
+    food4_n:'Recommended Restaurants',
+    tag_musteat:'Must Eat',tag_special:'Special',tag_mustdrink:'Must Drink',tag_local:'Local',
+    tips_caption:'Travel opens the world',tips_sec:'Driving Guide',
+    tip1_t:'Recommended Route',tip1_d:'SP → BR-116 → Serra do Mar → SP-55 → Angra → BR-101 → Paraty. ~280km, 4–5 hours.',
+    tip2_t:'Old Town Parking',tip2_d:'No cars in Centro Histórico. Park outside, 5–10 min walk. ~R$15–30/day.',
+    tip3_t:'Fuel Tips',tip3_d:'Fill up in SP, refuel at Angra dos Reis. Paraty gas ~15% more expensive.',
+    tip4_t:'Tidal Wonder',tip4_d:'Ocean floods old town streets at high tide. Check tide times in advance.',
+    tip5_t:'Weather & Season',tip5_d:'April: 24–30°C, occasional rain. Serra do Mar fog — slow down.',
+    tip6_t:'Payment',tip6_d:'Most shops take Pix + credit cards. Bring R$200–300 cash for stalls.',
+    tip_warn_t:'Important:',tip_warn_d:'Serra do Mar has steep curves. No speeding. Watch for trucks. Extra caution in rain.',
+    pack_sec:'Packing List',pack_drive:'Driving Essentials',pack_beach:'Beach Gear',pack_outdoor:'Jungle & Outdoors',pack_med:'Docs & Medical',
+    pk1:'Driver\'s license (CNH or IDP)',pk2:'Vehicle CRV + DPVAT insurance',pk3:'Phone mount & charger',pk4:'Toll tag (ConectCar/SemParar)',pk5:'Cash R$200–300',
+    pk6:'Sunscreen FPS 50+',pk7:'Swimwear',pk8:'Flip-flops & sandals',pk9:'Sun hat + sunglasses',pk10:'Waterproof phone pouch',
+    pk11:'Bug spray (DEET)',pk12:'Sport sandals / water shoes',pk13:'Light rain jacket',pk14:'Day backpack',
+    pk15:'Passport / RNE / RNM',pk16:'Medicine (anti-diarrhea, cold, motion sickness)',pk17:'Power bank',pk18:'Offline maps (downloaded)',
+    road_hwy:'Highway',road_mtn:'Mountain curves',road_cobble:'Cobblestone streets',park_road:'Free roadside parking',park_paid:'Paid parking lot',
+    tide_high:'High tide 19:45',tide_best:'Best departure: 1h before high tide (07:05)',
   },
   pt:{
-    eyebrow:"Guia de Road Trip",splashMeta:"São Paulo → Paraty<br>18–21 de abril de 2026",
-    nav_home:"Início",nav_itin:"Roteiro",nav_food:"Gastronomia",nav_tips:"Dicas",nav_pack:"Bagagem",
-    heroDeck:"Segredos da baía pirata, calçadões coloniais,<br>uma estrada litorânea, quatro dias de luz.",
-    km:"km",oneway:"ida",days:"dias",nights:"noites",temp:"temp.",
-    chooseDays:"&#128197; Escolha a Duração",daysUnit:"d",
-    dur2Title:"Drive · Essencial Compacto",dur2tag1:"Primeira visita a Paraty",dur2tag2:"Fim de semana relâmpago",
-    dur3Title:"Drive · Profundidade Confort",dur3tag1:"Ritmo equilibrado",dur3tag2:"&#11088; Mais recomendado",
-    dur4Title:"Drive · Experiência Completa",dur4tag1:"Explorador aprofundado",dur4tag2:"Vivência integral",
-    viewItin:"Ver Roteiro",
-    qi_route:"Rota de Carro",qi_park:"Estacionamento",qi_park_val:"Externos R$15–30/dia",
-    qi_fuel:"Combustível",qi_fuel_val:"Tanque cheio SP, reabastecer Angra",
-    qi_boat:"Passeio de Veleiro",qi_boat_val:"Reserve com antecedência R$80–120/p.p.",
-    tidalTitle:"&#127754; Marés &amp; Melhor Horário (18–21/Apr)",
-    weatherTitle:"&#9728; Previsão do Tempo",
-    th_date:"Data",th_high:"Maré Alta",th_low:"Maré Baixa",th_best:"Melhor Saída",
-    tabCompact:"Compacto",tabComfort:"Confort",tabFull:"Completo",
-    foodTitle:"Guia Gastronômico",localFlavors:"Sabores Locais",
-    foodSubtitle:"Frutos do Mar · Cachaça · Sabores Coloniais",
-    mustEat:"Imperdível",special:"Especialidade",mustDrink:"Deve Provar",localProd:"Produção Local",
-    restaurantTitle:"Restaurantes Recomendados",curated:"Selecionados",
-    drivingTips:"Dicas de Direção",routeTitle:"Rota Recomendada",parkingTitle:"Estacionamento no Centro",
-    fuelTitle:"Dicas de Combustível",tidalTip:"Maravilha das Marés",weatherTip:"Clima e Temporada",payTitle:"Formas de Pagamento",
-    warning:"Atenção: ",
-    packTitle:"Lista de Bagagem",packDrive:"&#128663; Essenciais para Dirigir",
-    packBeach:"&#128137; Equipamento de Praia",packJungle:"&#127807; Natureza &amp; Outdoor",packDocs:"&#128138; Documentos &amp; Saúde",
-    budget:"Referência de Orçamento",saveToast:"&#10003; Roteiro salvo"
+    nav_itin:'Roteiro',nav_food:'Gastronomia',nav_tips:'Dicas',nav_pack:'Mala',
+    hero_deck:'Baías de piratas, ruas de paralelepípedo, uma estrada costeira, quatro dias.',hero_km:'280km de carro',
+    dig_km:'KM',dig_drive:'Viagem',dig_days:'Dias',dig_nights:'Noites',dig_temp:'Temp',
+    tab_2d:'2D Compacto',tab_3d:'3D Conforto',tab_4d:'4D Completo',
+    ic_sail:'Navegar',ic_town:'Centro',ic_tide:'Maré',ic_jungle:'Selva',ic_cachaca:'Cachaça',
+    tide_title:'Previsão de Marés · 18–21 Abr',
+    sec_highlights:'Destaques',sec_itin:'Roteiro de 4 Dias',sec_budget:'Orçamento',
+    feat1_t:'Passeio de Barco: Baía de Paraty',feat1_d:'Navegue por águas turquesa, pare em ilhas selvagens, mergulhe e nade.',
+    feat2_t:'Maré Alta',feat2_d:'O mar invade o centro histórico, transformando o calçamento em espelho.',
+    feat3_t:'Golden Hour na Praça da Igreja',feat3_d:'O pôr do sol ilumina a praça como uma pintura a óleo.',
+    tag_mustdo:'Imperdível',tag_wonder:'Maravilha',tag_photo:'Foto Spot',
+    route_title:'Rota de Carro · SP → Paraty',
+    d1_label:'Partida',d1_title:'São Paulo → Paraty',
+    d1_0700:'Sair de SP pela BR-116 sentido sul',d1_tip1:'Saia cedo para evitar trânsito',
+    d1_0900:'Cruzar Serra do Mar, vistas espetaculares',d1_tip2:'Descida íngreme, cuidado com caminhões',
+    d1_1200:'Parada em Angra dos Reis para almoço e combustível',d1_1400:'Chegada em Paraty, check-in, passeio pelo centro',
+    d1_tip3:'Carros proibidos no centro histórico, estacione fora R$15–30/dia',
+    d1_1700:'Maré alta: mar invade as ruas de pedra',d1_1930:'Jantar no centro, prove Moqueca de Peixe',
+    d2_label:'Dia de Ilha',d2_title:'Barco · Ilhas · Praias',
+    d2_0830:'Embarque no veleiro, explore ilhas da Baía de Paraty',
+    d2_sail:'Pare em 3–4 ilhas: Ilha do Araújo, Praia Vermelha, snorkel livre',d2_tip1:'Reserve no dia anterior, ~R$80–120/pessoa, almoço incluso',
+    d2_1500:'Retorno a Paraty, degustação de cachaça',d2_1730:'Lojas de artesanato no centro',d2_2000:'Jantar: Refúgio Restaurant',
+    d2r_label:'Retorno',d2r_title:'Praia do Sono → Retorno SP',
+    d3_label:'Dia de Selva',d3_title:'Cachoeira · Selva · Cultura',
+    d3_0800:'Dirigir até Cachoeira Tobogã',d3_1100:'Visitar Casa da Cultura',
+    d3_1400:'Praia tranquila em Paraty Mirim',d3_1800:'Tour no alambique · degustação de cachaça',
+    d3_2000:'Último jantar: Merlin o Mago',
+    d4_label:'Dia de Retorno',d4_title:'Paraty → São Paulo',
+    d4_0800:'Passeio matinal pelo centro, melhor luz',d4_1000:'Check-out, retorno a SP',
+    d4_1200:'Almoço em Angra dos Reis',d4_1400:'Cruzar Serra do Mar de volta a SP',
+    bud_gas:'Combustível (ida e volta)',bud_hotel:'3 noites hospedagem',bud_boat:'Passeio de barco (2 pax)',bud_food:'Refeições (4 dias)',bud_act:'Atividades',bud_total:'Total (2 pax)',
+    food_hero:'Guia Gastronômico',food_sec:'Sabores Locais',food_title:'Frutos do Mar · Cachaça · Culinária Colonial',
+    food1_d:'Peixe cozido com leite de coco, tomate, cebola e coentro. Peixe fresco de Paraty.',
+    food2_d:'Abóbora inteira recheada com camarão cremoso. Visual e sabor impecáveis.',
+    food3_d:'Paraty é berço histórico da cachaça. Visite alambiques locais.',
+    food4_n:'Restaurantes Recomendados',
+    tag_musteat:'Imperdível',tag_special:'Especial',tag_mustdrink:'Imperdível',tag_local:'Local',
+    tips_caption:'Viajar abre o mundo',tips_sec:'Guia de Direção',
+    tip1_t:'Rota Recomendada',tip1_d:'SP → BR-116 → Serra do Mar → SP-55 → Angra → BR-101 → Paraty. ~280km, 4–5h.',
+    tip2_t:'Estacionamento no Centro',tip2_d:'Carros proibidos no Centro Histórico. Estacione fora, 5–10 min a pé. ~R$15–30/dia.',
+    tip3_t:'Dicas de Combustível',tip3_d:'Abasteça em SP, reabasteça em Angra. Gasolina em Paraty ~15% mais cara.',
+    tip4_t:'Maravilha da Maré',tip4_d:'Mar invade as ruas na maré alta. Consulte horários.',
+    tip5_t:'Clima & Temporada',tip5_d:'Abril: 24–30°C, chuvas ocasionais. Neblina na Serra do Mar.',
+    tip6_t:'Pagamento',tip6_d:'Maioria aceita Pix + cartão. Leve R$200–300 em dinheiro para barraquinhas.',
+    tip_warn_t:'Importante:',tip_warn_d:'Serra do Mar tem curvas íngremes. Não exceda velocidade. Cuidado com caminhões.',
+    pack_sec:'Lista de Mala',pack_drive:'Essenciais p/ Dirigir',pack_beach:'Praia',pack_outdoor:'Selva & Ar Livre',pack_med:'Docs & Saúde',
+    pk1:'CNH ou Permissão Internacional',pk2:'CRV do veículo + seguro DPVAT',pk3:'Suporte de celular + carregador',pk4:'TAG (ConectCar/SemParar)',pk5:'Dinheiro R$200–300',
+    pk6:'Protetor solar FPS 50+',pk7:'Roupa de banho',pk8:'Chinelo & sandália',pk9:'Chapéu + óculos de sol',pk10:'Capa impermeável p/ celular',
+    pk11:'Repelente (DEET)',pk12:'Sandália esportiva / aquática',pk13:'Jaqueta leve impermeável',pk14:'Mochila pequena',
+    pk15:'Passaporte / RNE / RNM',pk16:'Remédios (diarreia, gripe, enjoo)',pk17:'Carregador portátil',pk18:'Mapas offline (baixados)',
+    road_hwy:'Rodovia',road_mtn:'Curvas na serra',road_cobble:'Ruas de paralelepípedo',park_road:'Estacionamento gratuito',park_paid:'Estacionamento pago',
+    tide_high:'Maré alta 19:45',tide_best:'Melhor saída: 1h antes da maré alta (07:05)',
   }
 };
-
-let curLang='zh';
-function setLang(l){
-  curLang=l;
-  const map={zh:'中',en:'EN',pt:'PT'};
-  document.querySelectorAll('.lang-btn').forEach(b=>{
-    b.classList.toggle('active', b.textContent.trim()===map[l]);
-  });
-  const D=T[l];
+function setLang(lang){
+  _lang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.trim()===(lang==='zh'?'中':lang.toUpperCase()))});
+  if(lang==='zh'){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=el.getAttribute('data-orig')||el.textContent});return}
+  const dict=_i18n[lang];if(!dict)return;
   document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k=el.getAttribute('data-i18n');
-    if(D[k]!==undefined) el.innerHTML=D[k];
+    if(!el.getAttribute('data-orig'))el.setAttribute('data-orig',el.textContent);
+    const key=el.getAttribute('data-i18n');
+    if(dict[key])el.textContent=dict[key];
   });
-  const toast=document.getElementById('save-toast');
-  if(toast) toast.innerHTML=D.saveToast||'&#10003; 保存成功';
 }
 
-// ── Splash ────────────────────────────────────────────────
-setTimeout(()=>{
-  const s=document.getElementById('splash');
-  s.classList.add('hide');
-  setTimeout(()=>s.style.display='none',850);
-},1900);
-
-// ── Home fullscreen hero slideshow (9 images) ─────────────
-const HERO_SLIDES=document.querySelectorAll('#home-hero .hero-slide');
-const HERO_DOTS=document.querySelectorAll('#home-hero .hero-dot');
-let heroIdx=0,heroTimer=null;
-function goHeroSlide(n,dir){
-  HERO_SLIDES[heroIdx].classList.remove('active');
-  HERO_DOTS[heroIdx]&&HERO_DOTS[heroIdx].classList.remove('active');
-  heroIdx=((n%HERO_SLIDES.length)+HERO_SLIDES.length)%HERO_SLIDES.length;
-  HERO_SLIDES[heroIdx].classList.add('active');
-  HERO_DOTS[heroIdx]&&HERO_DOTS[heroIdx].classList.add('active');
-  // restart Ken Burns
-  const img=HERO_SLIDES[heroIdx].querySelector('.hero-slide-img');
-  if(img){img.style.animation='none';void img.offsetWidth;img.style.animation='kenBurns 5s ease-in-out both';}
-  clearInterval(heroTimer);
-  heroTimer=setInterval(()=>goHeroSlide(heroIdx+1),5000);
-}
-heroTimer=setInterval(()=>goHeroSlide(heroIdx+1),5000);
-
-// ── Parallax ─────────────────────────────────────────────
-const homeHero=document.getElementById('home-hero');
-function onScroll(){
-  const pg=document.getElementById('page-home');
-  if(!pg||!pg.classList.contains('active')) return;
-  const scrollY=window.scrollY||document.documentElement.scrollTop;
-  if(homeHero){
-    const active=homeHero.querySelector('.hero-slide.active .hero-slide-img');
-    if(active) active.style.transform=`translateY(${scrollY*0.3}px) scale(1.08)`;
-  }
-}
-window.addEventListener('scroll',onScroll,{passive:true});
-
-// ── Hero touch swipe ──────────────────────────────────────
-let heroTouchX=null;
-homeHero&&homeHero.addEventListener('touchstart',e=>{heroTouchX=e.touches[0].clientX;},{passive:true});
-homeHero&&homeHero.addEventListener('touchend',e=>{
-  if(heroTouchX===null) return;
-  const dx=e.changedTouches[0].clientX-heroTouchX; heroTouchX=null;
-  if(Math.abs(dx)<50) return;
-  goHeroSlide(dx<0?heroIdx+1:heroIdx-1);
-});
-
-// ── Itinerary slideshow ───────────────────────────────────
-const ITIN_SLIDES=document.querySelectorAll('#mag-itin .mag-slide');
-const ITIN_DOTS=document.querySelectorAll('#itin-dot-wrap .mag-dot-v');
-let itinIdx=0;
-function goItinSlide(n){
-  ITIN_SLIDES[itinIdx]&&ITIN_SLIDES[itinIdx].classList.remove('active');
-  ITIN_DOTS[itinIdx]&&ITIN_DOTS[itinIdx].classList.remove('active');
-  itinIdx=((n%ITIN_SLIDES.length)+ITIN_SLIDES.length)%ITIN_SLIDES.length;
-  ITIN_SLIDES[itinIdx]&&ITIN_SLIDES[itinIdx].classList.add('active');
-  ITIN_DOTS[itinIdx]&&ITIN_DOTS[itinIdx].classList.add('active');
-}
-setInterval(()=>goItinSlide(itinIdx+1),5000);
-
-// ── Page navigation ───────────────────────────────────────
-function showPage(name,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  btn.classList.add('active');
-  window.scrollTo(0,0);
-  setTimeout(initReveal,50);
-}
-
-// ── Duration card selection ───────────────────────────────
-let curDur=2;
-function selectDurCard(n){
-  curDur=n;
-  [2,3,4].forEach(d=>{
-    const c=document.getElementById('dur-'+d);
-    if(c) c.classList.toggle('selected',d===n);
-  });
-  const navBtn=document.querySelector('nav .nav-item:nth-child(2)');
-  showPage('itinerary',navBtn);
-  switchDay(n,'right');
-}
-
-// ── Day tab switching with directional animation ──────────
-let curDay=2;
-function switchDay(n,forceDir){
-  const dir=forceDir||(n>curDay?'right':'left');
-  curDay=n;
-  document.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.day-panel').forEach(p=>{
-    p.classList.remove('active','slide-in-left','slide-in-right');
-  });
-  document.getElementById('tab-'+n+'d').classList.add('active');
-  const panel=document.getElementById('panel-'+n+'d');
-  panel.classList.add('active',dir==='right'?'slide-in-right':'slide-in-left');
-  [2,3,4].forEach(d=>{
-    const c=document.getElementById('dur-'+d);
-    if(c) c.classList.toggle('selected',d===n);
-  });
-  setTimeout(initReveal,80);
-}
-
-// ── Touch swipe on itinerary page ────────────────────────
-let itinTouchX=null;
-document.addEventListener('touchstart',e=>{
-  const pg=document.getElementById('page-itinerary');
-  if(pg&&pg.classList.contains('active')) itinTouchX=e.touches[0].clientX;
-},{passive:true});
-document.addEventListener('touchend',e=>{
-  if(itinTouchX===null) return;
-  const dx=e.changedTouches[0].clientX-itinTouchX; itinTouchX=null;
-  const pg=document.getElementById('page-itinerary');
-  if(!pg||!pg.classList.contains('active')) return;
-  if(Math.abs(dx)<60) return;
-  const order=[2,3,4];
-  const idx=order.indexOf(curDay);
-  if(dx<0&&idx<order.length-1) switchDay(order[idx+1],'right');
-  else if(dx>0&&idx>0) switchDay(order[idx-1],'left');
-});
-
-// ── Drag & drop reorder ──────────────────────────────────
-let _dragEl=null;
-function onDragStart(e){
-  _dragEl=e.currentTarget;
-  _dragEl.classList.add('dragging');
-  e.dataTransfer.effectAllowed='move';
-}
-function onDragOver(e){
-  e.preventDefault();
-  if(e.currentTarget!==_dragEl) e.currentTarget.classList.add('drag-over');
-}
-function onDrop(e){
-  e.preventDefault();
-  const tgt=e.currentTarget;
-  tgt.classList.remove('drag-over');
-  if(_dragEl&&tgt!==_dragEl){
-    const parent=tgt.parentNode;
-    const all=[...parent.querySelectorAll('.spot-card')];
-    const di=all.indexOf(_dragEl),ti=all.indexOf(tgt);
-    if(di<ti) parent.insertBefore(_dragEl,tgt.nextSibling);
-    else parent.insertBefore(_dragEl,tgt);
-  }
-}
-function onDragEnd(e){
-  e.currentTarget.classList.remove('dragging');
-  document.querySelectorAll('.spot-card').forEach(c=>c.classList.remove('drag-over'));
-  _dragEl=null;
-}
-
-// ── Save itinerary ────────────────────────────────────────
-function saveItinerary(days){
-  const panels={};
-  [2,3,4].forEach(d=>{
-    const p=document.getElementById('panel-'+d+'d');
-    if(p) panels[d]=[...p.querySelectorAll('.spot-card')].map(c=>c.querySelector('.spot-card-name').textContent.trim());
-  });
-  try{localStorage.setItem('paraty_v5',JSON.stringify({days,panels,at:new Date().toISOString()}));}catch(e){}
-  const toast=document.getElementById('save-toast');
-  const D=T[curLang];
-  toast.innerHTML=D.saveToast||'&#10003; 行程已保存';
-  toast.style.display='block';
-  setTimeout(()=>toast.style.display='none',2200);
-}
-
-// ── IntersectionObserver for reveal ──────────────────────
-let revealObs=null;
-function initReveal(){
-  if(!('IntersectionObserver' in window)) return;
-  if(revealObs) revealObs.disconnect();
-  revealObs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revealObs.unobserve(e.target);}});
-  },{threshold:0.12});
-  document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
-}
-
-// ── Pack checklist ────────────────────────────────────────
-function togglePack(item){
-  item.classList.toggle('checked');
-  item.querySelector('.pack-checkbox').textContent=item.classList.contains('checked')?'✓':'';
-  updateProgress();
-}
-function updateProgress(){
-  const all=document.querySelectorAll('.pack-item');
-  const done=document.querySelectorAll('.pack-item.checked');
-  const pct=all.length?Math.round(done.length/all.length*100):0;
-  const bar=document.getElementById('pack-progress');
-  if(bar) bar.style.width=pct+'%';
-}
-
-// ── Restore saved ─────────────────────────────────────────
-(function(){
-  try{
-    const raw=localStorage.getItem('paraty_v5');
-    if(!raw) return;
-    const d=JSON.parse(raw);
-    if(d.days){[2,3,4].forEach(n=>{const c=document.getElementById('dur-'+n);if(c)c.classList.toggle('selected',n===d.days);});}
-  }catch(e){}
-})();
-
-// ── Init ──────────────────────────────────────────────────
-switchDay(2,'right');
-initReveal();
+// Open Day 1 by default
+toggleDay('day1');
 </script>
 </body>
 </html>
