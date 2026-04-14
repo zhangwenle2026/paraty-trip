@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="version" content="lp-v4.8">
+<meta name="version" content="lp-v4.9">
 <title>Mila's Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -49,8 +49,9 @@ body::before{content:'';position:fixed;inset:0;
   margin-bottom:12px;
 }
 .splash-title{
-  font-family:'Playfair Display',serif;font-size:58px;font-weight:900;
-  color:#0D1E3A;line-height:.95;text-align:center;letter-spacing:-1px;
+  font-family:'Playfair Display',serif;font-size:44px;font-weight:900;
+  color:#0D1E3A;line-height:1.05;text-align:center;letter-spacing:-0.5px;
+  padding:0 20px;
 }
 .splash-title em{
   font-style:italic;font-weight:700;color:#C4622D;
@@ -179,26 +180,26 @@ body::before{content:'';position:fixed;inset:0;
 .mag-digest{
   background-color:#002D5B !important;
   background:#002D5B;
-  padding:14px 20px;
-  display:flex;gap:0;overflow-x:auto;
+  padding:12px 16px;
+  display:flex;gap:0;
   scrollbar-width:none;border-bottom:2px solid #C4622D;
-  min-height:56px;
+  min-height:52px;
 }
 .mag-digest::-webkit-scrollbar{display:none}
 .mag-digest-item{
-  flex:1;padding:0 10px;
+  flex:1;padding:0 6px;
   border-right:1px solid rgba(255,255,255,.08);
   display:flex;flex-direction:column;gap:3px;
   min-width:0;text-align:center;
 }
-.mag-digest-item:first-child{padding-left:0}
-.mag-digest-item:last-child{border-right:none}
+.mag-digest-item:first-child{padding-left:4px}
+.mag-digest-item:last-child{border-right:none;padding-right:4px}
 .mag-digest-val{
   font-family:'Playfair Display',serif;
-  font-size:20px;font-weight:700;color:#fff;line-height:1;
+  font-size:18px;font-weight:700;color:#fff;line-height:1;
 }
 .mag-digest-key{
-  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  font-size:8px;letter-spacing:1px;text-transform:uppercase;
   color:rgba(255,255,255,.4);
 }
 
