@@ -2,8 +2,8 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="version" content="lp-v5.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="version" content="lp-v5.1">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -255,6 +255,67 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;border-top:1px sol
 
 /* Book-spine shadow for page transitions */
 .page-spine{box-shadow:inset 20px 0 25px -15px rgba(0,0,0,.08),inset -20px 0 25px -15px rgba(0,0,0,.08)}
+
+/* Smooth scroll */
+html{scroll-behavior:smooth}
+
+/* ═══ MOBILE RESPONSIVE ═══ */
+@media(max-width:480px){
+  /* Hero taller on mobile for immersion */
+  .hero-carousel{height:92vh;max-height:none;min-height:500px}
+  /* Headline smaller */
+  .hc-headline{font-size:32px}
+  .hc-deck{font-size:11px}
+  .hc-dateline{font-size:9px}
+  /* Dots: horizontal at bottom instead of vertical right */
+  .hc-dots{flex-direction:row;bottom:88px;right:auto;left:50%;transform:translateX(-50%);gap:6px}
+  .hc-dot{width:6px;height:6px}
+  .hc-dot.active{width:18px;height:6px;border-radius:3px}
+  /* Digest strip: smaller font */
+  .mag-digest-val{font-size:15px}
+  .mag-digest-key{font-size:7px}
+  .mag-digest{padding:10px 12px}
+  /* Day tabs: smaller font to fit */
+  .day-tab{font-size:13px;padding:8px 0}
+  /* Icon strip smaller */
+  .mag-icon{font-size:18px}
+  .mag-icon-label{font-size:8px;letter-spacing:1px}
+  /* Pull quote */
+  .mag-pullquote-text{font-size:14px}
+  /* Feature card title */
+  .mag-feature-title{font-size:14px}
+  /* Section title */
+  .section-title{font-size:22px}
+  /* Day card number */
+  .day-num{font-size:26px}
+  .day-title{font-size:14px}
+  /* Splash adjustments */
+  .splash-title{font-size:28px}
+  /* Nav safe area for notch phones */
+  nav{padding-bottom:env(safe-area-inset-bottom,0)}
+  /* Hero text padding above nav */
+  .hc-text{padding:16px 16px 16px}
+  /* Budget total */
+  .budget-total-val{font-size:18px}
+}
+
+/* Tablet tweaks */
+@media(min-width:481px) and (max-width:768px){
+  .hero-carousel{height:70vh}
+  .hc-headline{font-size:36px}
+  .hc-dots{flex-direction:row;bottom:95px;right:auto;left:50%;transform:translateX(-50%);gap:6px}
+  .hc-dot{width:5px;height:5px}
+  .hc-dot.active{width:16px;height:5px;border-radius:3px}
+}
+
+/* Desktop: two-column features */
+@media(min-width:769px){
+  .mag-feature-row{flex-direction:row;flex-wrap:wrap;gap:16px}
+  .mag-feature-card{flex:1;min-width:280px}
+  .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .tips-list{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .photo-row .photo-half img{height:240px}
+}
 </style>
 </head>
 <body>
