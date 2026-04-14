@@ -93,8 +93,9 @@ body::before{{content:'';position:fixed;inset:0;
 }
 .mag-slide{
   position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;
+  z-index:1;
 }
-.mag-slide.active{opacity:1}
+.mag-slide.active{opacity:1;z-index:2;}
 .mag-slide img{
   width:100%;height:100%;object-fit:cover;
   transform:scale(1.04);
@@ -178,6 +179,7 @@ body::before{{content:'';position:fixed;inset:0;
   padding:14px 20px;
   display:flex;gap:0;overflow-x:auto;
   scrollbar-width:none;border-bottom:2px solid var(--terra);
+  min-height:60px;
 }
 .mag-digest::-webkit-scrollbar{display:none}
 .mag-digest-item{
@@ -318,14 +320,14 @@ nav{{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1
 .page{{display:none;padding-bottom:80px;min-height:100vh}}
 .page.active{{display:block}}
 
-/* HERO */
-.hero{{position:relative;height:58vw;max-height:360px;min-height:220px;overflow:hidden;}}
-.hero img{{width:100%;height:100%;object-fit:cover;object-position:center 40%}}
-.hero-overlay{{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(27,43,75,.15) 0%,rgba(27,43,75,.5) 55%,rgba(27,43,75,.85) 100%);}}
-.hero-text{{position:absolute;bottom:0;left:0;right:0;padding:20px 20px 24px;}}
-.hero-breadcrumb{{color:rgba(255,255,255,.75);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;}}
-.hero-title{{font-family:'Playfair Display',serif;color:#fff;font-size:44px;font-weight:900;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.3);}}
-.hero-dates{{display:inline-flex;align-items:center;gap:6px;background:var(--terra);color:#fff;font-size:11px;font-weight:600;letter-spacing:1px;padding:4px 10px;border-radius:2px;margin-top:10px;}}
+/* HERO (food/tips pages) */
+.hero{position:relative;height:44vw;max-height:220px;min-height:160px;overflow:hidden;}
+.hero img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(27,43,75,.1) 0%,rgba(27,43,75,.7) 100%);}
+.hero-text{position:absolute;bottom:0;left:0;right:0;padding:16px 20px 18px;}
+.hero-breadcrumb{color:rgba(255,255,255,.65);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;}
+.hero-title{font-family:'Playfair Display',serif;color:#fff;font-size:30px;font-weight:900;line-height:1;}
+
 
 /* PHOTO CARD — full bleed */
 .photo-card{{margin:20px 20px 0;border-radius:6px;overflow:hidden;position:relative;box-shadow:3px 4px 0 rgba(44,36,22,.1);}}
@@ -616,7 +618,8 @@ nav{{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1
     </div>
   </div>
 
-  <div class="weather-strip">
+  <!-- weather compact (moved below route map) -->
+  <div class="weather-strip" style="margin:0 20px;border-radius:0 0 6px 6px;margin-bottom:0">
     <div class="weather-item"><div class="weather-day">Apr 18</div><div class="weather-icon">⛅</div><div class="weather-temp">24–29°C</div></div>
     <div class="weather-sep"></div>
     <div class="weather-item"><div class="weather-day">Apr 19</div><div class="weather-icon">🌤</div><div class="weather-temp">25–30°C</div></div>
