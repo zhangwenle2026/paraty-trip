@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v6.0">
+<meta name="version" content="lp-v6.0.1">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -447,6 +447,9 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
     <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_29c5962f-8971-453e-91a0-76724a84b719.jpg" alt="Paraty 7"><div class="hc-overlay"></div></div>
     <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty 8"><div class="hc-overlay"></div></div>
     <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_c8f0e0a1-d93e-4d4a-b41c-947859301151.jpg" alt="Paraty 9"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="Paraty dusk panorama"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f485a013-0d58-4ef0-8422-6d95f8f14a45.jpg" alt="Paraty church square"><div class="hc-overlay"></div></div>
+    <div class="hc-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_159b563e-463b-48e4-b4ed-56586614c7f6.jpg" alt="Paraty church close-up"><div class="hc-overlay"></div></div>
     <div class="hc-dots">
       <div class="hc-dot active" onclick="goSlide(0)"></div>
       <div class="hc-dot" onclick="goSlide(1)"></div>
@@ -457,6 +460,9 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
       <div class="hc-dot" onclick="goSlide(6)"></div>
       <div class="hc-dot" onclick="goSlide(7)"></div>
       <div class="hc-dot" onclick="goSlide(8)"></div>
+      <div class="hc-dot" onclick="goSlide(9)"></div>
+      <div class="hc-dot" onclick="goSlide(10)"></div>
+      <div class="hc-dot" onclick="goSlide(11)"></div>
     </div>
     <div class="hc-text">
       <div class="hc-eyebrow">South America &nbsp;/&nbsp; Brazil</div>
@@ -478,7 +484,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
   <!-- ★ NEW: Plan Picker (horizontal swipe cards) ★ -->
   <div class="plan-picker" id="plan-picker">
     <div class="plan-card" data-plan="2" onclick="selectPlan(2,this)">
-      <img class="plan-card-bg" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="2 days">
+      <img class="plan-card-bg" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="2 days">
       <div class="plan-card-overlay">
         <div class="plan-card-days">2<span data-i18n="plan_days">天</span></div>
         <div class="plan-card-title" data-i18n="plan2_t">紧凑精华</div>
@@ -657,6 +663,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
           </div>
           <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">19:30</div>
             <div class="tl-desc" data-i18n="d1_1930">晚餐：老城区餐厅，推荐 Moqueca de Peixe</div>
+            <div class="tl-photo"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f485a013-0d58-4ef0-8422-6d95f8f14a45.jpg" alt="Church square daytime"></div>
           </div>
         </div>
       </div></div>
@@ -842,7 +849,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 
   <!-- Ending -->
   <div class="ending-photo anim-card">
-    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Paraty night">
+    <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="Paraty dusk">
     <div class="ending-overlay">
       <div class="ending-quote">"The world is a book, and those who do not travel read only one page."</div>
     </div>
@@ -861,8 +868,8 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
     </div>
   </div>
   <div class="photo-row" style="margin-top:16px">
-    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="Colorful buildings"></div>
-    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_5ada0ec1-02df-412e-a96d-810d82bd92d6.jpg" alt="Hillside"></div>
+    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_159b563e-463b-48e4-b4ed-56586614c7f6.jpg" alt="Church close-up"></div>
+    <div class="photo-half"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="Dusk panorama"></div>
   </div>
   <div class="section" style="margin-top:16px">
     <div class="section-label" data-i18n="food_sec">本地特色</div>
