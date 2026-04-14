@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v6.2">
+<meta name="version" content="lp-v7.0">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -20,26 +20,66 @@ body::before{content:'';position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   pointer-events:none;z-index:9999}
 
-/* ═══ SPLASH ═══ */
-#splash{position:fixed;inset:0;z-index:1000;background:#F0E8D5;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease;overflow:hidden}
+/* ═══ SPLASH v7 — Magazine Cover + Plan Picker ═══ */
+#splash{position:fixed;inset:0;z-index:1000;background:#0a0a0a;display:flex;flex-direction:column;transition:opacity .8s ease;overflow:hidden}
 #splash.hide{opacity:0;pointer-events:none}
-#splash::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E")}
-#splash::after{content:'';position:absolute;inset:18px;border:1px solid rgba(0,79,159,.3);pointer-events:none}
-.splash-compass{width:64px;height:64px;margin-bottom:24px;opacity:.85;animation:compass-spin 12s linear infinite}
+
+/* Splash carousel */
+.sp-carousel{position:absolute;inset:0;z-index:0}
+.sp-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+.sp-slide.active{opacity:1}
+.sp-slide img{width:100%;height:100%;object-fit:cover;animation:sp-ken 12s ease-in-out infinite alternate}
+@keyframes sp-ken{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.08) translate(-1%,-1%)}}
+
+/* Dark gradient overlay for text legibility */
+.sp-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.08) 30%,rgba(0,0,0,.25) 60%,rgba(0,0,0,.7) 85%,rgba(0,0,0,.85) 100%)}
+
+/* Top bar */
+.sp-topbar{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:24px 28px 0}
+.sp-badge{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);backdrop-filter:blur(8px);padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.15)}
+.sp-compass{width:36px;height:36px;opacity:.7;animation:compass-spin 12s linear infinite}
 @keyframes compass-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.splash-eyebrow{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--terra);margin-bottom:12px}
-.splash-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--ink);line-height:1.05;text-align:center;letter-spacing:-0.5px;padding:0 20px}
-.splash-title em{font-style:italic;font-weight:700;color:var(--terra)}
-.splash-rule{width:48px;height:2px;background:var(--terra);margin:18px auto 14px}
-.splash-meta{font-family:'Libre Baskerville',serif;font-size:12px;font-style:italic;color:var(--muted);letter-spacing:.5px;text-align:center;line-height:1.6}
-.splash-bar{width:80px;height:1px;background:rgba(0,45,91,.15);margin-top:36px;overflow:hidden}
-.splash-bar-fill{height:100%;background:var(--terra);width:0;animation:loadbar 1.6s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes loadbar{to{width:100%}}
-.splash-corner{position:absolute;width:20px;height:20px;border-color:rgba(196,98,45,.4);border-style:solid}
-.splash-corner.tl{top:28px;left:28px;border-width:1.5px 0 0 1.5px}
-.splash-corner.tr{top:28px;right:28px;border-width:1.5px 1.5px 0 0}
-.splash-corner.bl{bottom:28px;left:28px;border-width:0 0 1.5px 1.5px}
-.splash-corner.br{bottom:28px;right:28px;border-width:0 1.5px 1.5px 0}
+
+/* Center text block */
+.sp-center{position:relative;z-index:3;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 28px 20px}
+.sp-eyebrow{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--terra);margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.sp-eyebrow::before{content:'';width:28px;height:1.5px;background:var(--terra)}
+.sp-hero-title{font-family:'Playfair Display',serif;font-size:clamp(42px,8vw,72px);font-weight:900;color:#fff;line-height:.95;letter-spacing:-1px;margin-bottom:12px;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+.sp-hero-title em{font-style:italic;font-weight:700;color:var(--terra)}
+.sp-subtitle{font-family:'Libre Baskerville',serif;font-size:clamp(13px,2vw,16px);font-style:italic;color:rgba(255,255,255,.8);line-height:1.5;max-width:480px;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.sp-divider{width:40px;height:2px;background:var(--terra);margin:16px 0}
+
+/* Carousel dots */
+.sp-dots{display:flex;gap:6px;margin-top:14px}
+.sp-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .3s}
+.sp-dot.active{background:#fff;width:18px;border-radius:3px}
+
+/* Bottom plan picker */
+.sp-plans{position:relative;z-index:3;padding:0 20px 32px;overflow-x:auto;display:flex;gap:12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.sp-plans::-webkit-scrollbar{display:none}
+.sp-plan{flex:0 0 calc(50% - 6px);scroll-snap-align:start;background:rgba(255,255,255,.12);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:18px 16px;cursor:pointer;transition:all .3s var(--ease-out-expo);position:relative;overflow:hidden}
+.sp-plan:hover{background:rgba(255,255,255,.2);transform:translateY(-3px)}
+.sp-plan:active{transform:scale(.97)}
+.sp-plan-days{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#fff;line-height:1}
+.sp-plan-label{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:4px}
+.sp-plan-desc{font-family:'Libre Baskerville',serif;font-size:11px;color:rgba(255,255,255,.7);margin-top:8px;line-height:1.4;font-style:italic}
+.sp-plan-arrow{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:rgba(255,255,255,.4);transition:color .3s}
+.sp-plan:hover .sp-plan-arrow{color:#fff}
+.sp-plan-tag{display:inline-block;font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:.5px;padding:3px 8px;border-radius:10px;margin-top:8px;background:rgba(196,98,45,.3);color:var(--terra);border:1px solid rgba(196,98,45,.3)}
+
+/* Splash choose prompt */
+.sp-prompt{position:relative;z-index:3;text-align:center;padding:0 20px 12px}
+.sp-prompt-text{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+
+@media(min-width:769px){
+  .sp-plan{flex:0 0 calc(33.33% - 8px)}
+  .sp-center{padding:0 48px 24px}
+}
+@media(max-width:480px){
+  .sp-plan{flex:0 0 calc(70% - 6px)}
+  .sp-topbar{padding:16px 20px 0}
+  .sp-center{padding:0 20px 16px}
+}
 
 /* ═══ HERO CAROUSEL ═══ */
 .hero-carousel{position:relative;width:100%;height:85vh;max-height:600px;min-height:400px;overflow:hidden;background:var(--lp-dark)}
@@ -420,7 +460,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
   .section-title{font-size:22px}
   .day-num{font-size:26px}
   .day-title{font-size:14px}
-  .splash-title{font-size:28px}
+  .sp-hero-title{font-size:36px}
   .hc-text{padding:16px}
   .budget-total-val{font-size:18px}
   .plan-card{width:85%;max-width:none}
@@ -454,27 +494,59 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 <!-- Pull balloon -->
 <div class="pull-balloon" id="pull-balloon">🎈</div>
 
-<!-- Splash -->
+<!-- Splash v7 — Magazine Cover + Plan Picker -->
 <div id="splash">
-  <div class="splash-corner tl"></div><div class="splash-corner tr"></div>
-  <div class="splash-corner bl"></div><div class="splash-corner br"></div>
-  <svg class="splash-compass compass-rotate" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="32" cy="32" r="28" stroke="#C4622D" stroke-width="1.5" opacity=".4"/>
-    <circle cx="32" cy="32" r="22" stroke="#C4622D" stroke-width="1" opacity=".25"/>
-    <polygon points="32,10 35,32 32,36 29,32" fill="#C4622D" opacity=".9"/>
-    <polygon points="32,54 35,32 32,36 29,32" fill="#7A6E5F" opacity=".6"/>
-    <line x1="32" y1="6" x2="32" y2="12" stroke="#C4622D" stroke-width="1.5" opacity=".5"/>
-    <line x1="32" y1="52" x2="32" y2="58" stroke="#7A6E5F" stroke-width="1" opacity=".4"/>
-    <line x1="6" y1="32" x2="12" y2="32" stroke="#7A6E5F" stroke-width="1" opacity=".3"/>
-    <line x1="52" y1="32" x2="58" y2="32" stroke="#7A6E5F" stroke-width="1" opacity=".3"/>
-    <text x="32" y="5" text-anchor="middle" font-size="6" fill="#C4622D" font-family="Inter,sans-serif" font-weight="700" opacity=".8">N</text>
-    <circle cx="32" cy="32" r="2.5" fill="#003A75" opacity=".7"/>
-  </svg>
-  <div class="splash-eyebrow">Road Trip Guide</div>
-  <div class="splash-title">April Par<em>aty</em> Trip</div>
-  <div class="splash-rule"></div>
-  <div class="splash-meta">São Paulo → Paraty<br>April 18 – 21, 2026</div>
-  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+  <div class="sp-carousel" id="sp-carousel">
+    <div class="sp-slide active"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="Paraty dusk"></div>
+    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f485a013-0d58-4ef0-8422-6d95f8f14a45.jpg" alt="Church square"></div>
+    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty streets"></div>
+    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="Colorful houses"></div>
+    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_159b563e-463b-48e4-b4ed-56586614c7f6.jpg" alt="Church angle"></div>
+  </div>
+  <div class="sp-overlay"></div>
+
+  <div class="sp-topbar">
+    <div class="sp-badge">Road Trip · Brasil</div>
+    <svg class="sp-compass" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="#fff" stroke-width="1.5" opacity=".4"/><polygon points="32,8 27,32 32,28 37,32" fill="#C4622D" opacity=".9"/><polygon points="32,56 27,32 32,36 37,32" fill="#fff" opacity=".5"/><circle cx="32" cy="32" r="3" fill="#fff"/></svg>
+  </div>
+
+  <div class="sp-center">
+    <div class="sp-eyebrow">South America / Brazil</div>
+    <div class="sp-hero-title">Par<em>aty</em></div>
+    <div class="sp-subtitle" data-i18n="sp_subtitle">海盗湾的秘密，殖民地的石板街，一条海岸公路，四天时光。</div>
+    <div class="sp-divider"></div>
+    <div class="sp-dots" id="sp-dots">
+      <div class="sp-dot active"></div><div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+    </div>
+  </div>
+
+  <div class="sp-prompt">
+    <div class="sp-prompt-text" data-i18n="sp_choose">— 选择你的旅程 —</div>
+  </div>
+
+  <div class="sp-plans" id="sp-plans">
+    <div class="sp-plan" onclick="enterPlan('2day')">
+      <div class="sp-plan-days">2<small style="font-size:16px;opacity:.6">天</small></div>
+      <div class="sp-plan-label" data-i18n="sp_2d_label">Weekend Escape</div>
+      <div class="sp-plan-desc" data-i18n="sp_2d_desc">老城 + 出海，紧凑精华</div>
+      <div class="sp-plan-tag" data-i18n="sp_2d_tag">首次来 Paraty</div>
+      <div class="sp-plan-arrow">›</div>
+    </div>
+    <div class="sp-plan" onclick="enterPlan('3day')">
+      <div class="sp-plan-days">3<small style="font-size:16px;opacity:.6">天</small></div>
+      <div class="sp-plan-label" data-i18n="sp_3d_label">Classic Journey</div>
+      <div class="sp-plan-desc" data-i18n="sp_3d_desc">老城 + 海岛 + 瀑布，舒适不赶</div>
+      <div class="sp-plan-tag" data-i18n="sp_3d_tag">最受欢迎</div>
+      <div class="sp-plan-arrow">›</div>
+    </div>
+    <div class="sp-plan" onclick="enterPlan('4day')">
+      <div class="sp-plan-days">4<small style="font-size:16px;opacity:.6">天</small></div>
+      <div class="sp-plan-label" data-i18n="sp_4d_label">Deep Exploration</div>
+      <div class="sp-plan-desc" data-i18n="sp_4d_desc">全景深度，丛林·文化·美食全收</div>
+      <div class="sp-plan-tag" data-i18n="sp_4d_tag">深度玩家</div>
+      <div class="sp-plan-arrow">›</div>
+    </div>
+  </div>
 </div>
 
 <!-- Lang switch -->
@@ -1071,8 +1143,20 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 </div>
 
 <script>
-// ── Splash
-setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>{document.getElementById('splash').style.display='none'},850)},1800);
+// ── Splash v7: carousel + enterPlan
+let _spi=0;const _spSlides=document.querySelectorAll('.sp-slide'),_spDots=document.querySelectorAll('.sp-dot');
+function spGo(n){_spSlides[_spi].classList.remove('active');if(_spDots[_spi])_spDots[_spi].classList.remove('active');_spi=(n+_spSlides.length)%_spSlides.length;_spSlides[_spi].classList.add('active');if(_spDots[_spi])_spDots[_spi].classList.add('active')}
+let _spTimer=setInterval(()=>spGo(_spi+1),4000);
+
+function enterPlan(plan){
+  clearInterval(_spTimer);
+  const sp=document.getElementById('splash');
+  sp.classList.add('hide');
+  setTimeout(()=>{sp.style.display='none'},850);
+  // Map plan to selectPlan value
+  const map={'2day':'2','3day':'3','4day':'4'};
+  setTimeout(()=>{selectPlan(map[plan]||'4')},900);
+}
 
 // ── Carousel
 let _si=0;const _sl=document.querySelectorAll('.hc-slide'),_dt=document.querySelectorAll('.hc-dot');
@@ -1272,6 +1356,11 @@ const _i18n={
     park_warn_t:'No cars in Old Town',park_warn_d:'Park outside, walk in',
     save_itin:'Save to My Itinerary',
     tide_alert_t:'Tide Alert',tide_alert_d:'High tide at 19:45 today — best time for old town reflections!',
+    sp_subtitle:'Pirate bays, colonial cobblestones, one coastal highway, four days.',
+    sp_choose:'— Choose Your Journey —',
+    sp_2d_label:'Weekend Escape',sp_2d_desc:'Old town + boat trip, compact highlights',sp_2d_tag:'First time in Paraty',
+    sp_3d_label:'Classic Journey',sp_3d_desc:'Old town + islands + waterfalls, relaxed pace',sp_3d_tag:'Most Popular',
+    sp_4d_label:'Deep Exploration',sp_4d_desc:'Full panorama — jungle, culture & food',sp_4d_tag:'Deep Explorer',
   },
   pt:{
     nav_itin:'Roteiro',nav_food:'Gastronomia',nav_tips:'Dicas',nav_pack:'Mala',
@@ -1334,6 +1423,11 @@ const _i18n={
     park_warn_t:'Carros proibidos no Centro',park_warn_d:'Estacione fora, entre a pé',
     save_itin:'Salvar no Meu Roteiro',
     tide_alert_t:'Alerta de Maré',tide_alert_d:'Maré alta às 19:45 — melhor hora para ver reflexos no centro!',
+    sp_subtitle:'Baías de piratas, calçadas coloniais, uma estrada costeira, quatro dias.',
+    sp_choose:'— Escolha Sua Viagem —',
+    sp_2d_label:'Escapada de Fim de Semana',sp_2d_desc:'Centro histórico + passeio de barco',sp_2d_tag:'Primeira vez em Paraty',
+    sp_3d_label:'Jornada Clássica',sp_3d_desc:'Centro + ilhas + cachoeiras, ritmo tranquilo',sp_3d_tag:'Mais Popular',
+    sp_4d_label:'Exploração Profunda',sp_4d_desc:'Panorama completo — selva, cultura e gastronomia',sp_4d_tag:'Explorador',
   }
 };
 function setLang(lang){
