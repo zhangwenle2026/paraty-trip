@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v6.1">
+<meta name="version" content="lp-v6.2">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -378,6 +378,29 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 .plan-card.active::before{content:'';position:absolute;inset:-2px;border-radius:14px;background:linear-gradient(135deg,rgba(196,98,45,.3),rgba(196,98,45,.1));z-index:-1;animation:selectedGlow 2s ease-in-out infinite}
 @keyframes selectedGlow{0%,100%{opacity:.5}50%{opacity:1}}
 
+/* ═══ PHASE 3: SWIPE GESTURES & SMART ALERTS ═══ */
+
+/* Swipe indicator arrows */
+.swipe-hint{position:absolute;top:50%;right:8px;transform:translateY(-50%);font-size:20px;color:rgba(255,255,255,.5);animation:swipeHint 2s ease-in-out infinite;pointer-events:none;z-index:5}
+@keyframes swipeHint{0%,100%{transform:translateY(-50%) translateX(0);opacity:.5}50%{transform:translateY(-50%) translateX(6px);opacity:1}}
+
+/* Day card swipe track */
+.day-cards-swipe{position:relative;overflow:hidden}
+
+/* Save to my itinerary button */
+.save-itin{margin:16px 20px 0;background:var(--terra);color:#fff;border:none;border-radius:6px;padding:12px 20px;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;width:calc(100% - 40px);display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s var(--ease-out-expo),box-shadow .2s}
+.save-itin:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(196,98,45,.35)}
+.save-itin:active{transform:scale(.97)}
+.save-itin.saved{background:#5C6B3A}
+
+/* Tide smart alert */
+.tide-alert{position:fixed;top:60px;left:16px;right:16px;background:linear-gradient(135deg,#004F9F,#1A6B9A);color:#fff;border-radius:10px;padding:14px 16px;z-index:250;display:none;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(0,79,159,.4);animation:toastIn .4s var(--ease-out-expo)}
+.tide-alert .ta-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;margin-left:auto}
+
+/* Audio stamp feedback (visual only, CSS) */
+.stamp-card.pop{animation:stampPop2 .6s var(--ease-out-expo)}
+@keyframes stampPop2{0%{transform:scale(.3) rotate(-20deg)}40%{transform:scale(1.1) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+
 /* ═══ MOBILE RESPONSIVE ═══ */
 @media(max-width:480px){
   .hero-carousel{height:92vh;max-height:none;min-height:500px}
@@ -479,6 +502,13 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
     <div class="stamp-text" data-i18n="stamp_t">Paraty · 已盖章</div>
     <div class="stamp-sub" data-i18n="stamp_d">你的旅行护照 +1</div>
   </div>
+</div>
+
+<!-- Tide smart alert -->
+<div class="tide-alert" id="tide-alert">
+  <span style="font-size:22px">🌊</span>
+  <div><strong data-i18n="tide_alert_t">潮汐提醒</strong><br><small data-i18n="tide_alert_d">今日高潮 19:45 — 最佳老城倒影观赏时间！</small></div>
+  <button class="ta-close" onclick="this.parentElement.style.display='none'">✕</button>
 </div>
 
 <!-- Parking toast -->
@@ -903,6 +933,9 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
     <div class="budget-row"><span class="budget-total-label" data-i18n="bud_total">合计（2人）</span><span class="budget-total-val">≈ R$ 1,940</span></div>
   </div>
 
+  <!-- Save button -->
+  <button class="save-itin" id="save-itin-btn" onclick="saveItinerary()">📋 <span data-i18n="save_itin">保存到我的行程</span></button>
+
   <!-- Ending -->
   <div class="ending-photo anim-card">
     <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="Paraty dusk">
@@ -1237,6 +1270,8 @@ const _i18n={
     tide_high:'High tide 19:45',tide_best:'Best departure: 1h before high tide (07:05)',
     stamp_t:'Paraty · Stamped',stamp_d:'Your travel passport +1',
     park_warn_t:'No cars in Old Town',park_warn_d:'Park outside, walk in',
+    save_itin:'Save to My Itinerary',
+    tide_alert_t:'Tide Alert',tide_alert_d:'High tide at 19:45 today — best time for old town reflections!',
   },
   pt:{
     nav_itin:'Roteiro',nav_food:'Gastronomia',nav_tips:'Dicas',nav_pack:'Mala',
@@ -1297,6 +1332,8 @@ const _i18n={
     tide_high:'Maré alta 19:45',tide_best:'Melhor saída: 1h antes da maré alta (07:05)',
     stamp_t:'Paraty · Carimbado',stamp_d:'Seu passaporte de viagem +1',
     park_warn_t:'Carros proibidos no Centro',park_warn_d:'Estacione fora, entre a pé',
+    save_itin:'Salvar no Meu Roteiro',
+    tide_alert_t:'Alerta de Maré',tide_alert_d:'Maré alta às 19:45 — melhor hora para ver reflexos no centro!',
   }
 };
 function setLang(lang){
@@ -1311,6 +1348,53 @@ function setLang(lang){
   });
   applyFilters();
 }
+
+// ── Phase 3: Swipe between days
+let _daySwipeX=0;
+const _dayContainer=document.getElementById('day-cards-container');
+if(_dayContainer){
+  _dayContainer.addEventListener('touchstart',e=>{_daySwipeX=e.touches[0].clientX},{passive:true});
+  _dayContainer.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-_daySwipeX;
+    if(Math.abs(dx)<60)return;
+    const openCard=_dayContainer.querySelector('.day-card.open');
+    if(!openCard)return;
+    const visible=Array.from(_dayContainer.querySelectorAll('.day-card')).filter(c=>c.style.display!=='none');
+    const idx=visible.indexOf(openCard);
+    if(dx<0&&idx<visible.length-1){openCard.classList.remove('open');visible[idx+1].classList.add('open');const items=visible[idx+1].querySelectorAll('.tl-item');items.forEach((it,i)=>{setTimeout(()=>it.classList.add('tl-visible'),i*80)});visible[idx+1].scrollIntoView({behavior:'smooth',block:'start'})}
+    if(dx>0&&idx>0){openCard.classList.remove('open');visible[idx-1].classList.add('open');const items=visible[idx-1].querySelectorAll('.tl-item');items.forEach((it,i)=>{setTimeout(()=>it.classList.add('tl-visible'),i*80)});visible[idx-1].scrollIntoView({behavior:'smooth',block:'start'})}
+  },{passive:true});
+}
+
+// ── Phase 3: Tide smart alert (show when scrolling to island section)
+let _tideShown=false;
+const _day2=document.getElementById('day2');
+if(_day2){
+  const _tideObs=new IntersectionObserver((entries)=>{
+    if(entries[0].isIntersecting&&!_tideShown){
+      _tideShown=true;
+      const ta=document.getElementById('tide-alert');
+      ta.style.display='flex';
+      setTimeout(()=>ta.style.display='none',6000);
+    }
+  },{threshold:0.3});
+  _tideObs.observe(_day2);
+}
+
+// ── Phase 3: Save to my itinerary
+function saveItinerary(){
+  const btn=document.getElementById('save-itin-btn');
+  btn.classList.add('saved');
+  const span=btn.querySelector('[data-i18n="save_itin"]');
+  if(_lang==='en')span.textContent='✅ Saved to My Itinerary';
+  else if(_lang==='pt')span.textContent='✅ Salvo no Meu Roteiro';
+  else span.textContent='✅ 已保存到我的行程';
+  // Also trigger stamp
+  doStamp();
+}
+
+// ── Phase 3: Enhanced stamp with pop animation
+const _origStamp=doStamp;
 
 // Open Day 1 by default
 toggleDay('day1');
