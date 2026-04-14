@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v6.0.1">
+<meta name="version" content="lp-v6.1">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -325,6 +325,59 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 /* ═══ COMPASS SELF-ROTATE ═══ */
 .compass-rotate{animation:compass-spin 12s linear infinite}
 
+/* ═══ PHASE 2: ENHANCED ANIMATIONS ═══ */
+
+/* Magazine page-turn effect on plan cards */
+.plan-card{transform-origin:left center;perspective:800px}
+.plan-picker{perspective:1000px}
+
+/* Card lift + paper shadow on hover */
+.day-card:hover{transform:translateY(-3px);box-shadow:2px 6px 0 rgba(0,45,91,.14),0 12px 30px rgba(0,0,0,.08)}
+
+/* Enhanced book-spine shadow (magazine feel) */
+.page{position:relative}
+.page::before,.page::after{content:'';position:fixed;top:0;bottom:0;width:25px;pointer-events:none;z-index:50}
+.page::before{left:0;background:linear-gradient(to right,rgba(0,0,0,.06),transparent)}
+.page::after{right:0;background:linear-gradient(to left,rgba(0,0,0,.06),transparent)}
+
+/* Vintage map enhancement */
+.route-map.vintage{background:#F5ECD7;border-color:#C9B98A;box-shadow:inset 0 0 30px rgba(160,130,70,.15)}
+.route-map.vintage .route-svg path{stroke:#8B6914!important}
+.route-map.vintage .route-svg circle{fill:#8B6914!important}
+.route-map.vintage .route-svg text{font-family:'Libre Baskerville',serif!important;fill:#5C4A1E!important}
+.route-map.vintage::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(139,105,20,.08) 100%);pointer-events:none;border-radius:6px}
+.day-mini-map{transition:background .3s,border-color .3s}
+
+/* Hot air balloon pull animation */
+.pull-balloon{position:fixed;top:-60px;left:50%;transform:translateX(-50%);font-size:40px;transition:top .5s var(--ease-out-expo);z-index:200;pointer-events:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))}
+.pull-balloon.show{top:20px}
+
+/* Nav icon bounce on tap */
+.nav-item:active .nav-icon{animation:navBounce .3s var(--ease-out-expo)}
+@keyframes navBounce{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1.2)}}
+
+/* Feature card 3D tilt on hover (desktop) */
+@media(min-width:769px){
+  .mag-feature-card{transition:transform .4s var(--ease-out-expo),box-shadow .4s ease}
+  .mag-feature-card:hover{transform:translateY(-6px) rotateX(2deg);box-shadow:3px 12px 0 rgba(0,45,91,.2),0 20px 40px rgba(0,0,0,.1)}
+}
+
+/* Smooth page blur transition */
+.page{transition:filter .3s ease}
+
+/* Tide row highlight animation */
+.tide-row{transition:background .2s ease}
+.tide-row:hover{background:rgba(0,79,159,.05)}
+
+/* Style tag ripple */
+.style-tag{position:relative;overflow:hidden}
+.style-tag::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(0,79,159,.15) 0%,transparent 70%);opacity:0;transition:opacity .3s}
+.style-tag:active::after{opacity:1}
+
+/* Plan card selected glow */
+.plan-card.active::before{content:'';position:absolute;inset:-2px;border-radius:14px;background:linear-gradient(135deg,rgba(196,98,45,.3),rgba(196,98,45,.1));z-index:-1;animation:selectedGlow 2s ease-in-out infinite}
+@keyframes selectedGlow{0%,100%{opacity:.5}50%{opacity:1}}
+
 /* ═══ MOBILE RESPONSIVE ═══ */
 @media(max-width:480px){
   .hero-carousel{height:92vh;max-height:none;min-height:500px}
@@ -374,6 +427,9 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 
 <!-- Offline bar -->
 <div class="offline-bar" id="offline-bar">📡 Offline Mode — Maps & content cached</div>
+
+<!-- Pull balloon -->
+<div class="pull-balloon" id="pull-balloon">🎈</div>
 
 <!-- Splash -->
 <div id="splash">
@@ -1260,6 +1316,39 @@ function setLang(lang){
 toggleDay('day1');
 // Initial filter
 applyFilters();
+
+// ── Phase 2: Pull-to-refresh balloon
+let _pullY=0,_pulling=false;
+document.addEventListener('touchstart',e=>{if(window.scrollY<=0){_pullY=e.touches[0].clientY;_pulling=true}},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(!_pulling)return;
+  const dy=e.touches[0].clientY-_pullY;
+  if(dy>80){const b=document.getElementById('pull-balloon');b.classList.add('show');setTimeout(()=>b.classList.remove('show'),2000);_pulling=false}
+},{passive:true});
+document.addEventListener('touchend',()=>{_pulling=false},{passive:true});
+
+// ── Phase 2: Enhanced parallax for cards (stagger reveal)
+const _cardObs2=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      e.target.style.transitionDelay=(i*0.05)+'s';
+      e.target.classList.add('visible');
+      _cardObs2.unobserve(e.target);
+    }
+  });
+},{threshold:0.05,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.food-card,.tip-card,.pack-item').forEach(c=>_cardObs2.observe(c));
+
+// ── Phase 2: Vintage map toggle applies to all mini maps too
+const _origToggle=window.toggleMapStyle;
+window.toggleMapStyle=function(){
+  _origToggle();
+  const isVintage=document.getElementById('route-map').classList.contains('vintage');
+  document.querySelectorAll('.day-mini-map').forEach(m=>{
+    if(isVintage){m.style.background='#F5ECD7';m.style.borderColor='#C9B98A'}
+    else{m.style.background='';m.style.borderColor=''}
+  });
+};
 </script>
 </body>
 </html>
