@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v7.0">
+<meta name="version" content="lp-v7.0.1">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -28,8 +28,8 @@ body::before{content:'';position:fixed;inset:0;
 .sp-carousel{position:absolute;inset:0;z-index:0}
 .sp-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
 .sp-slide.active{opacity:1}
-.sp-slide img{width:100%;height:100%;object-fit:cover;animation:sp-ken 12s ease-in-out infinite alternate}
-@keyframes sp-ken{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.08) translate(-1%,-1%)}}
+.sp-slide img{width:100%;height:100%;object-fit:cover;image-rendering:auto;-webkit-image-rendering:auto;animation:sp-ken 20s ease-in-out infinite alternate}
+@keyframes sp-ken{0%{transform:scale(1.02) translate(0,0)}100%{transform:scale(1.06) translate(-0.5%,-0.5%)}}
 
 /* Dark gradient overlay for text legibility */
 .sp-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.08) 30%,rgba(0,0,0,.25) 60%,rgba(0,0,0,.7) 85%,rgba(0,0,0,.85) 100%)}
@@ -497,11 +497,9 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 <!-- Splash v7 — Magazine Cover + Plan Picker -->
 <div id="splash">
   <div class="sp-carousel" id="sp-carousel">
-    <div class="sp-slide active"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="Paraty dusk"></div>
+    <div class="sp-slide active"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_33a1617d-d474-4022-a70a-f1b56caceb1e.png" alt="Paraty dusk panorama"></div>
+    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_159b563e-463b-48e4-b4ed-56586614c7f6.jpg" alt="Church close-up"></div>
     <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_f485a013-0d58-4ef0-8422-6d95f8f14a45.jpg" alt="Church square"></div>
-    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_0ceb6aac-e494-43ca-b518-d961bffc48ac.jpg" alt="Paraty streets"></div>
-    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_8679b3c3-df0e-47b3-ad6d-984bdb48e5b6.jpg" alt="Colorful houses"></div>
-    <div class="sp-slide"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_159b563e-463b-48e4-b4ed-56586614c7f6.jpg" alt="Church angle"></div>
   </div>
   <div class="sp-overlay"></div>
 
@@ -516,7 +514,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
     <div class="sp-subtitle" data-i18n="sp_subtitle">海盗湾的秘密，殖民地的石板街，一条海岸公路，四天时光。</div>
     <div class="sp-divider"></div>
     <div class="sp-dots" id="sp-dots">
-      <div class="sp-dot active"></div><div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+      <div class="sp-dot active"></div><div class="sp-dot"></div><div class="sp-dot"></div>
     </div>
   </div>
 
