@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v8.2">
+<meta name="version" content="lp-v8.3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Paraty · Lonely Planet Style Guide</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -140,16 +140,7 @@ a{color:var(--lp-blue);text-decoration:none}
 .spot-info-item svg{width:14px;height:14px;stroke:var(--lp-blue);stroke-width:2;fill:none}
 
 /* ===== FOOD SECTION ===== */
-.food-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin:32px 0}
-.food-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.06);transition:transform .3s}
-.food-card:hover{transform:translateY(-3px)}
-.food-card-img{height:180px;overflow:hidden}
-.food-card-img img{width:100%;height:100%;object-fit:cover}
-.food-card-body{padding:16px}
-.food-card-cat{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--terra)}
-.food-card-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text-dark);margin-top:4px}
-.food-card-desc{font-family:'Inter',sans-serif;font-size:13px;color:var(--warm-gray);margin-top:6px;line-height:1.5}
-.food-card-price{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--lp-blue);margin-top:8px}
+
 
 /* ===== JOURNEY / PLAN PAGES ===== */
 .plan-cover{width:100%;height:75vh;min-height:500px;position:relative;overflow:hidden}
@@ -218,7 +209,7 @@ a{color:var(--lp-blue);text-decoration:none}
 /* ===== MOBILE ===== */
 @media(max-width:640px){
   .mustsee-grid{grid-template-columns:1fr}
-  .food-grid{grid-template-columns:1fr}
+
   .tips-grid{grid-template-columns:1fr}
   .pack-list{columns:1}
   .bleed{height:50vh;min-height:300px}
@@ -246,7 +237,7 @@ a{color:var(--lp-blue);text-decoration:none}
 /* In bleed captions, sub is white-ish */
 .bleed-title .bi-sub,.bleed-sub .bi-sub,.sp-title .bi-sub,.sp-subtitle .bi-sub,.pc-title .bi-sub{color:rgba(255,255,255,.5);font-style:normal}
 /* In small elements, sub even smaller */
-.sp-plan-desc .bi-sub,.sp-plan-tag .bi-sub,.mc-name .bi-sub,.mc-tag .bi-sub,.food-card-desc .bi-sub,.food-card-name .bi-sub{font-size:0.8em}
+.sp-plan-desc .bi-sub,.sp-plan-tag .bi-sub,.mc-name .bi-sub,.mc-tag .bi-sub{font-size:0.8em}
 .spot-body .bi-sub,.ch-intro .bi-sub,.t-body .bi-sub{font-size:0.85em;line-height:1.7;margin-top:6px}
 /* Ending bilingual */
 .ending .bi-sub{color:rgba(255,255,255,.4)}
@@ -311,7 +302,7 @@ a{color:var(--lp-blue);text-decoration:none}
       <div class="sp-plan" onclick="enterPlan(4)">
         <div class="sp-plan-days" data-i18n="sp_4d_days">4天</div>
         <div class="sp-plan-label">DEEP EXPLORATION</div>
-        <div class="sp-plan-desc" data-i18n="sp_4d_desc">全景深度，丛林·文化·美食全收</div>
+        <div class="sp-plan-desc" data-i18n="sp_4d_desc">全景深度，丛林·海岸·文化全收</div>
         <div class="sp-plan-tag" data-i18n="sp_4d_tag">深度玩家</div>
       </div>
     </div>
@@ -535,76 +526,13 @@ a{color:var(--lp-blue);text-decoration:none}
 <div class="page-num">— 04 —</div>
 
 <!-- =============================== -->
-<!-- CHAPTER 3: TASTE OF PARATY      -->
-<!-- =============================== -->
-<div class="bleed" id="ch-food">
-  <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_7e112180-7886-4a27-9f83-74ee1081a39d.jpg" alt="Paraty harbor">
-  <div class="bleed-overlay"></div>
-  <div class="bleed-caption">
-    <div class="bleed-chapter" data-i18n="ch3_label">Chapter 03</div>
-    <div class="bleed-title" data-i18n="ch3_title">Paraty 的味道</div>
-    <div class="bleed-sub" data-i18n="ch3_sub">海鲜、Cachaça 与殖民地甜品</div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="ch-intro drop-cap fade-in" data-i18n="ch3_p1">
-    Paraty 是巴西的 Cachaça（甘蔗酒）之都。每年八月的 Festival da Cachaça 聚集了全国最好的酿酒师，老城的石板街上飘满甘蔗的甜香。但 Paraty 的美食远不止于酒——它是海鲜、原住民食材、葡式甜品与非洲香料的交汇点。
-  </div>
-
-  <div class="pull-quote fade-in">
-    <p data-i18n="ch3_quote">"在 Paraty 吃鱼，就像在波尔多喝酒——每一口都带着 terroir。"</p>
-  </div>
-
-  <div class="food-grid fade-in">
-    <div class="food-card">
-      <div class="food-card-img"><img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_b01636a3-d019-49dc-af11-637a2ab341aa.jpg" alt="Seafood"></div>
-      <div class="food-card-body">
-        <div class="food-card-cat" data-i18n="food1_cat">海鲜 · FRUTOS DO MAR</div>
-        <div class="food-card-name" data-i18n="food1_name">Peixe na Folha de Banana</div>
-        <div class="food-card-desc" data-i18n="food1_desc">香蕉叶包裹的烤鱼，配椰奶、棕榈心和虾，是 Paraty 渔民的传统做法。推荐 Restaurante do Higor（老城内）和 Punto Divino。</div>
-        <div class="food-card-price">R$60-90 · ¥80-120</div>      </div>
-    </div>
-    <div class="food-card">
-      <div class="food-card-img" style="background:linear-gradient(135deg,#F5E6D3,#E8D5C4);display:flex;align-items:center;justify-content:center;height:180px"><span style="font-size:48px">🥃</span></div>
-      <div class="food-card-body">
-        <div class="food-card-cat" data-i18n="food2_cat">甘蔗酒 · CACHAÇA</div>
-        <div class="food-card-name" data-i18n="food2_name">Cachaça Artesanal de Paraty</div>
-        <div class="food-card-desc" data-i18n="food2_desc">Paraty 拥有巴西最古老的甘蔗酒酿造传统。Coqueiro 和 Maria Izabel 是最知名的本地品牌。去 Cachaçaria Paratiana 可以免费品鉴20+款，从清甜到橡木桶陈年一一对比。</div>
-        <div class="food-card-price">R$15-80/瓶 · ¥20-110</div>
-      </div>
-    </div>
-    <div class="food-card">
-      <div class="food-card-img" style="background:linear-gradient(135deg,#FFF3E0,#FFE0B2);display:flex;align-items:center;justify-content:center;height:180px"><span style="font-size:48px">🍮</span></div>
-      <div class="food-card-body">
-        <div class="food-card-cat" data-i18n="food3_cat">甜品 · DOCES</div>
-        <div class="food-card-name" data-i18n="food3_name">Banana da Terra com Queijo</div>
-        <div class="food-card-desc" data-i18n="food3_desc">烤大蕉配融化的 Minas 奶酪——咸甜交织的巴西经典组合。Paraty 的版本会淋上本地蜂蜜和肉桂。Casa do Fogo 的版本是老城最好吃的。</div>
-        <div class="food-card-price">R$18-25 · ¥24-35</div>
-      </div>
-    </div>
-    <div class="food-card">
-      <div class="food-card-img" style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);display:flex;align-items:center;justify-content:center;height:180px"><span style="font-size:48px">🥘</span></div>
-      <div class="food-card-body">
-        <div class="food-card-cat" data-i18n="food4_cat">街头小吃 · COMIDA DE RUA</div>
-        <div class="food-card-name" data-i18n="food4_name">Acarajé & Pastel de Camarão</div>
-        <div class="food-card-desc" data-i18n="food4_desc">Acarajé 是非洲裔巴西人的灵魂小吃——黑眼豆泥炸丸子，填入虾干和辣椒酱。Pastel 则是炸馅饼，虾肉版是 Paraty 的特色。码头集市（Mercado do Pescador）是最佳觅食点。</div>
-        <div class="food-card-price">R$8-15 · ¥10-20</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="page-num">— 06 —</div>
-
-<!-- =============================== -->
 <!-- CHAPTER 4: YOUR JOURNEY         -->
 <!-- =============================== -->
 <div class="bleed" id="ch-journey">
   <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_40a787c1-55c3-475f-908a-61db68c3b99f.jpg" alt="Paraty high tide streets">
   <div class="bleed-overlay"></div>
   <div class="bleed-caption">
-    <div class="bleed-chapter" data-i18n="ch4_label">Chapter 04</div>
+    <div class="bleed-chapter" data-i18n="ch4_label">Chapter 03</div>
     <div class="bleed-title" data-i18n="ch4_title">你的行程</div>
     <div class="bleed-sub" data-i18n="ch4_sub">2天、3天或4天，量身定制</div>
   </div>
@@ -714,7 +642,7 @@ a{color:var(--lp-blue);text-decoration:none}
   </div>
 </div>
 
-<div class="page-num">— 08 —</div>
+<div class="page-num">— 06 —</div>
 
 <!-- =============================== -->
 <!-- CHAPTER 5: TRAVELER'S NOTES     -->
@@ -723,7 +651,7 @@ a{color:var(--lp-blue);text-decoration:none}
   <img src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_a51a2928-8377-406b-9d31-7cb11b80266a.jpg" alt="Paraty colorful street">
   <div class="bleed-overlay"></div>
   <div class="bleed-caption">
-    <div class="bleed-chapter" data-i18n="ch5_label">Chapter 05</div>
+    <div class="bleed-chapter" data-i18n="ch5_label">Chapter 04</div>
     <div class="bleed-title" data-i18n="ch5_title">旅行者手记</div>
     <div class="bleed-sub" data-i18n="ch5_sub">交通·住宿·季节·装备</div>
   </div>
@@ -764,7 +692,7 @@ a{color:var(--lp-blue);text-decoration:none}
   </div>
 </div>
 
-<div class="page-num">— 10 —</div>
+<div class="page-num">— 08 —</div>
 
 <!-- ===== PACKING CHECKLIST ===== -->
 <div class="section fade-in">
@@ -798,7 +726,6 @@ a{color:var(--lp-blue);text-decoration:none}
   <div class="nav-inner">
     <button class="nav-item active" onclick="navTo('ch-city')"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span data-i18n="nav_city">城市</span></button>
     <button class="nav-item" onclick="navTo('ch-spots')"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav_spots">景点</span></button>
-    <button class="nav-item" onclick="navTo('ch-food')"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg><span data-i18n="nav_food">美食</span></button>
     <button class="nav-item" onclick="navTo('ch-journey')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span data-i18n="nav_journey">行程</span></button>
     <button class="nav-item" onclick="navTo('ch-tips')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav_tips">攻略</span></button>
   </div>
@@ -817,7 +744,7 @@ const I18N = {
     sp_choose:'— 选择你的旅程 —',
     sp_2d_days:'2天',sp_2d_desc:'老城+出海，紧凑精华',sp_2d_tag:'首次来 Paraty',
     sp_3d_days:'3天',sp_3d_desc:'老城+海岛+瀑布，舒适不赶',sp_3d_tag:'最受欢迎',
-    sp_4d_days:'4天',sp_4d_desc:'全景深度，丛林·文化·美食全收',sp_4d_tag:'深度玩家',
+    sp_4d_days:'4天',sp_4d_desc:'全景深度，丛林·海岸·文化全收',sp_4d_tag:'深度玩家',
     ch1_label:'Chapter 01',ch1_title:'这座城市还在呼吸',ch1_sub:'Paraty · 从黄金之路到联合国遗产',
     ch1_p1:'涨潮时，大西洋的海水会漫过 Paraty 老城的石板街道。这不是灾害——而是这座城市四百多年来的日常。1597年，葡萄牙殖民者在这片 Guaianá 原住民的土地上建立了村落，用原住民图皮语中"鱼群之河"的发音为它命名：Paraty。',
     ch1_quote1:'"涨潮时海水淹没石板街——这座城市至今仍在呼吸。"',
@@ -850,16 +777,9 @@ const I18N = {
     spot6_title:'Igreja de Santa Rita 圣丽塔教堂',spot6_tag2:'1722年巴洛克教堂 · Paraty 标志',
     spot6_body:'建于1722年的圣丽塔教堂是 Paraty 最古老、最上镜的教堂，也是城市最具辨识度的地标。它坐落在老城入口的小广场上，白色外墙配巴洛克式钟楼，面朝大海。',
     spot6_addr:'Largo de Santa Rita, Centro Histórico',spot6_time:'30分钟参观',spot6_price:'博物馆 R$6（约 ¥8）',
-    ch3_label:'Chapter 03',ch3_title:'Paraty 的味道',ch3_sub:'海鲜、Cachaça 与殖民地甜品',
-    ch3_p1:'Paraty 是巴西的 Cachaça（甘蔗酒）之都。每年八月的 Festival da Cachaça 聚集了全国最好的酿酒师，老城的石板街上飘满甘蔗的甜香。但 Paraty 的美食远不止于酒——它是海鲜、原住民食材、葡式甜品与非洲香料的交汇点。',
-    ch3_quote:'"在 Paraty 吃鱼，就像在波尔多喝酒——每一口都带着 terroir。"',
-    food1_cat:'海鲜 · FRUTOS DO MAR',food1_name:'Peixe na Folha de Banana',food1_desc:'香蕉叶包裹的烤鱼，配椰奶、棕榈心和虾，是 Paraty 渔民的传统做法。推荐 Restaurante do Higor。',
-    food2_cat:'甘蔗酒 · CACHAÇA',food2_name:'Cachaça Artesanal de Paraty',food2_desc:'Paraty 拥有巴西最古老的甘蔗酒酿造传统。去 Cachaçaria Paratiana 可以免费品鉴20+款。',
-    food3_cat:'甜品 · DOCES',food3_name:'Banana da Terra com Queijo',food3_desc:'烤大蕉配融化的 Minas 奶酪——咸甜交织的巴西经典组合。Casa do Fogo 的版本是老城最好吃的。',
-    food4_cat:'街头小吃 · COMIDA DE RUA',food4_name:'Acarajé & Pastel de Camarão',food4_desc:'Acarajé 是非洲裔巴西人的灵魂小吃——黑眼豆泥炸丸子。码头集市是最佳觅食点。',
-    ch4_label:'Chapter 04',ch4_title:'你的行程',ch4_sub:'2天、3天或4天，量身定制',
+    ch4_label:'Chapter 03',ch4_title:'你的行程',ch4_sub:'2天、3天或4天，量身定制',
     tab_2d:'2天精华',tab_3d:'3天经典',tab_4d:'4天深度',
-    ch5_label:'Chapter 05',ch5_title:'旅行者手记',ch5_sub:'交通·住宿·季节·装备',
+    ch5_label:'Chapter 04',ch5_title:'旅行者手记',ch5_sub:'交通·住宿·季节·装备',
     tip1_title:'交通：圣保罗出发',tip1_desc:'自驾走 SP-055（Rio-Santos）约4.5小时，沿海公路风景绝美。大巴从 Rodoviária Tietê 出发，约5小时，R$80。',
     tip2_title:'住宿推荐',tip2_desc:'💎 奢华：Pousada Literária（R$600+）｜🏡 中档：Pousada do Ouro（R$300）｜🎒 背包：Hostel Casa Gaia（R$80/床位）',
     tip3_title:'最佳季节',tip3_desc:'4-6月和8-10月最佳。12-2月旺季价格翻倍。新月和满月时涨潮最高，老城「水镜」效果最佳。',
@@ -867,7 +787,7 @@ const I18N = {
     tip5_title:'安全提示',tip5_desc:'老城很安全。码头区夜间注意。贵重物品不留车内。防晒必须——巴西紫外线很强。',
     tip6_title:'打包清单',tip6_desc:'必带：防水手机袋、水陆两用鞋、防晒SPF50+、驱蚊液、轻薄雨衣、泳衣。选带：吊床、浮潜面镜。',
     pack_label:'PACKING LIST',pack_title:'行前清单',
-    nav_city:'城市',nav_spots:'景点',nav_food:'美食',nav_journey:'行程',nav_tips:'攻略',
+    nav_city:'城市',nav_spots:'景点',nav_journey:'行程',nav_tips:'攻略',
     ending_title:'Até logo, Paraty.',ending_sub:'下次涨潮的时候，希望你正站在石板街上。'
   },
   en: {
@@ -875,7 +795,7 @@ const I18N = {
     sp_choose:'— Choose Your Journey —',
     sp_2d_days:'2 Days',sp_2d_desc:'Old town + ocean, compact highlights',sp_2d_tag:'First time in Paraty',
     sp_3d_days:'3 Days',sp_3d_desc:'Old town + islands + waterfalls',sp_3d_tag:'Most Popular',
-    sp_4d_days:'4 Days',sp_4d_desc:'Full immersion: jungle, culture, food',sp_4d_tag:'Deep Explorer',
+    sp_4d_days:'4 Days',sp_4d_desc:'Full immersion: jungle, coast, culture',sp_4d_tag:'Deep Explorer',
     ch1_label:'Chapter 01',ch1_title:'A City Still Breathing',ch1_sub:'Paraty · From the Gold Trail to UNESCO Heritage',
     ch1_p1:'At high tide, the Atlantic Ocean floods the cobblestone streets of Paraty\'s historic center. This is not a disaster — it has been the city\'s daily rhythm for over four hundred years. In 1597, Portuguese colonists established a village on the land of the Guaianá people, naming it with the Tupi word for "river of fish": Paraty.',
     ch1_quote1:'"At high tide, the sea floods the cobblestones — this city is still breathing."',
@@ -908,16 +828,9 @@ const I18N = {
     spot6_title:'Igreja de Santa Rita',spot6_tag2:'1722 Baroque Church · Paraty Icon',
     spot6_body:'Built in 1722, Santa Rita is Paraty\'s oldest and most photographed church. Its white facade with baroque bell tower faces the sea at the entrance to the historic center.',
     spot6_addr:'Largo de Santa Rita, Centro Histórico',spot6_time:'30 minutes',spot6_price:'Museum R$6 (~$1.20)',
-    ch3_label:'Chapter 03',ch3_title:'Taste of Paraty',ch3_sub:'Seafood, Cachaça & Colonial Sweets',
-    ch3_p1:'Paraty is Brazil\'s cachaça capital. Every August, the Festival da Cachaça fills the cobblestone streets with the sweet scent of sugarcane. But Paraty\'s cuisine goes far beyond spirits — it\'s a crossroads of seafood, indigenous ingredients, Portuguese sweets, and African spices.',
-    ch3_quote:'"Eating fish in Paraty is like drinking wine in Bordeaux — every bite carries terroir."',
-    food1_cat:'SEAFOOD · FRUTOS DO MAR',food1_name:'Peixe na Folha de Banana',food1_desc:'Fish wrapped in banana leaves with coconut milk, palm heart and shrimp. Try Restaurante do Higor.',
-    food2_cat:'CACHAÇA · SPIRITS',food2_name:'Cachaça Artesanal de Paraty',food2_desc:'Brazil\'s oldest cachaça tradition. Free tastings of 20+ varieties at Cachaçaria Paratiana.',
-    food3_cat:'SWEETS · DOCES',food3_name:'Banana da Terra com Queijo',food3_desc:'Grilled plantain with melted Minas cheese — a classic sweet-salty Brazilian combo. Best at Casa do Fogo.',
-    food4_cat:'STREET FOOD · COMIDA DE RUA',food4_name:'Acarajé & Pastel de Camarão',food4_desc:'Acarajé: Afro-Brazilian black-eyed pea fritters. Pastel: fried pockets with shrimp. Best at Mercado do Pescador.',
-    ch4_label:'Chapter 04',ch4_title:'Your Journey',ch4_sub:'2, 3, or 4 days — tailored for you',
+    ch4_label:'Chapter 03',ch4_title:'Your Journey',ch4_sub:'2, 3, or 4 days — tailored for you',
     tab_2d:'2-Day Essential',tab_3d:'3-Day Classic',tab_4d:'4-Day Deep',
-    ch5_label:'Chapter 05',ch5_title:"Traveler's Notes",ch5_sub:'Transport · Stay · Season · Gear',
+    ch5_label:'Chapter 04',ch5_title:"Traveler's Notes",ch5_sub:'Transport · Stay · Season · Gear',
     tip1_title:'Getting There from SP',tip1_desc:'Drive SP-055 (Rio-Santos) ~4.5h, stunning coastal road. Bus from Rodoviária Tietê ~5h, R$80.',
     tip2_title:'Where to Stay',tip2_desc:'💎 Luxury: Pousada Literária (R$600+) | 🏡 Mid: Pousada do Ouro (R$300) | 🎒 Budget: Hostel Casa Gaia (R$80/bed)',
     tip3_title:'Best Season',tip3_desc:'Apr-Jun & Aug-Oct ideal. Dec-Feb peak season, prices double. New/full moon = highest tide, best "water mirror" in old town.',
@@ -925,7 +838,7 @@ const I18N = {
     tip5_title:'Safety Tips',tip5_desc:'Old town is very safe. Be cautious at the pier area at night. Don\'t leave valuables in car. Sunscreen is essential.',
     tip6_title:'Packing List',tip6_desc:'Must: waterproof phone pouch, water shoes, SPF50+, bug spray, rain jacket, swimsuit. Optional: hammock, snorkel mask.',
     pack_label:'PACKING LIST',pack_title:'Pre-Trip Checklist',
-    nav_city:'City',nav_spots:'Spots',nav_food:'Food',nav_journey:'Journey',nav_tips:'Tips',
+    nav_city:'City',nav_spots:'Spots',nav_journey:'Journey',nav_tips:'Tips',
     ending_title:'Até logo, Paraty.',ending_sub:'Next time the tide rises, may you be standing on those cobblestones.'
   },
   pt: {
@@ -933,7 +846,7 @@ const I18N = {
     sp_choose:'— Escolha sua jornada —',
     sp_2d_days:'2 Dias',sp_2d_desc:'Centro histórico + mar, essencial',sp_2d_tag:'Primeira vez em Paraty',
     sp_3d_days:'3 Dias',sp_3d_desc:'Centro + ilhas + cachoeiras',sp_3d_tag:'Mais Popular',
-    sp_4d_days:'4 Dias',sp_4d_desc:'Imersão total: selva, cultura, gastronomia',sp_4d_tag:'Explorador Profundo',
+    sp_4d_days:'4 Dias',sp_4d_desc:'Imersão total: selva, litoral, cultura',sp_4d_tag:'Explorador Profundo',
     ch1_label:'Capítulo 01',ch1_title:'Uma Cidade que Ainda Respira',ch1_sub:'Paraty · Do Caminho do Ouro ao Patrimônio da UNESCO',
     ch1_p1:'Na maré alta, o Atlântico invade as ruas de pedra do centro histórico de Paraty. Não é um desastre — é o ritmo diário desta cidade há mais de quatrocentos anos. Em 1597, colonizadores portugueses fundaram uma vila na terra dos Guaianás, batizando-a com a palavra tupi para "rio dos peixes": Paraty.',
     ch1_quote1:'"Na maré alta, o mar inunda as pedras — esta cidade ainda respira."',
@@ -966,16 +879,9 @@ const I18N = {
     spot6_title:'Igreja de Santa Rita',spot6_tag2:'Igreja Barroca de 1722 · Ícone de Paraty',
     spot6_body:'Construída em 1722, Santa Rita é a igreja mais antiga e mais fotografada de Paraty. Sua fachada branca com torre barroca encara o mar na entrada do centro histórico.',
     spot6_addr:'Largo de Santa Rita, Centro Histórico',spot6_time:'30 minutos',spot6_price:'Museu R$6',
-    ch3_label:'Capítulo 03',ch3_title:'Sabores de Paraty',ch3_sub:'Frutos do mar, Cachaça e Doces Coloniais',
-    ch3_p1:'Paraty é a capital da cachaça do Brasil. Todo agosto, o Festival da Cachaça enche as ruas de pedra com o aroma doce da cana. Mas a gastronomia de Paraty vai além — é um cruzamento de frutos do mar, ingredientes indígenas, doces portugueses e temperos africanos.',
-    ch3_quote:'"Comer peixe em Paraty é como beber vinho em Bordeaux — cada mordida tem terroir."',
-    food1_cat:'FRUTOS DO MAR',food1_name:'Peixe na Folha de Banana',food1_desc:'Peixe assado na folha de banana com leite de coco, palmito e camarão. Experimente no Restaurante do Higor.',
-    food2_cat:'CACHAÇA',food2_name:'Cachaça Artesanal de Paraty',food2_desc:'A tradição mais antiga de cachaça do Brasil. Degustação grátis de 20+ rótulos na Cachaçaria Paratiana.',
-    food3_cat:'DOCES',food3_name:'Banana da Terra com Queijo',food3_desc:'Banana assada com queijo minas derretido — clássico doce-salgado brasileiro. Melhor na Casa do Fogo.',
-    food4_cat:'COMIDA DE RUA',food4_name:'Acarajé & Pastel de Camarão',food4_desc:'Acarajé: bolinho frito de feijão-fradinho. Pastel: massa crocante com camarão. Melhor no Mercado do Pescador.',
-    ch4_label:'Capítulo 04',ch4_title:'Sua Jornada',ch4_sub:'2, 3 ou 4 dias — sob medida',
+    ch4_label:'Capítulo 03',ch4_title:'Sua Jornada',ch4_sub:'2, 3 ou 4 dias — sob medida',
     tab_2d:'2 Dias Essencial',tab_3d:'3 Dias Clássico',tab_4d:'4 Dias Profundo',
-    ch5_label:'Capítulo 05',ch5_title:'Notas do Viajante',ch5_sub:'Transporte · Hospedagem · Temporada · Equipamento',
+    ch5_label:'Capítulo 04',ch5_title:'Notas do Viajante',ch5_sub:'Transporte · Hospedagem · Temporada · Equipamento',
     tip1_title:'Como Chegar de SP',tip1_desc:'Carro pela SP-055 (Rio-Santos) ~4,5h, estrada linda. Ônibus da Rodoviária Tietê ~5h, R$80.',
     tip2_title:'Onde Ficar',tip2_desc:'💎 Luxo: Pousada Literária (R$600+) | 🏡 Médio: Pousada do Ouro (R$300) | 🎒 Econômico: Hostel Casa Gaia (R$80/cama)',
     tip3_title:'Melhor Época',tip3_desc:'Abr-Jun e Ago-Out ideal. Dez-Fev alta temporada, preços dobram. Lua nova/cheia = maré mais alta, melhor "espelho d\'água".',
@@ -983,7 +889,7 @@ const I18N = {
     tip5_title:'Segurança',tip5_desc:'Centro muito seguro. Cuidado no cais à noite. Não deixe objetos de valor no carro. Protetor solar é obrigatório.',
     tip6_title:'Lista de Malas',tip6_desc:'Essencial: capinha à prova d\'água, tênis anfíbio, protetor FPS50+, repelente, capa de chuva, maiô. Opcional: rede, máscara de snorkel.',
     pack_label:'LISTA DE MALAS',pack_title:'Checklist Pré-Viagem',
-    nav_city:'Cidade',nav_spots:'Pontos',nav_food:'Comida',nav_journey:'Roteiro',nav_tips:'Dicas',
+    nav_city:'Cidade',nav_spots:'Pontos',nav_journey:'Roteiro',nav_tips:'Dicas',
     ending_title:'Até logo, Paraty.',ending_sub:'Na próxima maré alta, que você esteja ali, sobre as pedras.'
   }
 };
@@ -1144,7 +1050,7 @@ let masterVol = 0.30;
 const zoneNames = { z1: 'AMBIENT', z2: 'WORLD', z3: 'CLASSICAL' };
 const zoneSections = {
   z1: ['splash'],  // Cover/Splash → Ambient electronic
-  z2: ['ch-city', 'ch-spots', 'spot-details', 'ch-food'],  // Culture → World/Organic
+  z2: ['ch-city', 'ch-spots', 'spot-details'],  // Culture → World/Organic
   z3: ['ch-journey', 'ch-tips']  // Journey/Ending → Neoclassical
 };
 
