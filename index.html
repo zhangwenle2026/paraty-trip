@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v8.7">
+<meta name="version" content="lp-v9.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Paraty · Lonely Planet Style Guide</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@ a{color:var(--lp-blue);text-decoration:none}
 
 .sp-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:env(safe-area-inset-top) 28px env(safe-area-inset-bottom)}
 
-.sp-topbar{display:flex;justify-content:space-between;align-items:center;padding:24px 0 0;padding-left:100px}
+.sp-topbar{display:flex;justify-content:flex-end;align-items:center;padding:24px 0 0}
 .sp-badge{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);backdrop-filter:blur(8px);padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.15)}
 .sp-lang{display:flex;gap:2px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border-radius:16px;padding:3px;border:1px solid rgba(255,255,255,.15)}
 .sp-lang-btn{border:none;background:transparent;color:rgba(255,255,255,.7);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:4px 10px;border-radius:14px;cursor:pointer;transition:all .2s}
@@ -273,44 +273,21 @@ a{color:var(--lp-blue);text-decoration:none}
   <div class="sp-overlay"></div>
   <div class="sp-content">
     <div class="sp-topbar">
-      <div class="sp-badge">Road Trip · Brasil</div>
+      <!-- badge removed -->
       <div class="sp-lang">
         <button class="sp-lang-btn active" onclick="setBilingual('zh-en')">中·EN</button>
         <button class="sp-lang-btn" onclick="setBilingual('zh-pt')">中·PT</button>
       </div>
     </div>
     <div class="sp-hero">
-      <div class="sp-eyebrow">South America · Brazil</div>
+      <!-- eyebrow removed -->
       <div class="sp-title">Paraty</div>
       <div class="sp-subtitle" data-i18n="sp_subtitle">海盗湾的秘密，殖民地的石板街，一条海岸公路，四天时光。</div>
       <div class="sp-dots" id="sp-dots">
         <div class="sp-dot active"></div><div class="sp-dot"></div><div class="sp-dot"></div>
       </div>
     </div>
-    <div class="sp-choose" data-i18n="sp_choose">— 选择你的旅程 —</div>
-    <div class="sp-plans">
-      <div class="sp-plan" onclick="enterPlan(2)">
-        <div class="sp-plan-days" data-i18n="sp_2d_days">2天</div>
-        <div class="sp-plan-label">WEEKEND ESCAPE</div>
-        <div class="sp-plan-desc" data-i18n="sp_2d_desc">老城+出海，紧凑精华</div>
-        <div class="sp-plan-tag" data-i18n="sp_2d_tag">首次来 Paraty</div>
-      </div>
-      <div class="sp-plan" onclick="enterPlan(3)">
-        <div class="sp-plan-days" data-i18n="sp_3d_days">3天</div>
-        <div class="sp-plan-label">CLASSIC JOURNEY</div>
-        <div class="sp-plan-desc" data-i18n="sp_3d_desc">老城+海岛+瀑布，舒适不赶</div>
-        <div class="sp-plan-tag" data-i18n="sp_3d_tag">最受欢迎</div>
-      </div>
-      <div class="sp-plan" onclick="enterPlan(4)">
-        <div class="sp-plan-days" data-i18n="sp_4d_days">4天</div>
-        <div class="sp-plan-label">DEEP EXPLORATION</div>
-        <div class="sp-plan-desc" data-i18n="sp_4d_desc">全景深度，丛林·海岸·文化全收</div>
-        <div class="sp-plan-tag" data-i18n="sp_4d_tag">深度玩家</div>
-      </div>
-    </div>
-    <div class="sp-scroll-hint">
-      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-    </div>
+    <!-- plans & scroll hint removed — journey plans now inside Ch3 -->
   </div>
 </div>
 
