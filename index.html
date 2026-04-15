@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v7.0.1">
+<meta name="version" content="lp-v7.0.2">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -45,7 +45,7 @@ body::before{content:'';position:fixed;inset:0;
 .sp-eyebrow{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--terra);margin-bottom:10px;display:flex;align-items:center;gap:12px}
 .sp-eyebrow::before{content:'';width:28px;height:1.5px;background:var(--terra)}
 .sp-hero-title{font-family:'Playfair Display',serif;font-size:clamp(42px,8vw,72px);font-weight:900;color:#fff;line-height:.95;letter-spacing:-1px;margin-bottom:12px;text-shadow:0 2px 30px rgba(0,0,0,.4)}
-.sp-hero-title em{font-style:italic;font-weight:700;color:var(--terra)}
+.sp-hero-title em{font-style:italic;font-weight:700;color:#fff}
 .sp-subtitle{font-family:'Libre Baskerville',serif;font-size:clamp(13px,2vw,16px);font-style:italic;color:rgba(255,255,255,.8);line-height:1.5;max-width:480px;text-shadow:0 1px 10px rgba(0,0,0,.5)}
 .sp-divider{width:40px;height:2px;background:var(--terra);margin:16px 0}
 
@@ -76,9 +76,15 @@ body::before{content:'';position:fixed;inset:0;
   .sp-center{padding:0 48px 24px}
 }
 @media(max-width:480px){
-  .sp-plan{flex:0 0 calc(70% - 6px)}
-  .sp-topbar{padding:16px 20px 0}
-  .sp-center{padding:0 20px 16px}
+  .sp-plans{gap:8px;padding:0 12px 28px;overflow-x:visible;flex-wrap:nowrap}
+  .sp-plan{flex:1 1 0;min-width:0}
+  .sp-plan-days{font-size:26px}
+  .sp-plan-label{font-size:9px;letter-spacing:.5px}
+  .sp-plan-desc{font-size:10px;margin-top:5px}
+  .sp-plan-tag{font-size:8px;padding:2px 6px;margin-top:6px}
+  .sp-plan-arrow{display:none}
+  .sp-topbar{padding:16px 16px 0}
+  .sp-center{padding:0 16px 12px}
 }
 
 /* ═══ HERO CAROUSEL ═══ */
