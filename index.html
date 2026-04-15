@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v7.0.2">
+<meta name="version" content="lp-v7.0.3">
 <title>April Paraty Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -37,8 +37,10 @@ body::before{content:'';position:fixed;inset:0;
 /* Top bar */
 .sp-topbar{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:24px 28px 0}
 .sp-badge{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);backdrop-filter:blur(8px);padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.15)}
-.sp-compass{width:36px;height:36px;opacity:.7;animation:compass-spin 12s linear infinite}
-@keyframes compass-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+/* Splash lang switch */
+.sp-lang{display:flex;gap:2px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border-radius:16px;padding:3px;border:1px solid rgba(255,255,255,.15)}
+.sp-lang-btn{border:none;background:transparent;color:rgba(255,255,255,.7);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:4px 10px;border-radius:14px;cursor:pointer;transition:all .2s}
+.sp-lang-btn.active{background:var(--terra);color:#fff}
 
 /* Center text block */
 .sp-center{position:relative;z-index:3;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 28px 20px}
@@ -511,7 +513,11 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid 
 
   <div class="sp-topbar">
     <div class="sp-badge">Road Trip · Brasil</div>
-    <svg class="sp-compass" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="#fff" stroke-width="1.5" opacity=".4"/><polygon points="32,8 27,32 32,28 37,32" fill="#C4622D" opacity=".9"/><polygon points="32,56 27,32 32,36 37,32" fill="#fff" opacity=".5"/><circle cx="32" cy="32" r="3" fill="#fff"/></svg>
+    <div class="sp-lang">
+      <button class="sp-lang-btn active" onclick="setLang('zh')">中</button>
+      <button class="sp-lang-btn" onclick="setLang('en')">EN</button>
+      <button class="sp-lang-btn" onclick="setLang('pt')">PT</button>
+    </div>
   </div>
 
   <div class="sp-center">
@@ -1436,7 +1442,7 @@ const _i18n={
 };
 function setLang(lang){
   _lang=lang;
-  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.trim()===(lang==='zh'?'中':lang.toUpperCase()))});
+  document.querySelectorAll('.lang-btn,.sp-lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.trim()===(lang==='zh'?'中':lang.toUpperCase()))});
   if(lang==='zh'){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=el.getAttribute('data-orig')||el.textContent});applyFilters();return}
   const dict=_i18n[lang];if(!dict)return;
   document.querySelectorAll('[data-i18n]').forEach(el=>{
