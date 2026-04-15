@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v8.1">
+<meta name="version" content="lp-v8.2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Paraty · Lonely Planet Style Guide</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -253,6 +253,19 @@ a{color:var(--lp-blue);text-decoration:none}
 
 /* Hide nav on splash */
 #splash:not(.hide) ~ .nav-bar{display:none!important}
+
+/* ===== MUSIC CONTROL ===== */
+.music-ctrl{position:fixed;bottom:68px;right:16px;z-index:200;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);border-radius:28px;padding:6px 14px 6px 10px;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .3s;opacity:0;pointer-events:none}
+.music-ctrl.show{opacity:1;pointer-events:auto}
+.music-ctrl.collapsed{border-radius:50%;padding:8px;width:40px;height:40px;justify-content:center}
+.music-ctrl.collapsed .mc-slider,.music-ctrl.collapsed .mc-zone{display:none}
+.mc-btn{background:none;border:none;cursor:pointer;color:#fff;font-size:18px;line-height:1;padding:2px;flex-shrink:0}
+.mc-btn:hover{transform:scale(1.1)}
+.mc-slider{-webkit-appearance:none;appearance:none;width:72px;height:3px;border-radius:2px;background:rgba(255,255,255,.25);outline:none;cursor:pointer;flex-shrink:0}
+.mc-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,.3)}
+.mc-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;border:none}
+.mc-zone{font-family:'Inter',sans-serif;font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.5px;white-space:nowrap;max-width:60px;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:600px){.music-ctrl{bottom:72px;right:10px;padding:5px 10px 5px 8px}.mc-slider{width:56px}}
 </style>
 </head>
 <body>
@@ -772,7 +785,7 @@ a{color:var(--lp-blue);text-decoration:none}
 </div>
 
 <!-- ===== ENDING ===== -->
-<div class="ending">
+<div class="ending" id="sec-ending">
   <div class="t-display" data-i18n="ending_title">Até logo, Paraty.</div>
   <p data-i18n="ending_sub">下次涨潮的时候，希望你正站在石板街上。</p>
 </div>
@@ -1106,5 +1119,160 @@ window.addEventListener('touchend', (e) => {
   }
 }, { passive: true });
 </script>
+<!-- Music Control -->
+<div class="music-ctrl" id="music-ctrl">
+  <button class="mc-btn" id="mc-play" onclick="toggleMusic()" aria-label="Play/Pause">♪</button>
+  <input class="mc-slider" id="mc-vol" type="range" min="0" max="100" value="30" oninput="setVolume(this.value)">
+  <span class="mc-zone" id="mc-zone">AMBIENT</span>
+</div>
+
+<!-- Audio Elements -->
+<audio id="audio-z1" loop preload="none" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_a37926ee-cf44-4ffb-ab6c-ee34f12c2013.mp3"></audio>
+<audio id="audio-z2" loop preload="none" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_819ae48d-21fc-4569-a832-709edc282bfb.mp3"></audio>
+<audio id="audio-z3" loop preload="none" src="https://msstest.sankuai.com/qacoverage-test/oversea/files/image/flowcopilot_da8b7cb1-d272-4f47-9f81-0a564d58a53b.mp3"></audio>
+
+<script>
+// ===== MUSIC SYSTEM =====
+const audioEls = {
+  z1: document.getElementById('audio-z1'),
+  z2: document.getElementById('audio-z2'),
+  z3: document.getElementById('audio-z3')
+};
+let musicPlaying = false;
+let currentZone = 'z1';
+let masterVol = 0.30;
+const zoneNames = { z1: 'AMBIENT', z2: 'WORLD', z3: 'CLASSICAL' };
+const zoneSections = {
+  z1: ['splash'],  // Cover/Splash → Ambient electronic
+  z2: ['ch-city', 'ch-spots', 'spot-details', 'ch-food'],  // Culture → World/Organic
+  z3: ['ch-journey', 'ch-tips']  // Journey/Ending → Neoclassical
+};
+
+// Fade helpers
+function fadeAudio(el, targetVol, duration, cb) {
+  const steps = 20;
+  const interval = duration / steps;
+  const startVol = el.volume;
+  const delta = (targetVol - startVol) / steps;
+  let step = 0;
+  const timer = setInterval(() => {
+    step++;
+    el.volume = Math.max(0, Math.min(1, startVol + delta * step));
+    if (step >= steps) {
+      clearInterval(timer);
+      el.volume = Math.max(0, Math.min(1, targetVol));
+      if (cb) cb();
+    }
+  }, interval);
+}
+
+function switchZone(newZone) {
+  if (newZone === currentZone) return;
+  const oldEl = audioEls[currentZone];
+  const newEl = audioEls[newZone];
+  
+  // Crossfade
+  newEl.volume = 0;
+  if (musicPlaying) {
+    newEl.play().catch(() => {});
+    fadeAudio(oldEl, 0, 1500, () => { oldEl.pause(); });
+    fadeAudio(newEl, masterVol, 1500);
+  }
+  currentZone = newZone;
+  document.getElementById('mc-zone').textContent = zoneNames[newZone];
+}
+
+function toggleMusic() {
+  const btn = document.getElementById('mc-play');
+  if (musicPlaying) {
+    fadeAudio(audioEls[currentZone], 0, 500, () => {
+      audioEls[currentZone].pause();
+    });
+    musicPlaying = false;
+    btn.textContent = '♪';
+    btn.style.opacity = '0.6';
+  } else {
+    const el = audioEls[currentZone];
+    el.volume = 0;
+    el.play().then(() => {
+      fadeAudio(el, masterVol, 800);
+      musicPlaying = true;
+      btn.textContent = '⏸';
+      btn.style.opacity = '1';
+    }).catch(() => {
+      // Autoplay blocked, show hint
+      btn.textContent = '▶';
+    });
+  }
+}
+
+function setVolume(val) {
+  masterVol = val / 100;
+  if (musicPlaying) {
+    audioEls[currentZone].volume = masterVol;
+  }
+}
+
+// Zone detection on scroll
+function detectZone() {
+  const scrollY = window.scrollY + window.innerHeight / 2;
+  
+  // Check sections bottom-to-top (last match wins = most visible)
+  for (const [zone, sectionIds] of Object.entries(zoneSections)) {
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      const elTop = rect.top + window.scrollY;
+      const elBot = elTop + rect.height;
+      if (scrollY >= elTop && scrollY <= elBot) {
+        switchZone(zone);
+        return;
+      }
+    }
+  }
+}
+
+// Show music control after entering app
+const mcObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.getElementById('music-ctrl').classList.add('show');
+      mcObs.disconnect();
+    }
+  });
+}, { threshold: 0.1 });
+
+// Observe first content section
+setTimeout(() => {
+  const target = document.getElementById('sec-city') || document.getElementById('app');
+  if (target) mcObs.observe(target);
+}, 1000);
+
+// Scroll listener for zone switching
+let scrollTick = false;
+window.addEventListener('scroll', () => {
+  if (!scrollTick) {
+    requestAnimationFrame(() => {
+      detectZone();
+      scrollTick = false;
+    });
+    scrollTick = true;
+  }
+});
+
+// Also show music ctrl when splash exits
+const origEnterPlan = window.enterPlan;
+if (typeof enterPlan === 'function') {
+  const _origEnter = enterPlan;
+  window.enterPlan = function(days) {
+    _origEnter(days);
+    setTimeout(() => {
+      document.getElementById('music-ctrl').classList.add('show');
+    }, 500);
+  };
+}
+</script>
+
 </body>
 </html>
