@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="version" content="lp-v8.6">
+<meta name="version" content="lp-v8.7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Paraty · Lonely Planet Style Guide</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -27,6 +27,13 @@ html{scroll-behavior:smooth;font-size:16px;background:var(--cream)}
 body{font-family:'Inter',sans-serif;color:var(--text-body);line-height:1.7;background:var(--cream);overflow-x:hidden}
 img{display:block;max-width:100%}
 a{color:var(--lp-blue);text-decoration:none}
+
+/* ===== ISLAND HOME BUTTON ===== */
+.island-home{position:fixed;top:16px;left:16px;z-index:2000;display:flex;align-items:center;gap:6px;padding:8px 16px 8px 12px;background:rgba(255,255,255,.18);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.25);border-radius:24px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:.5px;text-decoration:none;transition:all .3s ease;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.island-home:hover{background:rgba(255,255,255,.3);transform:scale(1.04);box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.island-home .island-icon{font-size:16px;line-height:1}
+.island-home .island-label{line-height:1}
+@media(max-width:768px){.island-home{top:12px;left:12px;padding:6px 12px 6px 10px;font-size:12px}}
 
 /* ===== TYPOGRAPHY - LP MAGAZINE ===== */
 .t-display{font-family:'Playfair Display',serif;font-weight:900;line-height:1.05;letter-spacing:-0.02em;color:var(--text-dark)}
@@ -250,6 +257,11 @@ a{color:var(--lp-blue);text-decoration:none}
 </style>
 </head>
 <body>
+
+<!-- ===== ISLAND HOME LINK ===== -->
+<a class="island-home" href="https://zhangwenle2026.github.io/" title="Back to Island">
+  <span class="island-icon">🏝️</span><span class="island-label">Island</span>
+</a>
 
 <!-- ===== SPLASH / COVER ===== -->
 <div id="splash">
